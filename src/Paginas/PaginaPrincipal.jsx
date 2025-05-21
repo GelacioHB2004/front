@@ -133,7 +133,7 @@ const PaginaPrincipal = () => {
     color: "#1e1e1e",
     overflow: "hidden",
     backgroundImage: `
-      linear-gradient(rgba(255,255,255,0.8), rgba(255, 255, 255, 0)),
+      linear-gradient(rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0)),
       url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c")
     `,
     backgroundSize: "cover",

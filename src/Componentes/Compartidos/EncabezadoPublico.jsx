@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HomeOutlined, LoginOutlined, CustomerServiceOutlined, ShoppingCartOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { HomeOutlined, LoginOutlined, BankOutlined, ApartmentOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -16,11 +16,7 @@ const EncabezadoPublico = () => {
       try {
         const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfilF');
         const data = response.data;
-
-        // Depuración: Mostrar los datos recibidos
-        console.log('Datos recibidos del backend:', data);
-
-        setNombreEmpresa(data.NombreEmpresa || 'Nombre no disponible'); // Cambiado a NombreEmpresa
+        setNombreEmpresa(data.NombreEmpresa || 'Nombre no disponible');
         setLogoUrl(data.Logo ? `data:image/jpeg;base64,${data.Logo}` : '');
       } catch (error) {
         console.error('Error al obtener datos del perfil:', error);
@@ -44,11 +40,11 @@ const EncabezadoPublico = () => {
       case "home":
         navigate('/');
         break;
-      case "productos":
-        navigate('/productosp');
+      case "hoteles":
+        navigate('/hoteles');
         break;
-      case "servicios":
-        navigate('/servicios');
+      case "departamentos":
+        navigate('/departamentos');
         break;
       case "login":
         navigate('/login');
@@ -75,13 +71,12 @@ const EncabezadoPublico = () => {
     <>
       <style>{`
         :root {
-          --color-primary: #000000; 
-          --color-secondary: #FFFFFF; 
-          --color-highlight: #4682B4; 
-          --color-hover: #A9DFBF; 
-          --color-mobile-bg: #333333; 
+          --color-primary: #2C3E50; 
+          --color-secondary: #ECF0F1; 
+          --color-highlight: #2980B9;
+          --color-hover: #3498DB;
+          --color-mobile-bg: #34495E;
           --color-mobile-text: #FFFFFF;
-          --color-icon: #00B300; 
         }
 
         .header {
@@ -93,42 +88,42 @@ const EncabezadoPublico = () => {
           color: var(--color-secondary);
         }
 
-        .logo h1 {
-          font-size: 1.2rem; 
+        .logo {
+          display: flex;
+          align-items: center;
+          flex: 1;
+        }
+
+        .logo img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-right: 10px;
+        }
+
+        .logo h3 {
+          font-size: 1.2rem;
           font-weight: bold;
           color: var(--color-secondary);
         }
 
-        .logo img {
-          width: 60px; 
-          height: 10px; 
-          border-radius: 50%; 
-          margin-right: 10px; 
-        }
-
-        .logo {
-          display: flex;
-          align-items: center;
-          flex: 1; 
-        }
-
         .menu ul {
           display: flex;
-          gap: 15px; 
-          list-style-type: none;
+          gap: 15px;
+          list-style: none;
           margin: 0;
           padding: 0;
         }
 
         .menu ul li {
-          font-size: 1rem; 
+          font-size: 1rem;
           cursor: pointer;
-          padding: 8px 12px; 
-          color: var(--color-secondary);
-          transition: background-color 0.3s ease, color 0.3s ease;
+          padding: 8px 12px;
           display: flex;
           align-items: center;
           gap: 8px;
+          color: var(--color-secondary);
+          transition: background-color 0.3s, color 0.3s;
         }
 
         .menu ul li:hover {
@@ -143,8 +138,8 @@ const EncabezadoPublico = () => {
 
         .mobile-menu-icon {
           display: none;
-          cursor: pointer;
           flex-direction: column;
+          cursor: pointer;
           gap: 4px;
         }
 
@@ -152,22 +147,20 @@ const EncabezadoPublico = () => {
           width: 25px;
           height: 3px;
           background-color: var(--color-secondary);
-          transition: background-color 0.3s ease;
         }
 
         @media (max-width: 768px) {
           .menu ul {
-            display: flex;
             flex-direction: column;
             position: fixed;
             top: 0;
             left: -100%;
             width: 70%;
             height: 100%;
-            background-color: var(--color-mobile-bg); 
+            background-color: var(--color-mobile-bg);
             padding: 20px;
             transition: left 0.3s ease-in-out;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
           }
 
           .menu.menu-open ul {
@@ -177,8 +170,7 @@ const EncabezadoPublico = () => {
           .menu ul li {
             padding: 20px;
             border-bottom: 1px solid var(--color-hover);
-            text-align: left;
-            color: var(--color-mobile-text); 
+            color: var(--color-mobile-text);
           }
 
           .mobile-menu-icon {
@@ -190,26 +182,26 @@ const EncabezadoPublico = () => {
       <header className="header">
         <div className="logo">
           {logoUrl && (
-            <img src={logoUrl} alt="Logo de la Empresa" style={{ height: '50px', width: '50px', marginRight: '10px' }} />
+            <img src={logoUrl} alt="Logo Empresa" />
           )}
           <h3>{nombreEmpresa}</h3>
         </div>
         <nav className={`menu ${isMobileMenuOpen ? 'menu-open' : ''}`} ref={menuRef}>
           <ul>
             <li className={active === 'home' ? 'active' : ''} onClick={() => { handleClick('home'); handleMenuClick('home'); }}>
-              <HomeOutlined style={{ color: '#00B300' }} />
-              Home
+              <HomeOutlined style={{ color: '#2ECC71' }} />
+              Inicio
             </li>
-            <li className={active === 'productos' ? 'active' : ''} onClick={() => { handleClick('productos'); handleMenuClick('productos'); }}>
-              <ShoppingCartOutlined style={{ color: '#00B300' }} />
-              Departamentos
-            </li>
-            <li className={active === 'productos' ? 'active' : ''} onClick={() => { handleClick('productos'); handleMenuClick('productos'); }}>
-              <ShoppingCartOutlined style={{ color: '#00B300' }} />
+            <li className={active === 'hoteles' ? 'active' : ''} onClick={() => { handleClick('hoteles'); handleMenuClick('hoteles'); }}>
+              <BankOutlined style={{ color: '#E67E22' }} />
               Hoteles
             </li>
+            <li className={active === 'departamentos' ? 'active' : ''} onClick={() => { handleClick('departamentos'); handleMenuClick('departamentos'); }}>
+              <ApartmentOutlined style={{ color: '#9B59B6' }} />
+              Departamentos
+            </li>
             <li className={active === 'login' ? 'active' : ''} onClick={() => { handleClick('login'); handleMenuClick('login'); }}>
-              <LoginOutlined style={{ color: '#00B300' }} />
+              <LoginOutlined style={{ color: '#E74C3C' }} />
               Iniciar sesión
             </li>
           </ul>

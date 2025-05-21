@@ -16,9 +16,6 @@ const EncabezadoCliente = () => {
       try {
         const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfilF');
         const data = response.data;
-
-        console.log('Datos recibidos del backend:', data); // Depuración
-
         setNombreEmpresa(data.NombreEmpresa || 'Nombre no disponible');
         setLogoUrl(data.Logo ? `data:image/jpeg;base64,${data.Logo}` : '');
       } catch (error) {
@@ -43,24 +40,14 @@ const EncabezadoCliente = () => {
       case "home":
         navigate('/cliente/');
         break;
-      case "iot":
-        navigate('/cliente/Registroiot');
-        break;
-      case "ControlCajaFuerte":
-        navigate('/cliente/ControlCajaFuerte');
-        break;
       case "productoscliente":
         navigate('/cliente/productosC');
-        break;
-      case "CajaFuerte":
-        navigate('/cliente/CajaFuerte');
         break;
       case "MQTT":
         navigate('/cliente/MQTT');
         break;
       case "cerrarSesion":
         try {
-          console.log('Cerrando sesión...');
           await fetch('/api/logout', {
             method: 'POST',
             credentials: 'include',
@@ -76,7 +63,7 @@ const EncabezadoCliente = () => {
         }
         break;
       default:
-        console.log("No se reconoce la acción del menú");
+        console.log("Opción no reconocida.");
     }
   };
 
@@ -100,6 +87,7 @@ const EncabezadoCliente = () => {
           --color-primary: #000000;
           --color-secondary: #FFFFFF;
           --color-hover: #A9DFBF;
+          --color-icon: #00B300;
         }
 
         .header {
@@ -109,59 +97,71 @@ const EncabezadoCliente = () => {
           padding: 20px 15px;
           background-color: var(--color-primary);
           color: var(--color-secondary);
+          font-family: 'Segoe UI', sans-serif;
         }
-        .logo h1 {
-          font-size: 1.2rem; 
-          font-weight: bold;
-          color: var(--color-secondary);
-        }
-        .logo img {
-          width: 60px; 
-          height: 10px; 
-          border-radius: 50%; 
-          margin-right: 10px; 
-        }
+
         .logo {
           display: flex;
           align-items: center;
-          flex: 1; 
+          flex: 1;
         }
+
+        .logo img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-right: 10px;
+        }
+
+        .logo h3 {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: var(--color-secondary);
+        }
+
         .menu ul {
           display: flex;
           gap: 15px;
-          list-style-type: none;
+          list-style: none;
           margin: 0;
           padding: 0;
         }
+
         .menu ul li {
           font-size: 1rem;
           cursor: pointer;
           padding: 8px 12px;
-          color: var(--color-secondary);
-          transition: background-color 0.3s ease;
           display: flex;
           align-items: center;
           gap: 8px;
+          color: var(--color-secondary);
+          transition: background-color 0.3s ease;
         }
+
         .menu ul li:hover {
           background-color: var(--color-hover);
           border-radius: 5px;
         }
+
         .menu ul li.active {
           background-color: var(--color-secondary);
+          color: var(--color-primary);
           border-radius: 5px;
         }
+
         .mobile-menu-icon {
           display: none;
-          cursor: pointer;
           flex-direction: column;
+          cursor: pointer;
           gap: 4px;
         }
+
         .hamburger {
           width: 25px;
           height: 3px;
           background-color: var(--color-secondary);
         }
+
         @media (max-width: 768px) {
           .menu ul {
             display: none;
@@ -175,10 +175,12 @@ const EncabezadoCliente = () => {
             padding: 20px;
             transition: left 0.3s ease-in-out;
           }
+
           .menu.menu-open ul {
             display: flex;
             left: 0;
           }
+
           .mobile-menu-icon {
             display: flex;
           }
@@ -188,26 +190,26 @@ const EncabezadoCliente = () => {
       <header className="header">
         <div className="logo">
           {logoUrl && (
-            <img src={logoUrl} alt="Logo de la Empresa" style={{ height: '50px', width: '50px', marginRight: '10px' }} />
+            <img src={logoUrl} alt="Logo de la Empresa" />
           )}
           <h3>{nombreEmpresa}</h3>
         </div>
         <nav className={`menu ${isMobileMenuOpen ? 'menu-open' : ''}`} ref={menuRef}>
           <ul>
             <li className={active === 'home' ? 'active' : ''} onClick={() => { handleClick('home'); handleMenuClick('home'); }}>
-              <HomeOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+              <HomeOutlined style={{ color: 'var(--color-icon)' }} />
               Home
             </li>
             <li onClick={() => handleMenuClick('productoscliente')}>
-              <ShopOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+              <ShopOutlined style={{ color: 'var(--color-icon)' }} />
               Alojamientos
             </li>
             <li onClick={() => handleMenuClick('MQTT')}>
-              <LogoutOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+              <UserOutlined style={{ color: 'var(--color-icon)' }} />
               Perfil
             </li>
             <li className={active === 'cerrarSesion' ? 'active' : ''} onClick={() => { handleClick('cerrarSesion'); handleMenuClick('cerrarSesion'); }}>
-              <LogoutOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+              <LogoutOutlined style={{ color: 'var(--color-icon)' }} />
               Cerrar Sesión
             </li>
           </ul>
