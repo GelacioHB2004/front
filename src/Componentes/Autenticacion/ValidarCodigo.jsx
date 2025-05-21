@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal);
 
 // URL base del backend para desarrollo local
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://backendd-q0zc.onrender.com";
 
 function ValidarCodigo() {
   const [codigo, setCodigo] = useState('');

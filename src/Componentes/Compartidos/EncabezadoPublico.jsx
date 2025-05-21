@@ -14,7 +14,7 @@ const EncabezadoPublico = () => {
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/perfilF');
+        const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfilF');
         const data = response.data;
 
         // Depuración: Mostrar los datos recibidos

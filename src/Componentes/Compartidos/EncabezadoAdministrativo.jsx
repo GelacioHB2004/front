@@ -15,7 +15,7 @@ const EncabezadoAdministrativo = () => {
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/perfilF');
+        const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfilF');
         const data = response.data;
 
         console.log('Datos recibidos del backend:', data); // Depuración

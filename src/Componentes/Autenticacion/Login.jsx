@@ -9,7 +9,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 const MySwal = withReactContent(Swal);
 
 // URL base del backend para desarrollo local
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://backendd-q0zc.onrender.com";
 
 function Login() {
   const navigate = useNavigate();
