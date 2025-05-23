@@ -26,6 +26,7 @@ import {
   ExpandMore as ChevronDown,
 } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import fondo from '../imagenes/huejutla.jpg';
 
 /**
  * Nuevo esquema de colores inspirado en Material Design 3
@@ -127,6 +128,7 @@ const PaginaPrincipal = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box
+      
   sx={{
     minHeight: "100vh",
     position: "relative",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route , useParams} from 'react-router-dom';
 import LayoutConEncabezado from './Componentes/Layout/LayoutConEncabezado';
 import PaginaPrincipal from './Paginas/PaginaPrincipal';
 import PaginaPrincipalAdministrativa from './Paginas/PaginaPrincipalAdministrativa';
@@ -12,6 +12,18 @@ import VerificarCorreo from './Componentes/Autenticacion/VerificarCorreo';
 import ValidarCodigo from './Componentes/Autenticacion/ValidarCodigo';
 import SolicitarCodigo from './Componentes/Autenticacion/SolicitarCodigo';
 import Perfil from './Componentes/Administrativo/Perfil';
+import HotelesR from './Componentes/Administrativo/Hoteles';
+import HotelesP from './Componentes/Publico/HotelesP';
+import Politicas from './Componentes/Administrativo/Politicas';
+import Cuartos from './Componentes/Administrativo/Cuartos';
+import CuartosP from './Componentes/Publico/CuartosP';
+import DetallesHabitacion from './Componentes/Publico/DetalleHabitacion';
+import CambiarPassword from './Componentes/Autenticacion/CambiarPassword';
+
+const CuartosPWrapper = () => {
+  const { idHotel } = useParams(); // Extrae idHotel de la URL
+  return <CuartosP idHotel={idHotel} />;
+};
 
 
 const App = () => {
@@ -26,6 +38,16 @@ const App = () => {
             <Route path="/verificar-correo" element={<VerificarCorreo />} />
             <Route path="/validar-codigo" element={<ValidarCodigo />} />
             <Route path="/verificar_correo" element={<SolicitarCodigo />} />
+            <Route path="/hotelesp" element={<HotelesP />} />
+            <Route path="/cuartosp/:idHotel" element={<CuartosPWrapper />} />
+            <Route path="/detalles-habitacion/:idHabitacion" element={<DetallesHabitacion />} />
+            <Route path="/cambiar_password" element={<CambiarPassword />} />
+            
+
+            
+
+            
+            
             
             
             {/* Rutas para la administración */}
@@ -34,6 +56,10 @@ const App = () => {
 
             <Route path="/admin" element={<PaginaPrincipalAdministrativa />} />
             <Route path="/admin/perfil" element={<Perfil />} />
+            <Route path="/admin/hoteles" element={<HotelesR />} />
+            <Route path="/admin/politicas" element={<Politicas />} />
+            <Route path="/admin/cuartos" element={<Cuartos />} />
+
             
 
 

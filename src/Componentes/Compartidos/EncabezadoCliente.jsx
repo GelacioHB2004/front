@@ -41,10 +41,10 @@ const EncabezadoCliente = () => {
         navigate('/cliente/');
         break;
       case "productoscliente":
-        navigate('/cliente/productosC');
+        navigate('/cliente/Alojamientos');
         break;
       case "MQTT":
-        navigate('/cliente/MQTT');
+        navigate('/cliente/perfilusuario');
         break;
       case "cerrarSesion":
         try {
@@ -95,7 +95,7 @@ const EncabezadoCliente = () => {
           justify-content: space-between;
           align-items: center;
           padding: 20px 15px;
-          background-color: var(--color-primary);
+          background-color: #2d3e57;
           color: var(--color-secondary);
           font-family: 'Segoe UI', sans-serif;
         }

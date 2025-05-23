@@ -41,7 +41,7 @@ const EncabezadoPublico = () => {
         navigate('/');
         break;
       case "hoteles":
-        navigate('/hoteles');
+        navigate('/hotelesp');
         break;
       case "departamentos":
         navigate('/departamentos');

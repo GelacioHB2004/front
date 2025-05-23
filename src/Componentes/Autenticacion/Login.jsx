@@ -7,7 +7,8 @@ import { useAuth } from './AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';  
 
 const MySwal = withReactContent(Swal);
-
+//http://localhost:3000
+//https://backendd-q0zc.onrender.com
 // URL base del backend para desarrollo local
 const API_BASE_URL = "https://backendd-q0zc.onrender.com";
 

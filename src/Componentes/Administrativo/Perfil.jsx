@@ -20,7 +20,7 @@ const Perfil = () => {
     useEffect(() => {
         const fetchPerfiles = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/perfil');
+                const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfil');
                 console.log('Datos recibidos del backend:', response.data); // Depuración
                 setPerfiles(response.data);
             } catch (error) {
@@ -95,7 +95,7 @@ const Perfil = () => {
 
         try {
             if (editingId) {
-                await axios.put(`http://localhost:3000/api/perfil/${editingId}`, formData, {
+                await axios.put(`https://backendd-q0zc.onrender.com/api/perfil/${editingId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -107,7 +107,7 @@ const Perfil = () => {
                     confirmButtonText: 'OK'
                 });
             } else {
-                await axios.post('http://localhost:3000/api/perfil', formData, {
+                await axios.post('https://backendd-q0zc.onrender.com/api/perfil', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -129,7 +129,7 @@ const Perfil = () => {
                 Telefono: ''
             });
             setEditingId(null);
-            const response = await axios.get('http://localhost:3000/api/perfil');
+            const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfil');
             setPerfiles(response.data);
         } catch (error) {
             console.error('Error al guardar perfil:', error.message);
@@ -156,7 +156,7 @@ const Perfil = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:3000/api/perfil/${id}`);
+                await axios.delete(`https://backendd-q0zc.onrender.com/api/perfil/${id}`);
                 setPerfiles(perfiles.filter(p => p.id !== id));
                 Swal.fire(
                     'Eliminado!',
@@ -200,261 +200,273 @@ const Perfil = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.title}>Gestión de Perfil</h1>
-            <form onSubmit={handleSubmit} style={styles.form}>
+          <h1 style={styles.title}>Gestión de Perfil y Perfiles Guardados</h1>
+    
+          <div style={styles.flexContainer}>
+            <section style={styles.gestionPerfilContainer}>
+              <h2>Gestión de Perfil</h2>
+              <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.formGrid}>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Empresa</label>
-                        <input
-                            type="text"
-                            name="NombreEmpresa"
-                            placeholder="Nombre de la Empresa"
-                            value={perfil.NombreEmpresa}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Eslogan</label>
-                        <input
-                            type="text"
-                            name="Eslogan"
-                            placeholder="Eslogan"
-                            value={perfil.Eslogan}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Logo</label>
-                        <input
-                            type="file"
-                            name="logo"
-                            accept="image/*"
-                            onChange={handleLogoChange}
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Dirección</label>
-                        <input
-                            type="text"
-                            name="Direccion"
-                            placeholder="Dirección"
-                            value={perfil.Direccion}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Correo</label>
-                        <input
-                            type="email"
-                            name="Correo"
-                            placeholder="Correo"
-                            value={perfil.Correo}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Teléfono (10 dígitos)</label>
-                        <input
-                            type="text"
-                            name="Telefono"
-                            placeholder="Teléfono"
-                            value={perfil.Telefono}
-                            onChange={handleChange}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Empresa</label>
+                    <input
+                      type="text"
+                      name="NombreEmpresa"
+                      placeholder="Nombre de la Empresa"
+                      value={perfil.NombreEmpresa}
+                      onChange={handleChange}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Eslogan</label>
+                    <input
+                      type="text"
+                      name="Eslogan"
+                      placeholder="Eslogan"
+                      value={perfil.Eslogan}
+                      onChange={handleChange}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Logo</label>
+                    <input
+                      type="file"
+                      name="logo"
+                      accept="image/*"
+                      onChange={handleLogoChange}
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Dirección</label>
+                    <input
+                      type="text"
+                      name="Direccion"
+                      placeholder="Dirección"
+                      value={perfil.Direccion}
+                      onChange={handleChange}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Correo</label>
+                    <input
+                      type="email"
+                      name="Correo"
+                      placeholder="Correo"
+                      value={perfil.Correo}
+                      onChange={handleChange}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>Teléfono (10 dígitos)</label>
+                    <input
+                      type="text"
+                      name="Telefono"
+                      placeholder="Teléfono"
+                      value={perfil.Telefono}
+                      onChange={handleChange}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
                 </div>
                 <div style={styles.buttonGroup}>
-                    <button type="submit" style={styles.editButton}>
-                        {editingId ? "Actualizar Perfil" : "Crear Perfil"}
+                  <button type="submit" style={styles.editButton}>
+                    {editingId ? "Actualizar Perfil" : "Crear Perfil"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    style={styles.cancelButton}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </section>
+    
+            <section style={styles.perfilesGuardadosContainer}>
+              <h2>Perfiles Guardados</h2>
+              {perfiles.length === 0 && <p>No hay perfiles guardados.</p>}
+              {perfiles.map((perfil) => (
+                <div key={perfil.id} style={styles.profileItem}>
+                  {perfil.Logo && (
+                    <img
+                      src={`data:image/jpeg;base64,${perfil.Logo}`}
+                      alt="Logo de la empresa"
+                      style={{ width: '100px', height: '100px', marginBottom: '10px', objectFit: 'contain' }}
+                    />
+                  )}
+                  <p><strong>Empresa:</strong> {perfil.NombreEmpresa}</p>
+                  <p><strong>Eslogan:</strong> {perfil.Eslogan}</p>
+                  <p><strong>Dirección:</strong> {perfil.Direccion}</p>
+                  <p><strong>Correo:</strong> {perfil.Correo}</p>
+                  <p><strong>Teléfono:</strong> {perfil.Telefono}</p>
+                  <div style={styles.buttonGroup}>
+                    <button
+                      style={styles.editButton}
+                      onClick={() => handleEdit(perfil)}
+                    >
+                      Editar
                     </button>
                     <button
-                        type="button"
-                        onClick={handleCancel}
-                        style={styles.cancelButton}
+                      style={styles.deleteButton}
+                      onClick={() => handleDelete(perfil.id)}
                     >
-                        Cancelar
+                      Eliminar
                     </button>
+                  </div>
                 </div>
-            </form>
-            <div style={styles.profileList}>
-                <h2>Perfiles Guardados</h2>
-                {perfiles.map((perfil) => (
-                    <div key={perfil.id} style={styles.profileItem}>
-                        {perfil.Logo && (
-                            <img
-                                src={`data:image/jpeg;base64,${perfil.Logo}`}
-                                alt="Logo de la empresa"
-                                style={{ width: '100px', height: 'auto', borderRadius: '8px' }}
-                            />
-                        )}
-                        <p><strong>Nombre de la Empresa:</strong> {perfil.NombreEmpresa || 'No disponible'}</p>
-                        <p><strong>Eslogan:</strong> {perfil.Eslogan || 'No disponible'}</p>
-                        <p><strong>Dirección:</strong> {perfil.Direccion || 'No disponible'}</p>
-                        <p><strong>Correo de la empresa:</strong> {perfil.Correo || 'No disponible'}</p>
-                        <p><strong>Teléfono:</strong> {perfil.Telefono || 'No disponible'}</p>
-                        <button onClick={() => handleEdit(perfil)} style={styles.editButton}>Editar</button>
-                        <button onClick={() => handleDelete(perfil.id)} style={styles.cancelButton}>Eliminar</button>
-                    </div>
-                ))}
-            </div>
+              ))}
+            </section>
+          </div>
         </div>
-    );
-};
-
-const styles = {
-    container: {
-        fontFamily: 'Arial, sans-serif',
-        margin: '0 auto',
-        padding: '20px',
-        maxWidth: '800px',
-        borderRadius: '8px',
-        backgroundColor: '#f4f4f9',
-    },
-    title: {
-        textAlign: 'center',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    formGrid: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '15px',
-    },
-    inputGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    label: {
-        fontSize: '16px',
-        color: '#333',
-        marginBottom: '5px',
-    },
-    input: {
-        padding: '10px',
-        fontSize: '16px',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        width: '100%',
-        boxSizing: 'border-box',
-    },
-    buttonGroup: {
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '10px',
-        marginTop: '20px',
-    },
-    profileList: {
-        marginTop: '30px',
-    },
-    profileItem: {
-        backgroundColor: '#fff',
-        padding: '20px',
-        borderRadius: '8px',
-        marginBottom: '15px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    },
-    editButton: {
-        backgroundColor: '#4CAF50',
-        color: 'white',
-        padding: '8px 16px',
-        border: 'none',
-        cursor: 'pointer',
-        marginRight: '10px',
-        borderRadius: '5px',
-        marginTop: '10px',
-    },
-    cancelButton: {
-        backgroundColor: '#dc3545',
-        color: 'white',
-        padding: '8px 16px',
-        fontSize: '16px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        marginTop: '10px',
-    },
-    '@media screen and (max-width: 1200px)': {
+      );
+    };
+    
+    const styles = {
         container: {
-            maxWidth: '90%',
-            padding: '15px',
-        },
-        formGrid: {
-            gridTemplateColumns: '1fr 1fr',
-        },
+            maxWidth: '1100px',
+            margin: '30px auto',
+            padding: '30px',
+            background: '#eff3cd', // nuevo color de fondo
+            borderRadius: '15px',
+            boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
+            fontFamily: "'Poppins', sans-serif",
+          },
+          
         title: {
-            fontSize: '22px',
+          fontSize: '32px',
+          fontWeight: '800',
+          marginBottom: '30px',
+          textAlign: 'center',
+          color: '#4b3f72', // púrpura oscuro
+          textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
+          letterSpacing: '0.05em',
         },
-    },
-    '@media screen and (max-width: 900px)': {
-        container: {
-            maxWidth: '100%',
-            padding: '10px',
+        flexContainer: {
+          display: 'flex',
+          gap: '25px',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+        },
+        gestionPerfilContainer: {
+          flex: '1 1 45%',
+          padding: '30px',
+          background: '#fff',
+          borderRadius: '15px',
+          boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
+          transition: 'transform 0.3s ease',
+          cursor: 'default',
+        },
+        perfilesGuardadosContainer: {
+          flex: '1 1 50%',
+          padding: '30px',
+          background: '#fff',
+          borderRadius: '15px',
+          boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
+          maxHeight: '600px',
+          overflowY: 'auto',
+        },
+        form: {
+          display: 'flex',
+          flexDirection: 'column',
         },
         formGrid: {
-            gridTemplateColumns: '1fr',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '20px',
+        },
+        inputGroup: {
+          display: 'flex',
+          flexDirection: 'column',
         },
         label: {
-            fontSize: '14px',
+          fontWeight: '700',
+          marginBottom: '8px',
+          color: '#5e548e', // púrpura medio
+          fontSize: '15px',
         },
         input: {
-            fontSize: '14px',
+          padding: '12px 16px',
+          fontSize: '16px',
+          borderRadius: '12px',
+          border: '2px solid #d3d0f7',
+          backgroundColor: '#fafaff',
+          transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+          outline: 'none',
+          fontWeight: '500',
+          color: '#333',
         },
-        title: {
-            fontSize: '20px',
+        inputFocus: {
+          borderColor: '#7266f0',
+          boxShadow: '0 0 8px rgba(114, 102, 240, 0.5)',
         },
-        profileItem: {
-            padding: '15px',
-        },
-        editButton: {
-            padding: '8px 12px',
-        },
-        cancelButton: {
-            padding: '8px 12px',
-        },
-    },
-    '@media screen and (max-width: 600px)': {
-        container: {
-            maxWidth: '100%',
-            padding: '5px',
-        },
-        formGrid: {
-            gridTemplateColumns: '1fr',
-        },
-        label: {
-            fontSize: '12px',
-        },
-        input: {
-            fontSize: '12px',
-        },
-        title: {
-            fontSize: '18px',
-        },
-        profileItem: {
-            padding: '10px',
+        buttonGroup: {
+          marginTop: '28px',
+          display: 'flex',
+          gap: '18px',
+          justifyContent: 'flex-start',
         },
         editButton: {
-            padding: '8px 10px',
-        },
-        cancelButton: {
-            padding: '8px 10px',
-        },
-    },
-};
-
+            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)', // degradado en tono verde
+            color: '#fff',
+            padding: '14px 28px',
+            fontSize: '17px',
+            border: 'none',
+            borderRadius: '14px',
+            cursor: 'pointer',
+            fontWeight: '700',
+            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
+            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+          },
+          editButtonHover: {
+            transform: 'translateY(-3px)',
+            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
+          },
+          
+          cancelButton: {
+            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
+            color: '#fff',
+            padding: '14px 28px',
+            fontSize: '17px',
+            border: 'none',
+            borderRadius: '14px',
+            cursor: 'pointer',
+            fontWeight: '700',
+            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
+            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+          },
+          cancelButtonHover: {
+            transform: 'translateY(-3px)',
+            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
+          },
+          
+          deleteButton: {
+            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
+            color: '#fff',
+            padding: '14px 28px',
+            fontSize: '17px',
+            border: 'none',
+            borderRadius: '14px',
+            cursor: 'pointer',
+            fontWeight: '700',
+            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
+            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+          },
+          deleteButtonHover: {
+            transform: 'translateY(-3px)',
+            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
+          },
+          
+      };
+      
 export default Perfil;

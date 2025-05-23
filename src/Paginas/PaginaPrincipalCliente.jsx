@@ -136,7 +136,7 @@ const PaginaPrincipalCliente = () => {
             minHeight: "100vh",
             position: "relative",
             backgroundImage: `
-              linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255, 255, 255, 0.3)),
+              linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0)),
               url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c")
             `,
             backgroundSize: "cover",

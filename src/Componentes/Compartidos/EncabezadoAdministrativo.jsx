@@ -64,11 +64,11 @@ const EncabezadoAdministrativo = () => {
       case "vision":
         navigate('/admin/vision');
         break;
-      case "productos":
-        navigate('/admin/productos');
+      case "altapropiedades":
+        navigate('/admin/hoteles');
         break;
-      case "maciotss":
-        navigate('/admin/maciot');
+      case "cuartos":
+        navigate('/admin/cuartos');
         break;
       case "Reportes":
         navigate('/admin/reportesproductos');
@@ -120,7 +120,7 @@ const EncabezadoAdministrativo = () => {
           justify-content: space-between;
           align-items: center;
           padding: 20px 15px;
-          background-color: var(--color-primary);
+          background-color: #2d3e57;
           color: var(--color-secondary);
           position: relative;
           flex-wrap: wrap;
@@ -248,7 +248,7 @@ const EncabezadoAdministrativo = () => {
         }
       `}</style>
 
-      <header className="header">
+<header className="header">
         <div className="logo">
           {logoUrl && (
             <img src={logoUrl} alt="Logo de la Empresa" style={{ height: '50px', width: '50px', marginRight: '10px' }} />
@@ -257,29 +257,41 @@ const EncabezadoAdministrativo = () => {
         </div>
         <nav className={`menu ${isMobileMenuOpen ? 'menu-open' : ''}`} ref={menuRef}>
           <ul>
-            <li onClick={() => handleMenuClick('home')}>
-              <HomeOutlined style={{ color: '#00B300', marginRight: '8px' }} />
-              Home
-            </li>
-            <li className="dropdown" onClick={() => toggleDropdown('empresa')}>
+          <li onClick={() => handleMenuClick('home')}>
+  <HomeOutlined style={{ color: 'pink', marginRight: '8px' }} />
+  Home
+</li>
+<li className="dropdown" onClick={() => toggleDropdown('empresa')}>
+  <span>
+    <FileTextOutlined style={{ color: 'orange', marginRight: '8px' }} />
+    Datos de la Empresa
+  </span>
+  {openDropdown === 'empresa' && (
+    <ul className="dropdown-menu">
+      <li onClick={() => { handleClick('perfil'); handleMenuClick('perfil'); }}>Perfil</li>
+      <li onClick={() => { handleClick('terminos'); handleMenuClick('terminos'); }}>Términos</li>
+      <li onClick={() => { handleClick('politicas'); handleMenuClick('politicas'); }}>Políticas</li>
+      <li onClick={() => { handleClick('mision'); handleMenuClick('mision'); }}>Misión</li>
+      <li onClick={() => { handleClick('vision'); handleMenuClick('vision'); }}>Visión</li>
+    </ul>
+  )}
+</li>
+          <li className="dropdown" onClick={() => toggleDropdown('altapropiedadess')}>
               <span>
-                <FileTextOutlined style={{ color: '#00B300', marginRight: '8px' }} />
-                Datos de la Empresa
+                <ShopOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+                Alta Propiedades
               </span>
-              {openDropdown === 'empresa' && (
+              {openDropdown === 'altapropiedadess' && (
                 <ul className="dropdown-menu">
-                  <li onClick={() => { handleClick('perfil'); handleMenuClick('perfil'); }}>Perfil</li>
-                  <li onClick={() => { handleClick('terminos'); handleMenuClick('terminos'); }}>Términos</li>
-                  <li onClick={() => { handleClick('politicas'); handleMenuClick('politicas'); }}>Políticas</li>
-                  <li onClick={() => { handleClick('mision'); handleMenuClick('mision'); }}>Misión</li>
-                  <li onClick={() => { handleClick('vision'); handleMenuClick('vision'); }}>Visión</li>
+                  <li onClick={() => { handleClick('altapropiedades'); handleMenuClick('altapropiedades'); }}>Hotel</li>
+                  <li onClick={() => { handleClick('cuartos'); handleMenuClick('cuartos'); }}>Habitaciones</li>
                 </ul>
               )}
             </li>
-            <li onClick={() => handleMenuClick('cerrarSesion')}>
-              <LogoutOutlined style={{ color: '#00B300', marginRight: '8px' }} />
-              Cerrar Sesión
-            </li>
+<li onClick={() => handleMenuClick('cerrarSesion')}>
+  <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />
+  Cerrar Sesión
+</li>
           </ul>
         </nav>
         <div className="mobile-menu-icon" onClick={toggleMobileMenu}>

@@ -23,7 +23,7 @@ function SolicitarCodigo() {
                 text: "Por favor revisa tu correo electrónico para obtener el código de recuperación.",
                 icon: "success",
             });
-            navigate('/validar_codigo', { state: { email } });
+            navigate('/validar-codigo', { state: { email } });
         } catch (error) {
             if (error.response && error.response.status === 404) {
                 MySwal.fire({
@@ -44,44 +44,63 @@ function SolicitarCodigo() {
     const estilos = {
         contenedor: {
             textAlign: 'center',
-            backgroundColor: '#e0f7fa',
-            padding: '20px',
+            backgroundColor: '#ffffff', // mismo fondo que el estilo base
+            padding: '30px',
             borderRadius: '15px',
             maxWidth: '400px',
             margin: '40px auto',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
+            fontFamily: "'Poppins', sans-serif",
         },
         titulo: {
-            fontSize: '28px',
-            marginBottom: '20px',
-            color: '#004d40',
+            fontSize: '22px',
+            fontWeight: '800',
+            marginBottom: '30px',
+            color: '#4b3f72',
+            textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
+            letterSpacing: '0.05em',
         },
+        
         campo: {
-            marginBottom: '15px',
-            textAlign: 'center',
+            marginBottom: '20px',
+            textAlign: 'left',
         },
         input: {
-            width: '100%',
-            padding: '12px',
-            borderRadius: '8px',
-            border: '1px solid #b2dfdb',
+            width: '90%', // antes era 100%
+            margin: '0 auto', // centra el input horizontalmente
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '2px solid #d3d0f7',
+            backgroundColor: '#fafaff',
             fontSize: '16px',
-            boxSizing: 'border-box',
+            fontWeight: '500',
+            color: '#333',
+            transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+            outline: 'none',
+        },
+        
+        inputFocus: {
+            borderColor: '#7266f0',
+            boxShadow: '0 0 8px rgba(114, 102, 240, 0.5)',
         },
         boton: {
-            backgroundColor: '#00796b',
-            color: 'white',
+            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
+            color: '#fff',
             border: 'none',
-            padding: '12px 20px',
-            borderRadius: '8px',
+            padding: '14px 28px',
+            borderRadius: '14px',
             cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            transition: 'background-color 0.3s ease',
-            display: 'block',
-            margin: '20px auto 0',
+            fontSize: '17px',
+            fontWeight: '700',
+            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
+            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
             width: '100%',
+            marginTop: '20px',
         },
+        botonHover: {
+            transform: 'translateY(-3px)',
+            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
+        }
     };
 
     return (
