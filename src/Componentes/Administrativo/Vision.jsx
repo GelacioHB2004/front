@@ -19,11 +19,11 @@ const Vision = () => {
         const fetchData = async () => {
             try {
                 // Obtener visiones
-                const visionesResponse = await axios.get('http://localhost:3000/api/vision');
+                const visionesResponse = await axios.get('https://backendd-q0zc.onrender.com/api/vision');
                 setVisiones(visionesResponse.data);
 
                 // Obtener perfiles para el dropdown
-                const perfilesResponse = await axios.get('http://localhost:3000/api/perfil');
+                const perfilesResponse = await axios.get('https://backendd-q0zc.onrender.com/api/perfil');
                 setPerfiles(perfilesResponse.data);
                 // Establecer id_empresa predeterminado si hay perfiles
                 if (perfilesResponse.data.length > 0 && !vision.id_empresa) {
@@ -73,7 +73,7 @@ const Vision = () => {
 
         try {
             if (editingId) {
-                await axios.put(`http://localhost:3000/api/vision/${editingId}`, vision);
+                await axios.put(`https://backendd-q0zc.onrender.com/api/vision/${editingId}`, vision);
                 MySwal.fire({
                     title: 'Éxito!',
                     text: 'La visión ha sido actualizada correctamente.',
@@ -81,7 +81,7 @@ const Vision = () => {
                     confirmButtonText: 'OK'
                 });
             } else {
-                await axios.post('http://localhost:3000/api/vision', vision);
+                await axios.post('https://backendd-q0zc.onrender.com/api/vision', vision);
                 MySwal.fire({
                     title: 'Éxito!',
                     text: 'La visión ha sido creada correctamente.',
@@ -96,7 +96,7 @@ const Vision = () => {
                 id_empresa: perfiles.length > 0 ? perfiles[0].id : ''
             });
             setEditingId(null);
-            const response = await axios.get('http://localhost:3000/api/vision');
+            const response = await axios.get('https://backendd-q0zc.onrender.com/api/vision');
             setVisiones(response.data);
         } catch (error) {
             console.error('Error al guardar visión:', error.message);
@@ -123,7 +123,7 @@ const Vision = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:3000/api/vision/${id}`);
+                await axios.delete(`https://backendd-q0zc.onrender.com/api/vision/${id}`);
                 setVisiones(visiones.filter(v => v.id !== id));
                 MySwal.fire(
                     'Eliminado!',

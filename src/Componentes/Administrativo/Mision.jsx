@@ -19,11 +19,11 @@ const Mision = () => {
         const fetchData = async () => {
             try {
                 // Obtener misiones
-                const misionesResponse = await axios.get('http://localhost:3000/api/mision');
+                const misionesResponse = await axios.get('https://backendd-q0zc.onrender.com/api/mision');
                 setMisiones(misionesResponse.data);
 
                 // Obtener perfiles para el dropdown
-                const perfilesResponse = await axios.get('http://localhost:3000/api/perfil');
+                const perfilesResponse = await axios.get('https://backendd-q0zc.onrender.com/api/perfil');
                 setPerfiles(perfilesResponse.data);
                 // Establecer id_empresa predeterminado si hay perfiles
                 if (perfilesResponse.data.length > 0 && !mision.id_empresa) {

@@ -451,8 +451,8 @@ const PaginaPrincipal = () => {
     try {
       setLoading(true);
       const [hotelesRes, cuartosRes] = await Promise.all([
-        fetch("http://localhost:3000/api/hoteles"),
-        fetch("http://localhost:3000/api/cuartos"),
+        fetch("https://backendd-q0zc.onrender.com/api/hoteles"),
+        fetch("https://backendd-q0zc.onrender.com/api/cuartos"),
       ]);
 
       const hotelesData = await hotelesRes.json();

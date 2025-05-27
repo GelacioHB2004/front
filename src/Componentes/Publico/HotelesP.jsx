@@ -36,7 +36,7 @@ const HotelesP = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/hoteles');
+      const response = await axios.get('https://backendd-q0zc.onrender.com/api/hoteles');
       const hotelesData = response.data.map(hotel => {
         let imagenParsed = null;
         try {

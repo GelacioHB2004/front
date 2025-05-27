@@ -116,7 +116,7 @@ const DetallesHabitacion = () => {
   const fetchHabitacion = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`http://localhost:3000/api/cuartos/${idHabitacion}`)
+      const response = await axios.get(`https://backendd-q0zc.onrender.com/api/cuartos/${idHabitacion}`)
       console.log("Respuesta de la API:", response.data)
       setHabitacion(response.data)
       setError("")
@@ -163,7 +163,7 @@ const DetallesHabitacion = () => {
         horario: reservationTime,
       }
 
-      const response = await axios.put(`http://localhost:3000/api/cuartos/${idHabitacion}`, updatedCuarto)
+      const response = await axios.put(`https://backendd-q0zc.onrender.com/api/cuartos/${idHabitacion}`, updatedCuarto)
       setHabitacion(response.data)
       setReservationSuccess("¡Habitación reservada con éxito!")
       setError("")

@@ -23,7 +23,7 @@ const CuartosP = ({ idHotel }) => {
 
   const fetchCuartos = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/cuartos/hotel/${idHotel}`); // Actualizada la ruta
+      const response = await axios.get(`https://backendd-q0zc.onrender.com/api/cuartos/hotel/${idHotel}`); // Actualizada la ruta
       setCuartos(response.data);
       setErrorMessage('');
     } catch (error) {
