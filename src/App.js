@@ -14,11 +14,18 @@ import SolicitarCodigo from './Componentes/Autenticacion/SolicitarCodigo';
 import Perfil from './Componentes/Administrativo/Perfil';
 import HotelesR from './Componentes/Administrativo/Hoteles';
 import HotelesP from './Componentes/Publico/HotelesP';
-import Politicas from './Componentes/Administrativo/Politicas';
+import Politicas from './Componentes/Administrativo/Politica';
 import Cuartos from './Componentes/Administrativo/Cuartos';
 import CuartosP from './Componentes/Publico/CuartosP';
 import DetallesHabitacion from './Componentes/Publico/DetalleHabitacion';
 import CambiarPassword from './Componentes/Autenticacion/CambiarPassword';
+import Terminos from './Componentes/Administrativo/Terminos';
+import Vision from './Componentes/Administrativo/Vision';
+import Mision from './Componentes/Administrativo/Mision';
+import PoliticasPCA from './Componentes/Compartidos/PoliticasPCA';
+import TerminosPCA from './Componentes/Compartidos/TerminosPCA';
+import VisionPCA from './Componentes/Compartidos/VisionPCA';
+import MisionPCA from './Componentes/Compartidos/MisionPCA';
 
 const CuartosPWrapper = () => {
   const { idHotel } = useParams(); // Extrae idHotel de la URL
@@ -42,14 +49,13 @@ const App = () => {
             <Route path="/cuartosp/:idHotel" element={<CuartosPWrapper />} />
             <Route path="/detalles-habitacion/:idHabitacion" element={<DetallesHabitacion />} />
             <Route path="/cambiar_password" element={<CambiarPassword />} />
+            <Route path="/politicaspca" element={<PoliticasPCA/>} />
+            <Route path="/terminospca" element={<TerminosPCA/>} />
+            <Route path="/visionpca" element={<VisionPCA/>} />
+            <Route path="/misionpca" element={<MisionPCA/>} />
+            
             
 
-            
-
-            
-            
-            
-            
             {/* Rutas para la administración */}
 
 
@@ -57,8 +63,22 @@ const App = () => {
             <Route path="/admin" element={<PaginaPrincipalAdministrativa />} />
             <Route path="/admin/perfil" element={<Perfil />} />
             <Route path="/admin/hoteles" element={<HotelesR />} />
-            <Route path="/admin/politicas" element={<Politicas />} />
             <Route path="/admin/cuartos" element={<Cuartos />} />
+            <Route path="admin/politicas" element={<Politicas/>} />
+            <Route path="/admin/terminos" element={<Terminos />} />
+            <Route path="/admin/vision" element={<Vision />} />
+            <Route path="/admin/mision" element={<Mision />} />
+
+            <Route path="/admin/politicaspca" element={<PoliticasPCA/>} />
+            <Route path="/admin/terminospca" element={<TerminosPCA/>} />
+            <Route path="/admin/visionpca" element={<VisionPCA/>} />
+            <Route path="/admin/misionpca" element={<MisionPCA/>} />
+            
+            {/* Rutas para el cliente */}
+            <Route path="/cliente/politicaspca" element={<PoliticasPCA/>} />
+            <Route path="/cliente/terminospca" element={<TerminosPCA/>} />
+            <Route path="/cliente/visionpca" element={<VisionPCA/>} />
+            <Route path="/cliente/misionpca" element={<MisionPCA/>} />
 
             
 

@@ -10,7 +10,6 @@ import {
     Typography,
     TextField,
     Button,
-    FormControl,
     InputAdornment,
     IconButton,
     Box,
@@ -36,26 +35,76 @@ const MySwal = withReactContent(Swal);
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#1976d2", // Azul moderno
+            main: "#1e88e5", // Azul más vibrante
+            light: "#4dabf5",
+            dark: "#005cb2",
         },
         secondary: {
             main: "#4caf50", // Verde
         },
         background: {
-            default: "#f5f5f5", // Fondo claro
+            default: "linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%)", // Fondo con gradiente
+        },
+        text: {
+            primary: "#212121",
+            secondary: "#757575",
         },
     },
     typography: {
-        fontFamily: "'Roboto', sans-serif",
+        fontFamily: "'Poppins', sans-serif",
         h4: {
-            fontWeight: 600,
-            color: "#1976d2",
+            fontWeight: 700,
+            color: "#1e88e5",
+        },
+        body2: {
+            color: "#757575",
+        },
+    },
+    components: {
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    "& .MuiOutlinedInput-root": {
+                        borderRadius: "8px",
+                        backgroundColor: "#fff",
+                        "&:hover fieldset": {
+                            borderColor: "#1e88e5",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "#1e88e5",
+                        },
+                    },
+                    "& .MuiInputLabel-root": {
+                        color: "#757575",
+                        "&.Mui-focused": {
+                            color: "#1e88e5",
+                        },
+                    },
+                },
+            },
+        },
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    padding: "12px 24px", // Ajuste de padding para un tamaño más controlado
+                    background: "linear-gradient(90deg, #1e88e5 0%, #4dabf5 100%)",
+                    "&:hover": {
+                        background: "linear-gradient(90deg, #1565c0 0%, #1e88e5 100%)",
+                        transform: "scale(1.02)",
+                        transition: "all 0.3s ease",
+                    },
+                },
+            },
         },
     },
 });
 
 // URL base del backend para desarrollo local
-const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Usar localhost para desarrollo local
+const API_BASE_URL = "http://localhost:3000";
 
 function FormularioRegistro() {
     const navigate = useNavigate();
@@ -100,7 +149,7 @@ function FormularioRegistro() {
         if (name === "nombre" || name === "apellidopa" || name === "apellidoma") {
             const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]{4,16}$/;
             if (!nameRegex.test(value)) {
-                errors[name] = "Debe contener solo letras entre 4 y 16 caracteres.";
+                errors[name] = "Solo letras entre 4 y 16 caracteres.";
             } else {
                 delete errors[name];
             }
@@ -109,25 +158,25 @@ function FormularioRegistro() {
         if (name === "telefono") {
             const phoneRegex = /^\d{10}$/;
             if (!phoneRegex.test(value)) {
-                errors[name] = "Debe contener exactamente 10 dígitos.";
+                errors[name] = "Contener exactamente 10 dígitos.";
             } else {
                 delete errors[name];
             }
         }
 
         if (name === "user") {
-            const usernameRegex = /^[a-zA-Z0-9]{4,10}$/;
+            const usernameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9]{4,10}$/;
             if (!usernameRegex.test(value)) {
-                errors[name] = "Debe contener entre 4 y 10 caracteres alfanuméricos.";
+                errors[name] = "Contener entre 4 y 10 caracteres.";
             } else {
                 delete errors[name];
             }
         }
 
         if (name === "password") {
-            const passwordRegex = /^.{8,15}$/;
+            const passwordRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,15}$/;
             if (!passwordRegex.test(value)) {
-                errors[name] = "Debe tener entre 8 y 15 caracteres.";
+                errors[name] = "Tener entre 8 y 15 caracteres.";
             } else {
                 delete errors[name];
             }
@@ -136,7 +185,7 @@ function FormularioRegistro() {
         if (name === "gmail") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(value)) {
-                errors[name] = "Por favor, introduce un correo electrónico válido.";
+                errors[name] = "Introduce un correo electrónico válido.";
             } else {
                 delete errors[name];
             }
@@ -155,7 +204,7 @@ function FormularioRegistro() {
         }
 
         for (const pattern of commonPatterns) {
-            if (password.includes(pattern)) {
+            if (password.toLowerCase().includes(pattern)) {
                 errorMessage = "Evita usar secuencias comunes como '12345' o 'password'.";
                 MySwal.fire({
                     icon: "error",
@@ -270,29 +319,36 @@ function FormularioRegistro() {
     return (
         <ThemeProvider theme={theme}>
             <Container
-                maxWidth="sm"
+                maxWidth="md"
                 sx={{
-                    mt: 4,
-                    mb: 4,
+                    minHeight: "50vh",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent: "center",
+                    background: theme.palette.background.default,
+                    p: isMobile ? 2 : 4,
                 }}
             >
                 <Paper
-                    elevation={3}
+                    elevation={6}
                     sx={{
-                        p: 4,
-                        width: "100%",
-                        borderRadius: 2,
-                        bgcolor: "background.paper",
+                        p: isMobile ? 3 : 5,
+                        width: "75%",
+                        borderRadius: "16px",
+                        bgcolor: "#ffffff",
+                        boxSizing: "border-box",
+                        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
                     }}
                 >
                     <Typography variant="h4" align="center" gutterBottom>
                         Registro
                     </Typography>
+                    <Typography variant="body2" align="center" sx={{ mb: 3 }}>
+                        Crea una cuenta para comenzar
+                    </Typography>
                     <form onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
@@ -303,7 +359,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu nombre"
                                     required
                                     error={!!formErrors.nombre}
-                                    helperText={formErrors.nombre}
+                                    helperText={formErrors.nombre || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -323,7 +379,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu apellido paterno"
                                     required
                                     error={!!formErrors.apellidopa}
-                                    helperText={formErrors.apellidopa}
+                                    helperText={formErrors.apellidopa || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -343,7 +399,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu apellido materno"
                                     required
                                     error={!!formErrors.apellidoma}
-                                    helperText={formErrors.apellidoma}
+                                    helperText={formErrors.apellidoma || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -363,7 +419,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu teléfono"
                                     required
                                     error={!!formErrors.telefono}
-                                    helperText={formErrors.telefono}
+                                    helperText={formErrors.telefono || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -386,7 +442,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu correo electrónico"
                                     required
                                     error={!!formErrors.gmail}
-                                    helperText={formErrors.gmail}
+                                    helperText={formErrors.gmail || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -406,7 +462,7 @@ function FormularioRegistro() {
                                     placeholder="Ingresa tu usuario"
                                     required
                                     error={!!formErrors.user}
-                                    helperText={formErrors.user}
+                                    helperText={formErrors.user || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -427,7 +483,7 @@ function FormularioRegistro() {
                                     placeholder="Crea una contraseña"
                                     required
                                     error={!!formErrors.password}
-                                    helperText={formErrors.password}
+                                    helperText={formErrors.password || " "}
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -444,40 +500,43 @@ function FormularioRegistro() {
                                     }}
                                 />
                                 {passwordStrength > 0 && (
-                                    <Box sx={{ mt: 1 }}>
+                                    <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 1 }}>
                                         <LinearProgress
                                             variant="determinate"
                                             value={(passwordStrength / 4) * 100}
                                             sx={{
+                                                flex: 1,
                                                 height: 8,
                                                 borderRadius: 4,
-                                                backgroundColor: "lightgray",
+                                                backgroundColor: "#e0e0e0",
                                                 "& .MuiLinearProgress-bar": {
+                                                    borderRadius: 4,
                                                     backgroundColor:
                                                         passwordStrength < 2
-                                                            ? "red"
+                                                            ? "#f44336"
                                                             : passwordStrength < 3
-                                                            ? "orange"
-                                                            : "green",
+                                                            ? "#ff9800"
+                                                            : "#4caf50",
                                                 },
                                             }}
                                         />
                                         <Typography variant="caption" color="textSecondary">
-                                            Fuerza de la contraseña: {getPasswordStrengthText(passwordStrength)}
+                                            {getPasswordStrengthText(passwordStrength)}
                                         </Typography>
                                     </Box>
                                 )}
                             </Grid>
                         </Grid>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            sx={{ mt: 3, py: 1.5 }}
-                        >
-                            Registrar
-                        </Button>
+                        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                sx={{ maxWidth: "300px", width: "100%" }} // Ancho máximo de 300px con ajuste responsivo
+                            >
+                                Registrar
+                            </Button>
+                        </Box>
                     </form>
                 </Paper>
             </Container>

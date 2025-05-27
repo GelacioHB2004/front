@@ -52,7 +52,7 @@ const Cuartos = () => {
 
   const fetchCuartos = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/cuartos');
+      const response = await axios.get('http://localhost:3000/api/cuartos');
       setCuartos(response.data);
       setErrorMessage('');
     } catch (error) {
@@ -63,7 +63,7 @@ const Cuartos = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/hoteles');
+      const response = await axios.get('http://localhost:3000/api/hoteles');
       setHoteles(response.data);
     } catch (error) {
       console.error('Error al obtener hoteles:', error);
@@ -127,11 +127,11 @@ const Cuartos = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://backendd-q0zc.onrender.com/api/cuartos/${editingId}`, formDataToSend, {
+        await axios.put(`http://localhost:3000/api/cuartos/${editingId}`, formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        await axios.post('https://backendd-q0zc.onrender.com/api/cuartos', formDataToSend, {
+        await axios.post('http://localhost:3000/api/cuartos', formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
@@ -147,7 +147,7 @@ const Cuartos = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Está seguro de que desea eliminar este cuarto?')) {
       try {
-        await axios.delete(`https://backendd-q0zc.onrender.com/api/cuartos/${id}`);
+        await axios.delete(`http://localhost:3000/api/cuartos/${id}`);
         fetchCuartos();
         setErrorMessage('');
       } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AppstoreOutlined, LogoutOutlined, HomeOutlined, FileTextOutlined, TeamOutlined, ShopOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, LogoutOutlined, HomeOutlined, FileTextOutlined, TeamOutlined, ShopOutlined,ApartmentOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -70,8 +70,8 @@ const EncabezadoAdministrativo = () => {
       case "cuartos":
         navigate('/admin/cuartos');
         break;
-      case "Reportes":
-        navigate('/admin/reportesproductos');
+      case "Departamentos":
+        navigate('/admin/departamentos');
         break;
       case "cerrarSesion":
         handleLogout();
@@ -248,7 +248,7 @@ const EncabezadoAdministrativo = () => {
         }
       `}</style>
 
-<header className="header">
+      <header className="header">
         <div className="logo">
           {logoUrl && (
             <img src={logoUrl} alt="Logo de la Empresa" style={{ height: '50px', width: '50px', marginRight: '10px' }} />
@@ -257,26 +257,26 @@ const EncabezadoAdministrativo = () => {
         </div>
         <nav className={`menu ${isMobileMenuOpen ? 'menu-open' : ''}`} ref={menuRef}>
           <ul>
-          <li onClick={() => handleMenuClick('home')}>
-  <HomeOutlined style={{ color: 'pink', marginRight: '8px' }} />
-  Home
-</li>
-<li className="dropdown" onClick={() => toggleDropdown('empresa')}>
-  <span>
-    <FileTextOutlined style={{ color: 'orange', marginRight: '8px' }} />
-    Datos de la Empresa
-  </span>
-  {openDropdown === 'empresa' && (
-    <ul className="dropdown-menu">
-      <li onClick={() => { handleClick('perfil'); handleMenuClick('perfil'); }}>Perfil</li>
-      <li onClick={() => { handleClick('terminos'); handleMenuClick('terminos'); }}>Términos</li>
-      <li onClick={() => { handleClick('politicas'); handleMenuClick('politicas'); }}>Políticas</li>
-      <li onClick={() => { handleClick('mision'); handleMenuClick('mision'); }}>Misión</li>
-      <li onClick={() => { handleClick('vision'); handleMenuClick('vision'); }}>Visión</li>
-    </ul>
-  )}
-</li>
-          <li className="dropdown" onClick={() => toggleDropdown('altapropiedadess')}>
+            <li onClick={() => handleMenuClick('home')}>
+              <HomeOutlined style={{ color: 'pink', marginRight: '8px' }} />
+              Home
+            </li>
+            <li className="dropdown" onClick={() => toggleDropdown('empresa')}>
+              <span>
+                <FileTextOutlined style={{ color: 'orange', marginRight: '8px' }} />
+                Datos de la Empresa
+              </span>
+              {openDropdown === 'empresa' && (
+                <ul className="dropdown-menu">
+                  <li onClick={() => { handleClick('perfil'); handleMenuClick('perfil'); }}>Perfil</li>
+                  <li onClick={() => { handleClick('terminos'); handleMenuClick('terminos'); }}>Términos</li>
+                  <li onClick={() => { handleClick('politicas'); handleMenuClick('politicas'); }}>Políticas</li>
+                  <li onClick={() => { handleClick('mision'); handleMenuClick('mision'); }}>Misión</li>
+                  <li onClick={() => { handleClick('vision'); handleMenuClick('vision'); }}>Visión</li>
+                </ul>
+              )}
+            </li>
+            <li className="dropdown" onClick={() => toggleDropdown('altapropiedadess')}>
               <span>
                 <ShopOutlined style={{ color: '#00B300', marginRight: '8px' }} />
                 Alta Propiedades
@@ -288,10 +288,14 @@ const EncabezadoAdministrativo = () => {
                 </ul>
               )}
             </li>
-<li onClick={() => handleMenuClick('cerrarSesion')}>
-  <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />
-  Cerrar Sesión
-</li>
+            <li onClick={() => handleMenuClick('Departamentos')}>
+              <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
+              Departamentos
+            </li>
+            <li onClick={() => handleMenuClick('cerrarSesion')}>
+              <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />
+              Cerrar Sesión
+            </li>
           </ul>
         </nav>
         <div className="mobile-menu-icon" onClick={toggleMobileMenu}>

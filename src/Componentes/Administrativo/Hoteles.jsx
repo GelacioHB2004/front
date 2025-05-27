@@ -48,7 +48,7 @@ const Hoteles = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/hoteles');
+      const response = await axios.get('http://localhost:3000/api/hoteles');
       const hotelesData = response.data.map(hotel => {
         let imagenParsed = null;
         try {
@@ -121,11 +121,11 @@ const Hoteles = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://backendd-q0zc.onrender.com/api/hoteles/${editingId}`, formDataToSend, {
+        await axios.put(`http://localhost:3000/api/hoteles/${editingId}`, formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        await axios.post('https://backendd-q0zc.onrender.com/api/hoteles', formDataToSend, {
+        await axios.post('http://localhost:3000/api/hoteles', formDataToSend, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
@@ -141,7 +141,7 @@ const Hoteles = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Está seguro de que desea eliminar este hotel?')) {
       try {
-        await axios.delete(`https://backendd-q0zc.onrender.com/api/hoteles/${id}`);
+        await axios.delete(`http://localhost:3000/api/hoteles/${id}`);
         fetchHoteles();
         setErrorMessage('');
       } catch (error) {

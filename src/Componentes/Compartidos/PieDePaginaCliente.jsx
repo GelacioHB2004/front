@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
 import { Layout, Typography } from 'antd';
 import {
   FacebookOutlined,
@@ -7,14 +8,18 @@ import {
   PhoneOutlined,
   MailOutlined,
   EnvironmentOutlined,
-  FileProtectOutlined,
   LockOutlined,
   FileDoneOutlined,
+  EyeOutlined,
+  RocketOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 const { Footer } = Layout;
 const { Text } = Typography;
+
+// URL base del backend
+const API_BASE_URL = "http://localhost:3000";
 
 const PieDePaginaCliente = () => {
   const [datosEmpresa, setDatosEmpresa] = useState({
@@ -27,37 +32,40 @@ const PieDePaginaCliente = () => {
     correo: "",
     direccion: ""
   });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://backendiot-h632.onrender.com/api/perfilF')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Error fetching perfil: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Datos del perfil:', data);
+    const fetchPerfil = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/perfilF`);
+        console.log('Datos del perfil recibidos:', response.data);
         setDatosEmpresa({
-          redesSociales: data.redesSociales || {
-            facebook: "",
-            twitter: "",
-            instagram: ""
+          redesSociales: {
+            facebook: response.data.facebook || "",
+            twitter: response.data.twitter || "",
+            instagram: response.data.instagram || ""
           },
-          telefono: data.telefono || "",
-          correo: data.correo || "",
-          direccion: data.direccion || ""
+          telefono: response.data.Telefono || "",
+          correo: response.data.Correo || "",
+          direccion: response.data.Direccion || ""
         });
-      })
-      .catch(error => {
-        console.error('Error fetching perfil:', error);
-      });
+      } catch (err) {
+        console.error('Error fetching perfil:', err);
+        setError("No se pudieron cargar los datos de la empresa.");
+      }
+    };
+
+    fetchPerfil();
   }, []);
+
+  if (error) {
+    return <Text style={{ color: '#ffffff', textAlign: 'center' }}>{error}</Text>;
+  }
 
   return (
     <Layout>
       <Footer style={{
-        backgroundColor: '#000000',
+        backgroundColor: ' #2C3E50',
         textAlign: 'center',
         padding: '40px 20px',
         width: '100%',
@@ -76,27 +84,27 @@ const PieDePaginaCliente = () => {
           <div>
             <h2 style={headerStyle}>Síguenos en nuestras redes sociales</h2>
             <a href={datosEmpresa.redesSociales.facebook || '#'} style={linkStyle} target="_blank" rel="noopener noreferrer">
-              <FacebookOutlined style={iconStyle} /> Facebook
+              <FacebookOutlined style={facebookIconStyle} /> Facebook
             </a>
             <a href={datosEmpresa.redesSociales.twitter || '#'} style={linkStyle} target="_blank" rel="noopener noreferrer">
-              <TwitterOutlined style={iconStyle} /> Twitter
+              <TwitterOutlined style={twitterIconStyle} /> Twitter
             </a>
             <a href={datosEmpresa.redesSociales.instagram || '#'} style={linkStyle} target="_blank" rel="noopener noreferrer">
-              <InstagramOutlined style={iconStyle} /> Instagram
+              <InstagramOutlined style={instagramIconStyle} /> Instagram
             </a>
           </div>
           <div>
             <h2 style={headerStyle}>Atención al cliente</h2>
-            <p style={textStyle}><PhoneOutlined style={iconStyle} /> Teléfono: {datosEmpresa.telefono || 'No disponible'}</p>
-            <p style={textStyle}><MailOutlined style={iconStyle} /> Correo electrónico: {datosEmpresa.correo || 'No disponible'}</p>
-            <p style={textStyle}><EnvironmentOutlined style={iconStyle} /> Ubicación: {datosEmpresa.direccion || 'No disponible'}</p>
+            <p style={textStyle}><PhoneOutlined style={phoneIconStyle} /> Teléfono: {datosEmpresa.telefono || 'No disponible'}</p>
+            <p style={textStyle}><MailOutlined style={mailIconStyle} /> Correo electrónico: {datosEmpresa.correo || 'No disponible'}</p>
+            <p style={textStyle}><EnvironmentOutlined style={environmentIconStyle} /> Ubicación: {datosEmpresa.direccion || 'No disponible'}</p>
           </div>
           <div>
             <h2 style={headerStyle}>Datos de la empresa</h2>
-            <Link to="/cliente/politicass" style={linkStyle}><LockOutlined style={iconStyle} /> Política de Privacidad</Link>
-            <Link to="/cliente/terminos-condiciones" style={linkStyle}><FileDoneOutlined style={iconStyle} /> Términos y condiciones</Link>
-            <Link to="/cliente/misionf" style={linkStyle}><FileDoneOutlined style={iconStyle} /> Misión</Link>
-            <Link to="/cliente/visionf" style={linkStyle}><FileDoneOutlined style={iconStyle} /> Visión</Link>
+            <Link to="/cliente/politicaspca" style={linkStyle}><LockOutlined style={lockIconStyle} /> Política de Privacidad</Link>
+            <Link to="/cliente/terminospca" style={linkStyle}><FileDoneOutlined style={fileDoneIconStyle} /> Términos y condiciones</Link>
+            <Link to="/cliente/misionpca" style={linkStyle}><RocketOutlined style={rocketIconStyle} /> Misión</Link>
+            <Link to="/cliente/visionpca" style={linkStyle}><EyeOutlined style={eyeIconStyle} /> Visión</Link>
           </div>
         </div>
       </Footer>
@@ -108,7 +116,7 @@ const PieDePaginaCliente = () => {
         boxSizing: 'border-box'
       }}>
         <Text style={{ color: '#ffffff', fontSize: '16px' }}>
-          &copy; {new Date().getFullYear()}Caja Fuerte. Todos los derechos reservados.
+          © {new Date().getFullYear()} Caja Fuerte. Todos los derechos reservados.
         </Text>
       </div>
     </Layout>
@@ -123,10 +131,64 @@ const linkStyle = {
   textDecoration: 'none'
 };
 
-const iconStyle = {
+const facebookIconStyle = {
   fontSize: '18px',
   marginRight: '5px',
-  color: '#2E8B57',  
+  color: '#3B5998',
+};
+
+const twitterIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#1DA1F2',
+};
+
+const instagramIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#E1306C',
+};
+
+const phoneIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#2E8B57',
+};
+
+const mailIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#F28C38',
+};
+
+const environmentIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#6A0DAD',
+};
+
+const lockIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#FF0000',
+};
+
+const fileDoneIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#008080',
+};
+
+const rocketIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#00FFFF',
+};
+
+const eyeIconStyle = {
+  fontSize: '18px',
+  marginRight: '5px',
+  color: '#FFFF00',
 };
 
 const textStyle = {

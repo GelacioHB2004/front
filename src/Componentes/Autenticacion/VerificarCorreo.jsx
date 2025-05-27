@@ -40,7 +40,7 @@ const theme = createTheme({
 });
 
 // URL base del backend para desarrollo local
-const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Usar localhost para desarrollo local
+const API_BASE_URL = "http://localhost:3000"; // Usar localhost para desarrollo local
 
 function VerificarCorreo() {
     const [verificationCode, setVerificationCode] = useState("");
@@ -71,16 +71,22 @@ function VerificarCorreo() {
             MySwal.fire({
                 icon: "success",
                 title: "Verificación exitosa",
-                text: response.data.message,
+                text: response.data.message, // Mostrará "Correo verificado exitosamente. Tu cuenta ahora está activa."
+            }).then(() => {
+                navigate("/login"); // Redirección después de cerrar la alerta
             });
-            navigate("/login");
         } catch (error) {
             console.error("Error al verificar el código:", error.response ? error.response.data : error.message);
-            MySwal.fire({
-                icon: "error",
-                title: "Error de verificación",
-                text: error.response?.data?.error || "Ocurrió un error al verificar el código.",
-            });
+            const errorMessage = error.response?.data?.error || "Ocurrió un error al verificar el código. Por favor, intenta de nuevo.";
+            if (errorMessage === "La cuenta ya está verificada. Inicia sesión para continuar.") {
+                navigate("/login"); // Redirige al login sin mostrar alerta
+            } else {
+                MySwal.fire({
+                    icon: "error",
+                    title: "Error de verificación",
+                    text: errorMessage,
+                });
+            }
         }
     };
 
