@@ -25,8 +25,7 @@ import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-lea
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
-import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
-import HotelComentarios from './HotelComentarios'; // Importamos el componente
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';// Importamos el componente
 
 const customIcon = new L.Icon({
   iconUrl: markerIconPng,
