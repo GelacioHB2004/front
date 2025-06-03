@@ -17,15 +17,13 @@ import {
   Tooltip,
   Paper,
   Divider,
-  Modal,
-  Fade,
 } from '@mui/material';
-import { LocationOn, StarBorder, Star, Visibility, Room, Comment } from '@mui/icons-material';
+import { LocationOn, StarBorder, Star, Visibility, Room } from '@mui/icons-material';
 import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
-import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';// Importamos el componente
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 
 const customIcon = new L.Icon({
   iconUrl: markerIconPng,
@@ -49,8 +47,6 @@ const HotelesP = () => {
   const [hoteles, setHoteles] = useState([]);
   const [ratings, setRatings] = useState({});
   const [userLocation, setUserLocation] = useState(null);
-  const [openModal, setOpenModal] = useState(false); // Estado para controlar el modal
-  const [selectedHotelId, setSelectedHotelId] = useState(null); // ID del hotel seleccionado
 
   const navigate = useNavigate();
 
@@ -130,23 +126,6 @@ const HotelesP = () => {
       ...prevRatings,
       [hotelId]: newValue
     }));
-  };
-
-  // Función para manejar el clic en el ícono de comentarios
-  const handleCommentsClick = (hotelId) => {
-    const idUsuario = localStorage.getItem('id_usuario');
-    if (!idUsuario) {
-      // Guardar la ruta actual para redirigir después del login
-      navigate('/login', { state: { from: '/cliente/hotelesc' } });
-    } else {
-      setSelectedHotelId(hotelId);
-      setOpenModal(true);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedHotelId(null);
   };
 
   const mapContainerStyle = {
@@ -406,77 +385,12 @@ const HotelesP = () => {
                       <LocationOn fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Agregar comentario">
-                    <IconButton
-                      onClick={() => handleCommentsClick(hotel.id)}
-                      size="small"
-                      sx={{
-                        bgcolor: colors.light,
-                        color: colors.dark,
-                        '&:hover': {
-                          bgcolor: colors.secondary,
-                          color: '#ffffff',
-                          transform: 'scale(1.05)',
-                        },
-                        transition: 'all 0.3s ease',
-                      }}
-                    >
-                      <Comment fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
                 </CardActions>
               </Card>
             </Grid>
           ))}
         </Grid>
       </Container>
-
-      {/* Modal para el formulario de comentarios */}
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        closeAfterTransition
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Fade in={openModal}>
-          <Box
-            sx={{
-              bgcolor: '#ffffff',
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 3,
-              width: { xs: '90%', sm: '70%', md: '50%' },
-              maxHeight: '80vh',
-              overflowY: 'auto',
-              position: 'relative',
-            }}
-          >
-            <Typography variant="h5" sx={{ mb: 2, color: colors.dark, fontWeight: 600 }}>
-              Agregar Comentario
-            </Typography>
-            {selectedHotelId && <HotelComentarios hotelId={selectedHotelId} showOnlyForm={true} />}
-            <Button
-              onClick={handleCloseModal}
-              variant="outlined"
-              sx={{
-                mt: 2,
-                borderColor: colors.primary,
-                color: colors.primary,
-                '&:hover': {
-                  borderColor: colors.dark,
-                  bgcolor: colors.light,
-                },
-              }}
-            >
-              Cerrar
-            </Button>
-          </Box>
-        </Fade>
-      </Modal>
     </Box>
   );
 };
