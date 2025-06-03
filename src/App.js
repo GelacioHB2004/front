@@ -33,7 +33,6 @@ import DetallesHotel from './Componentes/Publico/DetallesHotel';
 import HotelesC from './Componentes/Cliente/HotelesC';
 import CuartosC from './Componentes/Cliente/CuartosC';
 import DetallesHabitacionC from './Componentes/Cliente/DetalleHabitacionC';
-import HotelesComentariosC from './Componentes/Cliente/HotelComentariosC';
 import DetallesHotelC from './Componentes/Cliente/DetallesHotelC';
 
 const CuartosPWrapper = () => {
@@ -95,7 +94,6 @@ const App = () => {
             <Route path="/cliente/hotelesc" element={<HotelesC/>} />
             <Route path="/cliente/cuartosc/:idHotel" element={<CuartosCWrapper/>} />
             <Route path="/cliente/detalles-habitacionc/:idHabitacion" element={<DetallesHabitacionC />} />
-             <Route path="/cliente/hoteles-comentarios/:id" element={<HotelesComentariosC />} />
              <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
 
             <Route path="/cliente" element={<PaginaPrincipalCliente />} />
