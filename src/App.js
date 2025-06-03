@@ -29,8 +29,6 @@ import MisionPCA from './Componentes/Compartidos/MisionPCA';
 import Tipohabitacion from './Componentes/Administrativo/TiposHabitaciones';
 //rutas publicas
 import DetallesHotel from './Componentes/Publico/DetallesHotel';
-import HotelesComentarios from './Componentes/Publico/HotelComentarios';
-
 //rutas cliente
 import HotelesC from './Componentes/Cliente/HotelesC';
 import CuartosC from './Componentes/Cliente/CuartosC';
@@ -70,7 +68,7 @@ const App = () => {
             <Route path="/visionpca" element={<VisionPCA/>} />
             <Route path="/misionpca" element={<MisionPCA/>} />
             <Route path="/detalles-hoteles/:id" element={<DetallesHotel />} />
-            <Route path="/hoteles-comentarios/:id" element={<HotelesComentarios />} />
+            
             
             {/* Rutas para la administración */}
 
