@@ -160,95 +160,171 @@ const Vision = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.title}>Gestión de Visiones</h1>
+            {/* Header con gradiente */}
+            <div style={styles.header}>
+                <h1 style={styles.title}>
+                    <span style={styles.titleIcon}>✨</span>
+                    Gestión de Visiones
+                    <span style={styles.titleIcon}>✨</span>
+                </h1>
+                <p style={styles.subtitle}>Define y administra las visiones de tu empresa</p>
+            </div>
 
-            <div style={styles.flexContainer}>
-                <section style={styles.gestionVisionContainer}>
-                    <h2>Gestión de Visión</h2>
+            <div style={styles.mainContent}>
+                {/* Panel de formulario */}
+                <div style={styles.formPanel}>
+                    <div style={styles.panelHeader}>
+                        <h2 style={styles.panelTitle}>
+                            {editingId ? '✏️ Editar Visión' : '🚀 Nueva Visión'}
+                        </h2>
+                    </div>
+                    
                     <form onSubmit={handleSubmit} style={styles.form}>
-                        <div style={styles.formGrid}>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Título</label>
-                                <input
-                                    type="text"
-                                    name="titulo"
-                                    placeholder="Título de la visión"
-                                    value={vision.titulo}
-                                    onChange={handleChange}
-                                    required
-                                    style={styles.input}
-                                />
-                            </div>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Contenido</label>
-                                <textarea
-                                    name="contenido"
-                                    placeholder="Contenido de la visión"
-                                    value={vision.contenido}
-                                    onChange={handleChange}
-                                    required
-                                    style={{ ...styles.input, height: '100px', resize: 'vertical' }}
-                                />
-                            </div>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Empresa</label>
-                                <select
-                                    name="id_empresa"
-                                    value={vision.id_empresa}
-                                    onChange={handleChange}
-                                    required
-                                    style={styles.input}
-                                >
-                                    {perfiles.length === 0 ? (
-                                        <option value="">No hay empresas disponibles</option>
-                                    ) : (
-                                        perfiles.map(perfil => (
-                                            <option key={perfil.id} value={perfil.id}>
-                                                {perfil.NombreEmpresa}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                            </div>
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>
+                                <span style={styles.labelIcon}>📝</span>
+                                Título
+                            </label>
+                            <input
+                                type="text"
+                                name="titulo"
+                                placeholder="Ingresa el título de la visión..."
+                                value={vision.titulo}
+                                onChange={handleChange}
+                                required
+                                style={styles.input}
+                            />
+                            <span style={styles.charCount}>{vision.titulo.length}/255</span>
                         </div>
-                        <div style={styles.buttonGroup}>
-                            <button type="submit" style={styles.editButton}>
+
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>
+                                <span style={styles.labelIcon}>📄</span>
+                                Contenido
+                            </label>
+                            <textarea
+                                name="contenido"
+                                placeholder="Describe la visión de la empresa..."
+                                value={vision.contenido}
+                                onChange={handleChange}
+                                required
+                                style={styles.textarea}
+                            />
+                        </div>
+
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>
+                                <span style={styles.labelIcon}>🏢</span>
+                                Empresa
+                            </label>
+                            <select
+                                name="id_empresa"
+                                value={vision.id_empresa}
+                                onChange={handleChange}
+                                required
+                                style={styles.select}
+                            >
+                                {perfiles.length === 0 ? (
+                                    <option value="">No hay empresas disponibles</option>
+                                ) : (
+                                    perfiles.map(perfil => (
+                                        <option key={perfil.id} value={perfil.id}>
+                                            {perfil.NombreEmpresa}
+                                        </option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+
+                        <div style={styles.buttonContainer}>
+                            <button type="submit" style={styles.primaryButton}>
+                                <span style={styles.buttonIcon}>
+                                    {editingId ? '💾' : '➕'}
+                                </span>
                                 {editingId ? 'Actualizar Visión' : 'Crear Visión'}
                             </button>
-                            <button type="button" onClick={handleCancel} style={styles.cancelButton}>
-                                Cancelar
-                            </button>
+                            {editingId && (
+                                <button type="button" onClick={handleCancel} style={styles.secondaryButton}>
+                                    <span style={styles.buttonIcon}>❌</span>
+                                    Cancelar
+                                </button>
+                            )}
                         </div>
                     </form>
-                </section>
+                </div>
 
-                <section style={styles.visionesGuardadasContainer}>
-                    <h2>Visiones Guardadas</h2>
-                    {visiones.length === 0 && <p>No hay visiones guardadas.</p>}
-                    {visiones.map((vision) => (
-                        <div key={vision.id} style={styles.visionItem}>
-                            <p><strong>Título:</strong> {vision.titulo}</p>
-                            <p><strong>Contenido:</strong> {vision.contenido}</p>
-                            <p><strong>Fecha:</strong> {new Date(vision.fechahora).toLocaleString()}</p>
-                            <p><strong>Empresa:</strong> {vision.NombreEmpresa}</p>
-                            <p><strong>Estado:</strong> {vision.estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
-                            <div style={styles.buttonGroup}>
-                                <button
-                                    style={styles.editButton}
-                                    onClick={() => handleEdit(vision)}
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    style={styles.deleteButton}
-                                    onClick={() => handleDelete(vision.id)}
-                                >
-                                    Eliminar
-                                </button>
+                {/* Panel de visiones guardadas */}
+                <div style={styles.visionesPanel}>
+                    <div style={styles.panelHeader}>
+                        <h2 style={styles.panelTitle}>
+                            📊 Visiones Guardadas
+                            <span style={styles.badge}>{visiones.length}</span>
+                        </h2>
+                    </div>
+
+                    <div style={styles.visionesContainer}>
+                        {visiones.length === 0 ? (
+                            <div style={styles.emptyState}>
+                                <div style={styles.emptyIcon}>📋</div>
+                                <p style={styles.emptyText}>No hay visiones guardadas</p>
+                                <p style={styles.emptySubtext}>Crea tu primera visión empresarial</p>
                             </div>
-                        </div>
-                    ))}
-                </section>
+                        ) : (
+                            visiones.map((visionItem) => (
+                                <div key={visionItem.id} style={styles.visionCard}>
+                                    <div style={styles.cardHeader}>
+                                        <h3 style={styles.cardTitle}>{visionItem.titulo}</h3>
+                                        <div style={styles.statusBadge}>
+                                            <span style={visionItem.estado === 'activo' ? styles.activeStatus : styles.inactiveStatus}>
+                                                {visionItem.estado === 'activo' ? '🟢 Activo' : '🔴 Inactivo'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.cardContent}>
+                                        <p style={styles.cardText}>{visionItem.contenido}</p>
+                                    </div>
+                                    
+                                    <div style={styles.cardMeta}>
+                                        <div style={styles.metaItem}>
+                                            <span style={styles.metaIcon}>🏢</span>
+                                            <span style={styles.metaText}>{visionItem.NombreEmpresa}</span>
+                                        </div>
+                                        <div style={styles.metaItem}>
+                                            <span style={styles.metaIcon}>📅</span>
+                                            <span style={styles.metaText}>
+                                                {new Date(visionItem.fechahora).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.cardActions}>
+                                        <button
+                                            style={styles.editButton}
+                                            onClick={() => handleEdit(visionItem)}
+                                        >
+                                            <span style={styles.buttonIcon}>✏️</span>
+                                            Editar
+                                        </button>
+                                        <button
+                                            style={styles.deleteButton}
+                                            onClick={() => handleDelete(visionItem.id)}
+                                        >
+                                            <span style={styles.buttonIcon}>🗑️</span>
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -256,124 +332,325 @@ const Vision = () => {
 
 const styles = {
     container: {
-        maxWidth: '1100px',
-        margin: '30px auto',
-        padding: '30px',
-        background: '#eff3cd',
-        borderRadius: '15px',
-        boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
-        fontFamily: "'Poppins', sans-serif"
+    minHeight: '100vh',
+    background: '#b3c9ca', // Changed to white
+    padding: '40px 20px',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+},
+    header: {
+        textAlign: 'center',
+        marginBottom: '40px',
+        padding: '40px 20px',
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '24px',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
     },
     title: {
-        fontSize: '32px',
+        fontSize: '3.5rem',
         fontWeight: '800',
-        marginBottom: '30px',
-        textAlign: 'center',
-        color: '#4b3f72',
-        textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
-        letterSpacing: '0.05em'
+        color: '#000000', // Changed to black
+        margin: '0 0 16px 0',
+        textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        letterSpacing: '-0.02em'
     },
-    flexContainer: {
+    titleIcon: {
+        margin: '0 16px',
+        fontSize: '2.5rem'
+    },
+    subtitle: {
+        fontSize: '1.2rem',
+        color: '#000000', // Changed to black
+        margin: 0,
+        fontWeight: '400'
+    },
+    mainContent: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '32px',
+        maxWidth: '1400px',
+        margin: '0 auto'
+    },
+    formPanel: {
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '24px',
+        padding: '32px',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        height: 'fit-content'
+    },
+    visionesPanel: {
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '24px',
+        padding: '32px',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        maxHeight: '800px',
         display: 'flex',
-        gap: '25px',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        flexDirection: 'column'
     },
-    gestionVisionContainer: {
-        flex: '1 1 45%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        transition: 'transform 0.3s ease',
-        cursor: 'default'
+    panelHeader: {
+        marginBottom: '32px',
+        paddingBottom: '16px',
+        borderBottom: '2px solid #f0f4f8'
     },
-    visionesGuardadasContainer: {
-        flex: '1 1 50%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        maxHeight: '600px',
-        overflowY: 'auto'
+    panelTitle: {
+        fontSize: '1.8rem',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: 0,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    badge: {
+        background: 'linear-gradient(135deg, #549c94, #3d7570)',
+        color: 'white',
+        padding: '4px 12px',
+        borderRadius: '20px',
+        fontSize: '0.9rem',
+        fontWeight: '600',
+        marginLeft: 'auto'
     },
     form: {
         display: 'flex',
-        flexDirection: 'column'
-    },
-    formGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px'
+        flexDirection: 'column',
+        gap: '24px'
     },
     inputGroup: {
-        display: 'flex',
-        flexDirection: 'column'
+        position: 'relative'
     },
     label: {
-        fontWeight: '700',
-        marginBottom: '8px',
-        color: '#5e548e',
-        fontSize: '15px'
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '1rem',
+        fontWeight: '600',
+        color: '#4a5568',
+        marginBottom: '8px'
+    },
+    labelIcon: {
+        fontSize: '1.2rem'
     },
     input: {
-        padding: '12px 16px',
-        fontSize: '16px',
-        borderRadius: '12px',
-        border: '2px solid #d3d0f7',
-        backgroundColor: '#fafaff',
-        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+        width: '100%',
+        padding: '16px 20px',
+        fontSize: '1rem',
+        border: '2px solid #e2e8f0',
+        borderRadius: '16px',
+        background: '#ffffff',
+        transition: 'all 0.3s ease',
         outline: 'none',
-        fontWeight: '500',
-        color: '#333'
+        fontFamily: 'inherit',
+        boxSizing: 'border-box'
     },
-    buttonGroup: {
-        marginTop: '28px',
+    textarea: {
+        width: '100%',
+        padding: '16px 20px',
+        fontSize: '1rem',
+        border: '2px solid #e2e8f0',
+        borderRadius: '16px',
+        background: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontFamily: 'inherit',
+        minHeight: '120px',
+        resize: 'vertical',
+        boxSizing: 'border-box'
+    },
+    select: {
+        width: '100%',
+        padding: '16px 20px',
+        fontSize: '1rem',
+        border: '2px solid #e2e8f0',
+        borderRadius: '16px',
+        background: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontFamily: 'inherit',
+        cursor: 'pointer',
+        boxSizing: 'border-box'
+    },
+    charCount: {
+        position: 'absolute',
+        bottom: '-20px',
+        right: '0',
+        fontSize: '0.8rem',
+        color: '#a0aec0',
+        fontWeight: '500'
+    },
+    buttonContainer: {
         display: 'flex',
-        gap: '18px',
-        justifyContent: 'flex-start'
+        gap: '16px',
+        marginTop: '32px'
+    },
+    primaryButton: {
+        background: 'linear-gradient(135deg, #549c94, #3d7570)',
+        color: 'white',
+        border: 'none',
+        padding: '16px 32px',
+        borderRadius: '16px',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        boxShadow: '0 8px 24px rgba(84, 156, 148, 0.4)',
+        minWidth: '180px',
+        justifyContent: 'center'
+    },
+    secondaryButton: {
+        background: 'linear-gradient(135deg, #f093fb, #f5576c)',
+        color: 'white',
+        border: 'none',
+        padding: '16px 32px',
+        borderRadius: '16px',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        boxShadow: '0 8px 24px rgba(240, 147, 251, 0.4)'
+    },
+    buttonIcon: {
+        fontSize: '1.1rem'
+    },
+    visionesContainer: {
+        flex: 1,
+        overflowY: 'auto',
+        paddingRight: '8px'
+    },
+    emptyState: {
+        textAlign: 'center',
+        padding: '60px 20px',
+        color: '#a0aec0'
+    },
+    emptyIcon: {
+        fontSize: '4rem',
+        marginBottom: '16px'
+    },
+    emptyText: {
+        fontSize: '1.4rem',
+        fontWeight: '600',
+        margin: '0 0 8px 0',
+        color: '#4a5568'
+    },
+    emptySubtext: {
+        fontSize: '1rem',
+        margin: 0,
+        color: '#a0aec0'
+    },
+    visionCard: {
+        background: '#ffffff',
+        borderRadius: '20px',
+        padding: '24px',
+        marginBottom: '20px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        border: '1px solid #f7fafc',
+        transition: 'all 0.3s ease',
+        position: 'relative'
+    },
+    cardHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '16px'
+    },
+    cardTitle: {
+        fontSize: '1.3rem',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: 0,
+        flex: 1
+    },
+    statusBadge: {
+        marginLeft: '16px'
+    },
+    activeStatus: {
+        background: 'linear-gradient(135deg, #48bb78, #38a169)',
+        color: 'white',
+        padding: '6px 12px',
+        borderRadius: '20px',
+        fontSize: '0.8rem',
+        fontWeight: '600'
+    },
+    inactiveStatus: {
+        background: 'linear-gradient(135deg, #f56565, #e53e3e)',
+        color: 'white',
+        padding: '6px 12px',
+        borderRadius: '20px',
+        fontSize: '0.8rem',
+        fontWeight: '600'
+    },
+    cardContent: {
+        marginBottom: '20px'
+    },
+    cardText: {
+        fontSize: '1rem',
+        lineHeight: '1.6',
+        color: '#4a5568',
+        margin: 0
+    },
+    cardMeta: {
+        display: 'flex',
+        gap: '20px',
+        marginBottom: '20px',
+        paddingTop: '16px',
+        borderTop: '1px solid #f7fafc'
+    },
+    metaItem: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
+    },
+    metaIcon: {
+        fontSize: '1rem'
+    },
+    metaText: {
+        fontSize: '0.9rem',
+        color: '#718096',
+        fontWeight: '500'
+    },
+    cardActions: {
+        display: 'flex',
+        gap: '12px',
+        justifyContent: 'flex-end'
     },
     editButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+        background: 'linear-gradient(135deg, #549c94, #3d7570)',
+        color: 'white',
         border: 'none',
-        borderRadius: '14px',
+        padding: '10px 20px',
+        borderRadius: '12px',
+        fontSize: '0.9rem',
+        fontWeight: '600',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    cancelButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
-        border: 'none',
-        borderRadius: '14px',
-        cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        boxShadow: '0 4px 12px rgba(84, 156, 148, 0.3)'
     },
     deleteButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+        background: 'linear-gradient(135deg, #f093fb, #f5576c)',
+        color: 'white',
         border: 'none',
-        borderRadius: '14px',
+        padding: '10px 20px',
+        borderRadius: '12px',
+        fontSize: '0.9rem',
+        fontWeight: '600',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    visionItem: {
-        padding: '15px',
-        borderBottom: '1px solid #eee',
-        marginBottom: '10px'
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        boxShadow: '0 4px 12px rgba(240, 147, 251, 0.3)'
     }
 };
-
 export default Vision;

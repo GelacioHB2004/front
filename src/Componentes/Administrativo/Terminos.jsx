@@ -160,44 +160,57 @@ const Terminos = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.title}>Gestión de Términos</h1>
+            <div style={styles.header}>
+                <h1 style={styles.title}>Gestión de Términos</h1>
+                <div style={styles.titleUnderline}></div>
+            </div>
 
             <div style={styles.flexContainer}>
                 <section style={styles.gestionTerminosContainer}>
-                    <h2>Gestión de Término</h2>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>
+                            {editingId ? '✏️ Editar Término' : '📝 Nuevo Término'}
+                        </h2>
+                    </div>
+                    
                     <form onSubmit={handleSubmit} style={styles.form}>
                         <div style={styles.formGrid}>
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Título</label>
+                                <label style={styles.label}>📄 Título</label>
                                 <input
                                     type="text"
                                     name="titulo"
-                                    placeholder="Título del término"
+                                    placeholder="Ingresa el título del término..."
                                     value={termino.titulo}
                                     onChange={handleChange}
                                     required
                                     style={styles.input}
                                 />
+                                <small style={styles.charCount}>
+                                    {termino.titulo.length}/255 caracteres
+                                </small>
                             </div>
+                            
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Contenido</label>
+                                <label style={styles.label}>📝 Contenido</label>
                                 <textarea
                                     name="contenido"
-                                    placeholder="Contenido del término (usa saltos de línea para separar puntos)"
+                                    placeholder="Describe el contenido del término (usa saltos de línea para separar puntos)..."
                                     value={termino.contenido}
                                     onChange={handleChange}
                                     required
-                                    style={{ ...styles.input, height: '100px', resize: 'vertical' }}
+                                    style={styles.textarea}
                                 />
                             </div>
+                            
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Empresa</label>
+                                <label style={styles.label}>🏢 Empresa</label>
                                 <select
                                     name="id_empresa"
                                     value={termino.id_empresa}
                                     onChange={handleChange}
                                     required
-                                    style={styles.input}
+                                    style={styles.select}
                                 >
                                     {perfiles.length === 0 ? (
                                         <option value="">No hay empresas disponibles</option>
@@ -211,47 +224,90 @@ const Terminos = () => {
                                 </select>
                             </div>
                         </div>
+                        
                         <div style={styles.buttonGroup}>
-                            <button type="submit" style={styles.editButton}>
-                                {editingId ? 'Actualizar Término' : 'Crear Término'}
+                            <button type="submit" style={styles.primaryButton}>
+                                {editingId ? '✅ Actualizar Término' : '➕ Crear Término'}
                             </button>
-                            <button type="button" onClick={handleCancel} style={styles.cancelButton}>
-                                Cancelar
+                            <button type="button" onClick={handleCancel} style={styles.secondaryButton}>
+                                ❌ Cancelar
                             </button>
                         </div>
                     </form>
                 </section>
 
                 <section style={styles.terminosGuardadosContainer}>
-                    <h2>Términos Guardados</h2>
-                    {terminos.length === 0 && <p>No hay términos guardados.</p>}
-                    {terminos.map((termino) => (
-                        <div key={termino.id} style={styles.terminoItem}>
-                            <p><strong>Título:</strong> {termino.titulo}</p>
-                            <ul style={styles.contentList}>
-                                {termino.contenido.split('\n').map((item, index) => (
-                                    item.trim() && <li key={index} style={styles.contentItem}>{item.trim()}</li>
-                                ))}
-                            </ul>
-                            <p><strong>Fecha:</strong> {new Date(termino.fechahora).toLocaleString()}</p>
-                            <p><strong>Empresa:</strong> {termino.NombreEmpresa}</p>
-                            <p><strong>Estado:</strong> {termino.estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
-                            <div style={styles.buttonGroup}>
-                                <button
-                                    style={styles.editButton}
-                                    onClick={() => handleEdit(termino)}
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    style={styles.deleteButton}
-                                    onClick={() => handleDelete(termino.id)}
-                                >
-                                    Eliminar
-                                </button>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>📚 Términos Guardados</h2>
+                        <div style={styles.badge}>{terminos.length} término{terminos.length !== 1 ? 's' : ''}</div>
+                    </div>
+                    
+                    <div style={styles.terminosGrid}>
+                        {terminos.length === 0 ? (
+                            <div style={styles.emptyState}>
+                                <div style={styles.emptyIcon}>📝</div>
+                                <p style={styles.emptyText}>No hay términos guardados</p>
+                                <p style={styles.emptySubtext}>Crea tu primer término usando el formulario</p>
                             </div>
-                        </div>
-                    ))}
+                        ) : (
+                            terminos.map((termino) => (
+                                <div key={termino.id} style={styles.terminoCard}>
+                                    <div style={styles.cardHeader}>
+                                        <h3 style={styles.terminoTitle}>{termino.titulo}</h3>
+                                        <div style={styles.statusBadge}>
+                                            <span style={termino.estado === 'activo' ? styles.activeStatus : styles.inactiveStatus}>
+                                                {termino.estado === 'activo' ? '🟢 Activo' : '🔴 Inactivo'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.cardContent}>
+                                        <ul style={styles.contentList}>
+                                            {termino.contenido.split('\n').map((item, index) => (
+                                                item.trim() && (
+                                                    <li key={index} style={styles.contentItem}>
+                                                        {item.trim()}
+                                                    </li>
+                                                )
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style={styles.cardFooter}>
+                                        <div style={styles.metaInfo}>
+                                            <span style={styles.metaItem}>
+                                                🏢 {termino.NombreEmpresa}
+                                            </span>
+                                            <span style={styles.metaItem}>
+                                                📅 {new Date(termino.fechahora).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </span>
+                                        </div>
+                                        
+                                        <div style={styles.cardActions}>
+                                            <button
+                                                style={styles.editButton}
+                                                onClick={() => handleEdit(termino)}
+                                            >
+                                                ✏️ Editar
+                                            </button>
+                                            <button
+                                                style={styles.deleteButton}
+                                                onClick={() => handleDelete(termino.id)}
+                                            >
+                                                🗑️ Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </section>
             </div>
         </div>
@@ -260,132 +316,289 @@ const Terminos = () => {
 
 const styles = {
     container: {
-        maxWidth: '1100px',
-        margin: '30px auto',
-        padding: '30px',
-        background: '#eff3cd',
-        borderRadius: '15px',
-        boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
-        fontFamily: "'Poppins', sans-serif"
+    minHeight: '100vh',
+    background: '#b3c9ca', // Changed to white
+    padding: '40px 20px',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+},
+    header: {
+        textAlign: 'center',
+        marginBottom: '40px'
     },
     title: {
-        fontSize: '32px',
-        fontWeight: '800',
-        marginBottom: '30px',
-        textAlign: 'center',
-        color: '#4b3f72',
-        textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
-        letterSpacing: '0.05em'
+    fontSize: '42px',
+    fontWeight: '700',
+    color: '#000000', // Changed to black
+    textShadow: 'none', // Removed shadow for better contrast on white background
+    margin: 0,
+    letterSpacing: '-0.5px'
+},
+    titleUnderline: {
+        width: '80px',
+        height: '4px',
+        background: 'linear-gradient(90deg, #ff6b6b, #4ecdc4)',
+        margin: '15px auto',
+        borderRadius: '2px'
     },
     flexContainer: {
-        display: 'flex',
-        gap: '25px',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '30px',
+        maxWidth: '1400px',
+        margin: '0 auto'
     },
     gestionTerminosContainer: {
-        flex: '1 1 45%',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '20px',
         padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        transition: 'transform 0.3s ease',
-        cursor: 'default'
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.2)'
     },
     terminosGuardadosContainer: {
-        flex: '1 1 50%',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '20px',
         padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        maxHeight: '600px',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        maxHeight: '800px',
         overflowY: 'auto'
+    },
+    sectionHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '25px',
+        paddingBottom: '15px',
+        borderBottom: '2px solid #f0f0f0'
+    },
+    sectionTitle: {
+        fontSize: '24px',
+        fontWeight: '600',
+        color: '#333',
+        margin: 0
+    },
+    badge: {
+        background: 'linear-gradient(45deg, #667eea, #764ba2)',
+        color: 'white',
+        padding: '6px 12px',
+        borderRadius: '20px',
+        fontSize: '12px',
+        fontWeight: '600'
     },
     form: {
         display: 'flex',
         flexDirection: 'column'
     },
     formGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '25px'
     },
     inputGroup: {
         display: 'flex',
         flexDirection: 'column'
     },
     label: {
-        fontWeight: '700',
-        marginBottom: '8px',
-        color: '#5e548e',
-        fontSize: '15px'
+        fontSize: '16px',
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: '8px'
     },
     input: {
-        padding: '12px 16px',
+        padding: '15px 20px',
         fontSize: '16px',
         borderRadius: '12px',
-        border: '2px solid #d3d0f7',
-        backgroundColor: '#fafaff',
-        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+        border: '2px solid #e1e5e9',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
         outline: 'none',
-        fontWeight: '500',
+        fontWeight: '400',
         color: '#333'
+    },
+    textarea: {
+        padding: '15px 20px',
+        fontSize: '16px',
+        borderRadius: '12px',
+        border: '2px solid #e1e5e9',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontWeight: '400',
+        color: '#333',
+        minHeight: '120px',
+        resize: 'vertical',
+        fontFamily: 'inherit'
+    },
+    select: {
+        padding: '15px 20px',
+        fontSize: '16px',
+        borderRadius: '12px',
+        border: '2px solid #e1e5e9',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontWeight: '400',
+        color: '#333',
+        cursor: 'pointer'
+    },
+    charCount: {
+        color: '#666',
+        fontSize: '12px',
+        marginTop: '5px',
+        textAlign: 'right'
     },
     buttonGroup: {
-        marginTop: '28px',
+        marginTop: '30px',
         display: 'flex',
-        gap: '18px',
-        justifyContent: 'flex-start'
+        gap: '15px'
     },
-    editButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+    primaryButton: {
+        background: 'linear-gradient(45deg, #4CAF50, #45a049)',
+        color: '#ffffff',
+        padding: '15px 30px',
+        fontSize: '16px',
         border: 'none',
-        borderRadius: '14px',
+        borderRadius: '12px',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+        fontWeight: '600',
+        boxShadow: '0 6px 20px rgba(76, 175, 80, 0.3)',
+        transition: 'all 0.3s ease',
+        flex: 1
     },
-    cancelButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+    secondaryButton: {
+        background: 'linear-gradient(45deg, #6c757d, #5a6268)',
+        color: '#ffffff',
+        padding: '15px 30px',
+        fontSize: '16px',
         border: 'none',
-        borderRadius: '14px',
+        borderRadius: '12px',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+        fontWeight: '600',
+        boxShadow: '0 6px 20px rgba(108, 117, 125, 0.3)',
+        transition: 'all 0.3s ease',
+        flex: 1
     },
-    deleteButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
-        border: 'none',
-        borderRadius: '14px',
-        cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+    terminosGrid: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px'
     },
-    terminoItem: {
-        padding: '15px',
-        borderBottom: '1px solid #eee',
-        marginBottom: '10px'
+    terminoCard: {
+        background: '#ffffff',
+        borderRadius: '15px',
+        padding: '25px',
+        boxShadow: '0 8px 25px rgba(0,0,0,0.08)',
+        border: '1px solid #f0f0f0',
+        transition: 'all 0.3s ease'
+    },
+    cardHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '15px'
+    },
+    terminoTitle: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#333',
+        margin: 0,
+        flex: 1
+    },
+    statusBadge: {
+        marginLeft: '15px'
+    },
+    activeStatus: {
+        color: '#4CAF50',
+        fontSize: '14px',
+        fontWeight: '600'
+    },
+    inactiveStatus: {
+        color: '#f44336',
+        fontSize: '14px',
+        fontWeight: '600'
+    },
+    cardContent: {
+        marginBottom: '20px'
     },
     contentList: {
-        listStyleType: 'disc',
-        paddingLeft: '20px',
-        margin: '10px 0'
+        listStyleType: 'none',
+        padding: 0,
+        margin: 0
     },
     contentItem: {
-        margin: '5px 0',
+        padding: '8px 0',
+        color: '#555',
+        fontSize: '15px',
+        lineHeight: '1.5',
+        borderBottom: '1px solid #f9f9f9',
+        position: 'relative',
+        paddingLeft: '20px'
+    },
+    cardFooter: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: '20px',
+        borderTop: '1px solid #f0f0f0'
+    },
+    metaInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '5px'
+    },
+    metaItem: {
+        fontSize: '13px',
+        color: '#666',
+        fontWeight: '500'
+    },
+    cardActions: {
+        display: 'flex',
+        gap: '10px'
+    },
+    editButton: {
+        background: 'linear-gradient(45deg, #2196F3, #1976D2)',
+        color: '#ffffff',
+        padding: '10px 20px',
+        fontSize: '14px',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        boxShadow: '0 4px 15px rgba(33, 150, 243, 0.3)',
+        transition: 'all 0.3s ease'
+    },
+    deleteButton: {
+        background: 'linear-gradient(45deg, #f44336, #d32f2f)',
+        color: '#ffffff',
+        padding: '10px 20px',
+        fontSize: '14px',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        boxShadow: '0 4px 15px rgba(244, 67, 54, 0.3)',
+        transition: 'all 0.3s ease'
+    },
+    emptyState: {
+        textAlign: 'center',
+        padding: '60px 20px',
+        color: '#666'
+    },
+    emptyIcon: {
+        fontSize: '64px',
+        marginBottom: '20px'
+    },
+    emptyText: {
+        fontSize: '18px',
+        fontWeight: '600',
+        marginBottom: '10px',
         color: '#333'
+    },
+    emptySubtext: {
+        fontSize: '14px',
+        color: '#666'
     }
 };
 

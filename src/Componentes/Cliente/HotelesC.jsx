@@ -43,7 +43,7 @@ const colors = {
   light: '#b3c9ca',      // color5 - Gris azulado claro
 };
 
-const HotelesC = () => {
+const HotelesP = () => {
   const [hoteles, setHoteles] = useState([]);
   const [ratings, setRatings] = useState({});
   const [userLocation, setUserLocation] = useState(null);
@@ -69,7 +69,7 @@ const HotelesC = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/hoteles');
+      const response = await axios.get('https://backendd-q0zc.onrender.com/api/detallehotel/public'); // Nueva ruta
       const hotelesData = response.data.map(hotel => {
         let imagenParsed = null;
         try {
@@ -395,4 +395,4 @@ const HotelesC = () => {
   );
 };
 
-export default HotelesC;
+export default HotelesP;

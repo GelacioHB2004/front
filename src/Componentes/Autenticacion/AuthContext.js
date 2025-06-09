@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -8,24 +8,26 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const login = (username, tipo, userData) => {
-    const authData = { username, tipo, ...userData };
+  const login = (username, tipo, userData, token) => {
+    const authData = { username, tipo, token, ...userData };
     setUser(authData);
     sessionStorage.setItem('user', JSON.stringify(authData));
+    localStorage.setItem('token', token); // Guardar el token en localStorage
     // Almacenar id_usuario en localStorage
     if (userData && userData.id_usuario) {
       localStorage.setItem('id_usuario', userData.id_usuario);
-      console.log('id_usuario guardado en localStorage:', userData.id_usuario); // Para depuración
+      console.log('id_usuario guardado en localStorage:', userData.id_usuario);
     } else {
-      console.warn('id_usuario no encontrado en userData:', userData); // Para depuración
+      console.warn('id_usuario no encontrado en userData:', userData);
     }
   };
 
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('user');
-    localStorage.removeItem('id_usuario'); // Limpiar id_usuario al cerrar sesión
-    console.log('Sesión cerrada, id_usuario eliminado de localStorage'); // Para depuración
+    localStorage.removeItem('token'); // Limpiar el token
+    localStorage.removeItem('id_usuario'); // Limpiar id_usuario
+    console.log('Sesión cerrada, token e id_usuario eliminados de localStorage');
   };
 
   useEffect(() => {

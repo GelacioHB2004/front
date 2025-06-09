@@ -46,13 +46,12 @@ const DetallesHabitacion = () => {
   const [reservationTime, setReservationTime] = useState("");
   const [reservationSuccess, setReservationSuccess] = useState("");
 
-  // Paleta de colores
   const colors = {
-    primary: "#4c94bc", // color1
-    secondary: "#549c94", // color4
-    accent: "#0b7583", // color3
-    success: "#549c94", // color4
-    neutral: "#b3c9ca", // color5
+    primary: "#4c94bc",
+    secondary: "#549c94",
+    accent: "#0b7583",
+    success: "#549c94",
+    neutral: "#b3c9ca",
   };
 
   const styles = {
@@ -130,7 +129,11 @@ const DetallesHabitacion = () => {
   };
 
   useEffect(() => {
-    console.log("ID de la habitación:", idHabitacion);
+    if (!idHabitacion || isNaN(idHabitacion)) {
+      setError("ID de habitación no válido.");
+      setLoading(false);
+      return;
+    }
     fetchHabitacion();
   }, [idHabitacion]);
 
@@ -138,31 +141,21 @@ const DetallesHabitacion = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://backendd-q0zc.onrender.com/api/cuartos/detalles/${idHabitacion}`
+        `https://backendd-q0zc.onrender.com/api/detallesHabitacion/detalles/${idHabitacion}`
       );
-      console.log("Respuesta de la API:", response.data);
       setHabitacion(response.data);
       setError("");
     } catch (err) {
       const errorMessage =
         err.response?.status === 404
           ? "Habitación no encontrada en la base de datos."
-          : err.response?.data?.message ||
+          : err.response?.data?.error ||
             "Error al cargar los detalles de la habitación. Intente de nuevo.";
       setError(errorMessage);
       console.error("Error fetching habitacion:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  const parseImagesSafely = (imagenes) => {
-    // Si imagenes no existe o es un arreglo vacío, devolver un arreglo vacío
-    if (!imagenes || !Array.isArray(imagenes) || imagenes.length === 0) {
-      return [];
-    }
-    // Las imágenes ya son un arreglo de cadenas en base64, no necesitan parseo
-    return imagenes;
   };
 
   const handleReservationTimeChange = (e) => {
@@ -175,7 +168,7 @@ const DetallesHabitacion = () => {
       return;
     }
 
-    if (habitacion.estado !== "Disponible") {
+    if (habitacion.estado?.toLowerCase() !== "disponible") {
       setError("Esta habitación no está disponible para reservar.");
       return;
     }
@@ -187,7 +180,7 @@ const DetallesHabitacion = () => {
       };
 
       const response = await axios.put(
-        `https://backendd-q0zc.onrender.com/api/cuartos/${idHabitacion}`,
+        `https://backendd-q0zc.onrender.com/api/detallesHabitacion/${idHabitacion}`,
         updatedCuarto
       );
       setHabitacion(response.data);
@@ -208,14 +201,13 @@ const DetallesHabitacion = () => {
       gym: <FitnessCenter sx={styles.serviceIcon} />,
       pool: <Pool sx={styles.serviceIcon} />,
       spa: <Spa sx={styles.serviceIcon} />,
-      internet: <Wifi sx={styles.serviceIcon} />, // Añadido para "Internet"
-      baño: <RoomService sx={styles.serviceIcon} />, // Añadido para "Baño"
+      internet: <Wifi sx={styles.serviceIcon} />,
+      baño: <RoomService sx={styles.serviceIcon} />,
     };
 
-    // Asegurarse de que servicios sea un arreglo y mapearlo
-    const serviceList = Array.isArray(servicios) ? servicios : (servicios || "").split(",");
-    return serviceList
-      .map((service, index) => {
+    const serviceList = Array.isArray(servicios) ? servicios : [];
+    return serviceList.length > 0 ? (
+      serviceList.map((service, index) => {
         const trimmedService = service.trim().toLowerCase();
         return (
           <Grid item xs={12} sm={6} key={index}>
@@ -230,7 +222,18 @@ const DetallesHabitacion = () => {
             </Box>
           </Grid>
         );
-      });
+      })
+    ) : (
+      <Grid item xs={12}>
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          sx={{ fontStyle: "italic", textAlign: "center", py: 2 }}
+        >
+          No hay servicios especificados
+        </Typography>
+      </Grid>
+    );
   };
 
   if (loading) {
@@ -289,10 +292,16 @@ const DetallesHabitacion = () => {
     );
   }
 
-  const images = parseImagesSafely(habitacion.imagenes);
+  const images = habitacion.imagenes && Array.isArray(habitacion.imagenes) && habitacion.imagenes.length > 0
+    ? habitacion.imagenes.map(img => 
+        img.data && img.mimeType
+          ? `data:${img.mimeType};base64,${img.data}`
+          : null
+      ).filter(img => img)
+    : null;
   const normalizedEstado =
-    habitacion.estado.charAt(0).toUpperCase() + habitacion.estado.slice(1).toLowerCase();
-  const isAvailable = normalizedEstado === "Disponible";
+    habitacion.estado?.charAt(0).toUpperCase() + habitacion.estado?.slice(1).toLowerCase();
+  const isAvailable = normalizedEstado?.toLowerCase() === "disponible";
 
   return (
     <Box sx={styles.container}>
@@ -312,12 +321,15 @@ const DetallesHabitacion = () => {
               >
                 <Hotel sx={{ fontSize: 35, color: "white" }} />
               </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: "600", mb: 2 }}>
+              <Typography variant="h3" sx={{ fontWeight: "600", mb: 1 }}>
                 Habitación {habitacion.cuarto}
+              </Typography>
+              <Typography variant="h6" sx={{ mb: 2, opacity: 0.9 }}>
+                Tipo: {habitacion.tipo_habitacion || "No especificado"}
               </Typography>
               <Chip
                 icon={isAvailable ? <CheckCircle /> : <Cancel />}
-                label={normalizedEstado}
+                label={normalizedEstado || "Sin estado"}
                 sx={{
                   ...styles.statusChip,
                   bgcolor: isAvailable ? colors.success : "#dc3545",
@@ -343,28 +355,24 @@ const DetallesHabitacion = () => {
           </Zoom>
         )}
 
-        {/* Image Gallery - 3 columns */}
+        {/* Image Gallery */}
         <Fade in={true} timeout={1000}>
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="h5"
               sx={{ ...styles.sectionTitle, textAlign: "center" }}
             >
-              Galería de Imágenes
+              Imágenes de la Habitación
             </Typography>
             <Grid container spacing={2}>
-              {images.length > 0 ? (
-                images.map((img, index) => (
-                  <Grid item xs={12} sm={4} key={index}>
+              {images && images.length > 0 ? (
+                images.map((image, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
                     <Card sx={styles.imageCard}>
                       <CardMedia
                         component="img"
-                        height="220"
-                        image={
-                          img.startsWith("data:image")
-                            ? img
-                            : `data:image/jpeg;base64,${img}`
-                        }
+                        height="200"
+                        image={image}
                         alt={`Imagen ${index + 1} de ${habitacion.cuarto}`}
                         sx={{ objectFit: "cover" }}
                         loading="lazy"
@@ -377,7 +385,7 @@ const DetallesHabitacion = () => {
                   <Card
                     sx={{
                       ...styles.imageCard,
-                      height: "220px",
+                      height: "200px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -453,7 +461,24 @@ const DetallesHabitacion = () => {
                               fontWeight: "600",
                             }}
                           >
-                            {normalizedEstado}
+                            {normalizedEstado || "Sin estado"}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <Box sx={styles.iconBox}>
+                        <RoomService sx={styles.serviceIcon} />
+                        <Box>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontWeight: "600", color: colors.accent }}
+                          >
+                            Tipo de Habitación
+                          </Typography>
+                          <Typography variant="body1" sx={{ color: "#6c757d" }}>
+                            {habitacion.tipo_habitacion || "No especificado"}
                           </Typography>
                         </Box>
                       </Box>
@@ -463,26 +488,10 @@ const DetallesHabitacion = () => {
                   <Divider sx={{ my: 3, borderColor: colors.neutral }} />
 
                   <Typography variant="h6" sx={styles.sectionTitle}>
-                    Servicios Incluidos
+                    Servicios del Hotel
                   </Typography>
                   <Grid container spacing={2}>
-                    {habitacion.servicios ? (
-                      getServiceIcons(habitacion.servicios)
-                    ) : (
-                      <Grid item xs={12}>
-                        <Typography
-                          variant="body1"
-                          color="textSecondary"
-                          sx={{
-                            fontStyle: "italic",
-                            textAlign: "center",
-                            py: 2,
-                          }}
-                        >
-                          No hay servicios especificados
-                        </Typography>
-                      </Grid>
-                    )}
+                    {getServiceIcons(habitacion.servicios)}
                   </Grid>
                 </CardContent>
               </Card>
@@ -510,10 +519,10 @@ const DetallesHabitacion = () => {
                   </Typography>
 
                   {[
-                    { label: "Por Hora", price: habitacion.tarifas?.preciohora },
-                    { label: "Por Día", price: habitacion.tarifas?.preciodia },
-                    { label: "Por Noche", price: habitacion.tarifas?.precionoche },
-                    { label: "Por Semana", price: habitacion.tarifas?.preciosemana },
+                    { label: "Por Hora", price: habitacion.preciohora },
+                    { label: "Por Día", price: habitacion.preciodia },
+                    { label: "Por Noche", price: habitacion.precionoche },
+                    { label: "Por Semana", price: habitacion.preciosemana },
                   ].map((item, index) => (
                     <Box
                       key={index}

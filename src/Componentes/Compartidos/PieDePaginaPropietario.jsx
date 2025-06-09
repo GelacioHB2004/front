@@ -21,7 +21,7 @@ const { Text } = Typography;
 // URL base del backend
 const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Cambia esto a tu URL de backend
 
-const PieDePaginaAdmin = () => {
+const PieDePaginaPropietario = () => {
   const [datosEmpresa, setDatosEmpresa] = useState({
     redesSociales: {
       facebook: "",
@@ -101,10 +101,10 @@ const PieDePaginaAdmin = () => {
           </div>
           <div>
             <h2 style={headerStyle}>Datos de la empresa</h2>
-            <Link to="/admin/politicaspca" style={linkStyle}><LockOutlined style={lockIconStyle} /> Política de Privacidad</Link>
-            <Link to="/admin/terminospca" style={linkStyle}><FileDoneOutlined style={fileDoneIconStyle} /> Términos y condiciones</Link>
-            <Link to="/admin/misionpca" style={linkStyle}><RocketOutlined style={rocketIconStyle} /> Misión</Link>
-            <Link to="/admin/visionpca" style={linkStyle}><EyeOutlined style={eyeIconStyle} /> Visión</Link>
+            <Link to="/propietario/politicaspca" style={linkStyle}><LockOutlined style={lockIconStyle} /> Política de Privacidad</Link>
+            <Link to="/propietario/terminospca" style={linkStyle}><FileDoneOutlined style={fileDoneIconStyle} /> Términos y condiciones</Link>
+            <Link to="/propietario/misionpca" style={linkStyle}><RocketOutlined style={rocketIconStyle} /> Misión</Link>
+            <Link to="/propietario/visionpca" style={linkStyle}><EyeOutlined style={eyeIconStyle} /> Visión</Link>
           </div>
         </div>
       </Footer>
@@ -203,4 +203,4 @@ const headerStyle = {
   marginBottom: '10px',
 };
 
-export default PieDePaginaAdmin;
+export default PieDePaginaPropietario;

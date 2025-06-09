@@ -51,7 +51,6 @@ const CuartosP = ({ idHotel }) => {
       textAlign: 'center',
       boxShadow: '0 4px 20px rgba(76, 148, 188, 0.2)',
     },
-    // Grid container centrado
     gridContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -74,11 +73,11 @@ const CuartosP = ({ idHotel }) => {
     },
     imageContainer: {
       position: 'relative',
-      height: '220px', // Aumentado de 180px
+      height: '220px',
       borderRadius: '12px 12px 0 0',
     },
     noImageBox: {
-      height: '220px', // Aumentado de 180px
+      height: '220px',
       backgroundColor: colors.neutral,
       display: 'flex',
       alignItems: 'center',
@@ -88,7 +87,7 @@ const CuartosP = ({ idHotel }) => {
     },
     cardContent: {
       flexGrow: 1,
-      padding: '2rem', // Aumentado de 1.5rem
+      padding: '2rem',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -96,8 +95,8 @@ const CuartosP = ({ idHotel }) => {
     roomTitle: {
       color: colors.accent,
       fontWeight: '600',
-      fontSize: '1.25rem', // Aumentado de 1.1rem
-      marginBottom: '0.5rem', // Reducido para dar espacio al tipo de habitación
+      fontSize: '1.25rem',
+      marginBottom: '0.5rem',
       display: 'flex',
       alignItems: 'center',
     },
@@ -111,7 +110,7 @@ const CuartosP = ({ idHotel }) => {
       fontWeight: '600',
       borderRadius: '20px',
       marginBottom: '0.5rem',
-      fontSize: '0.9rem', // Chip ligeramente más grande
+      fontSize: '0.9rem',
       padding: '0.5rem 1rem',
     },
     infoBox: {
@@ -119,7 +118,7 @@ const CuartosP = ({ idHotel }) => {
       alignItems: 'center',
       marginTop: '0.5rem',
       color: '#6c757d',
-      fontSize: '1rem', // Texto más grande
+      fontSize: '1rem',
     },
     emptyState: {
       textAlign: 'center',
@@ -137,22 +136,36 @@ const CuartosP = ({ idHotel }) => {
 
   const fetchCuartos = async () => {
     try {
-      const response = await axios.get(`https://backendd-q0zc.onrender.com/api/cuartos/hotel/${idHotel}`);
-      setCuartos(response.data);
+      const response = await axios.get(`https://backendd-q0zc.onrender.com/api/detallesHabitacion/hotel/${idHotel}`);
+      const cuartosData = response.data.map(cuarto => {
+        let imagenParsed = null;
+        try {
+          if (cuarto.imagenhabitacion) {
+            if (typeof cuarto.imagenhabitacion === 'object' && cuarto.imagenhabitacion.data && cuarto.imagenhabitacion.mimeType) {
+              imagenParsed = cuarto.imagenhabitacion;
+            } else {
+              const parsed = JSON.parse(cuarto.imagenhabitacion);
+              if (parsed.data && parsed.mimeType) {
+                imagenParsed = { data: parsed.data, mimeType: parsed.mimeType };
+              } else {
+                imagenParsed = { data: cuarto.imagenhabitacion, mimeType: 'image/jpeg' };
+              }
+            }
+          }
+        } catch (parseError) {
+          imagenParsed = { data: cuarto.imagenhabitacion, mimeType: 'image/jpeg' };
+        }
+        return {
+          ...cuarto,
+          imagenhabitacion: imagenParsed,
+          tipohabitacion: cuarto.idtipohabitacion // Asumimos que idtipohabitacion podría ser un ID que necesitaría mapeo a un nombre en el futuro
+        };
+      });
+      setCuartos(cuartosData);
       setErrorMessage('');
     } catch (error) {
       console.error('Error al obtener cuartos:', error);
       setErrorMessage('Error al cargar los cuartos. Intente de nuevo.');
-    }
-  };
-
-  const parseImagesSafely = (imagenes) => {
-    try {
-      if (!imagenes) return [];
-      return JSON.parse(imagenes);
-    } catch (error) {
-      console.error('Error al parsear imágenes:', error.message);
-      return [];
     }
   };
 
@@ -213,8 +226,9 @@ const CuartosP = ({ idHotel }) => {
         {/* Rooms Grid - Centrado y más grande (3 columnas máximo) */}
         <Grid container spacing={4} sx={styles.gridContainer}>
           {cuartos.map((cuarto, index) => {
-            const images = parseImagesSafely(cuarto.imagenes);
-            const primaryImage = cuarto.imagenhabitacion || (images.length > 0 ? images[0] : null);
+            const primaryImage = cuarto.imagenhabitacion && cuarto.imagenhabitacion.data && cuarto.imagenhabitacion.mimeType
+              ? `data:${cuarto.imagenhabitacion.mimeType};base64,${cuarto.imagenhabitacion.data}`
+              : null;
             const normalizedEstado = cuarto.estado?.charAt(0).toUpperCase() + cuarto.estado?.slice(1).toLowerCase();
             const isAvailable = cuarto.estado?.toLowerCase() === 'disponible';
 
@@ -231,7 +245,7 @@ const CuartosP = ({ idHotel }) => {
                         <CardMedia
                           component="img"
                           height="220"
-                          image={`data:image/jpeg;base64,${primaryImage}`}
+                          image={primaryImage}
                           alt={`Imagen de ${cuarto.cuarto}`}
                           sx={{ 
                             objectFit: 'cover', 
@@ -317,4 +331,3 @@ const CuartosP = ({ idHotel }) => {
 };
 
 export default CuartosP;
-

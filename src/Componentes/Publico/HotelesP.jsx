@@ -69,7 +69,7 @@ const HotelesP = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/hoteles');
+      const response = await axios.get('https://backendd-q0zc.onrender.com/api/detallehotel/public'); // Nueva ruta
       const hotelesData = response.data.map(hotel => {
         let imagenParsed = null;
         try {

@@ -38,7 +38,8 @@ const DetallesHoteles = () => {
     const fetchHotel = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://backendd-q0zc.onrender.com/api/hoteles/${id}`);
+        // Cambiar al nuevo endpoint público
+        const response = await axios.get(`https://backendd-q0zc.onrender.com/api/detallehotel/public/${id}`);
         let imagenParsed = null;
         try {
           if (response.data.imagen) {
@@ -454,7 +455,7 @@ const DetallesHoteles = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Ver Habitaciones Disponibles
+            Ver Habitaciones 
           </Button>
         </Box>
 

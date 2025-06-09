@@ -19,7 +19,7 @@ const { Footer } = Layout;
 const { Text } = Typography;
 
 // URL base del backend
-const API_BASE_URL = "https://backendd-q0zc.onrender.com";
+const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Cambia esto a tu URL de backend
 
 const PieDePaginaCliente = () => {
   const [datosEmpresa, setDatosEmpresa] = useState({
@@ -116,7 +116,7 @@ const PieDePaginaCliente = () => {
         boxSizing: 'border-box'
       }}>
         <Text style={{ color: '#ffffff', fontSize: '16px' }}>
-          © {new Date().getFullYear()} Caja Fuerte. Todos los derechos reservados.
+          © {new Date().getFullYear()} Reserva de Alojamientos. Todos los derechos reservados.
         </Text>
       </div>
     </Layout>

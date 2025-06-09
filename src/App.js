@@ -35,6 +35,13 @@ import CuartosC from './Componentes/Cliente/CuartosC';
 import DetallesHabitacionC from './Componentes/Cliente/DetalleHabitacionC';
 import DetallesHotelC from './Componentes/Cliente/DetallesHotelC';
 
+//rutas propietario
+import PaginaPrincipalPropietario from './Paginas/PaginaPrincipalPropietario';
+import CuartosPropietario from './Componentes/Propietario/Cuartos';
+import HotelPropietario from './Componentes/Propietario/Hoteles';
+import TipoHabitacionPropietario from './Componentes/Propietario/TiposHabitaciones';
+
+
 const CuartosPWrapper = () => {
   const { idHotel } = useParams(); // Extrae idHotel de la URL
   return <CuartosP idHotel={idHotel} />; 
@@ -87,6 +94,7 @@ const App = () => {
             <Route path="/admin/misionpca" element={<MisionPCA/>} />
             
             {/* Rutas para el cliente */}
+            <Route path="/cliente" element={<PaginaPrincipalCliente />} />
             <Route path="/cliente/politicaspca" element={<PoliticasPCA/>} />
             <Route path="/cliente/terminospca" element={<TerminosPCA/>} />
             <Route path="/cliente/visionpca" element={<VisionPCA/>} />
@@ -96,8 +104,15 @@ const App = () => {
             <Route path="/cliente/detalles-habitacionc/:idHabitacion" element={<DetallesHabitacionC />} />
              <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
 
-            <Route path="/cliente" element={<PaginaPrincipalCliente />} />
-            
+            <Route path="/propietario" element={<PaginaPrincipalPropietario />} />
+            <Route path="/propietario/cuartos/:id" element={<CuartosPropietario />} />
+            <Route path="/propietario/hoteles" element={<HotelPropietario />} />
+            <Route path="/propietario/tiposhabitaciones" element={<TipoHabitacionPropietario />} />
+            <Route path="/propietario/politicaspca" element={<PoliticasPCA/>} />
+            <Route path="/propietario/terminospca" element={<TerminosPCA/>} />
+            <Route path="/propietario/visionpca" element={<VisionPCA/>} />
+            <Route path="/propietario/misionpca" element={<MisionPCA/>} />
+
           </Routes>
         </LayoutConEncabezado>
       </ThemeProvider>

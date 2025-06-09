@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import {
   Box,
   Typography,
@@ -25,11 +26,95 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-// Base URL for API (working locally)
+// Configurar el ícono del marcador
+const markerIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 const API_BASE_URL = 'https://backendd-q0zc.onrender.com';
 
+// Configurar interceptor de axios para incluir el token
+const setupAxiosInterceptors = (navigate) => {
+  axios.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.warn('No se encontró token en localStorage');
+        navigate('/');
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        console.error('Error 401:', error.response.data?.error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('id_usuario');
+        navigate('/');
+      }
+      return Promise.reject(error);
+    }
+  );
+};
+
+// Componente para invalidar el tamaño del mapa
+function MapInvalidateSize() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+  }, [map]);
+  return null;
+}
+
+// Componente para manejar clics en el mapa
+function MapClickHandler({ setFormData, setValidationErrors }) {
+  useMapEvents({
+    click(e) {
+      const { lat, lng } = e.latlng;
+      setFormData((prev) => ({
+        ...prev,
+        latitud: lat.toString(),
+        longitud: lng.toString(),
+      }));
+      setValidationErrors((prev) => ({
+        ...prev,
+        latitud: '',
+        longitud: '',
+      }));
+    },
+  });
+  return null;
+}
+
+// Componente para actualizar el centro y zoom del mapa
+function MapCenterUpdater({ center }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && !isNaN(center[0]) && !isNaN(center[1])) {
+      map.setView(center, 18); // Zoom máximo (18)
+    }
+  }, [map, center]);
+  return null;
+}
+
 const Hoteles = () => {
+  const navigate = useNavigate();
   const [hoteles, setHoteles] = useState([]);
   const [formData, setFormData] = useState({
     nombrehotel: '',
@@ -43,59 +128,68 @@ const Hoteles = () => {
     removeImage: false,
     latitud: '',
     longitud: '',
+    ubicacionTexto: '',
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [locationError, setLocationError] = useState('');
-  const [habitaciones, setHabitaciones] = useState([]);
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
-  const [openHabitacionesModal, setOpenHabitacionesModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [mapCenter, setMapCenter] = useState([21.1399, -98.4194]); // Centro inicial en Huejutla
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    setupAxiosInterceptors(navigate);
     fetchHoteles();
-  }, []);
+  }, [navigate]);
 
   const fetchHoteles = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/hoteles`);
-      const hotelesData = response.data.map(hotel => {
-        let imagenParsed = null;
-        try {
-          if (hotel.imagen) {
-            imagenParsed = JSON.parse(hotel.imagen);
-          }
-        } catch (error) {
-          console.error(`Error al parsear imagen del hotel ${hotel.id_hotel}:`, error);
-          imagenParsed = null;
-        }
-        return {
-          ...hotel,
-          id: hotel.id_hotel,
-          imagen: imagenParsed
-        };
-      });
+      if (!Array.isArray(response.data)) {
+        throw new Error('La respuesta de la API no es un arreglo');
+      }
+      const hotelesData = response.data.map((hotel) => ({
+        ...hotel,
+        id: hotel.id_hotel,
+        imagen: hotel.imagen ? JSON.parse(hotel.imagen) : null,
+        telefono: hotel.telefono || '',
+      }));
       setHoteles(hotelesData);
       setErrorMessage('');
     } catch (error) {
-      console.error('Error al obtener hoteles:', error);
-      setErrorMessage('Error al cargar los hoteles. Intente de nuevo.');
+      console.error('Error al obtener hoteles:', error.response?.data || error.message);
+      setErrorMessage(error.response?.data?.error || 'Error al cargar los hoteles. Intente de nuevo.');
     }
   };
 
-  const fetchHabitaciones = async (hotelId) => {
+  const geocodeLocation = async (location) => {
+    if (!location.trim()) return;
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/hoteles/${hotelId}/cuartos`);
-      setHabitaciones(response.data);
-      setSelectedHotelId(hotelId);
-      setOpenHabitacionesModal(true);
-      setErrorMessage('');
+      const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+        params: {
+          q: `${location}, Huejutla, Hidalgo, Mexico`,
+          format: 'json',
+          limit: 1,
+        },
+      });
+      if (response.data.length > 0) {
+        const { lat, lon } = response.data[0];
+        setMapCenter([parseFloat(lat), parseFloat(lon)]);
+        setLocationError('');
+      } else {
+        setLocationError('No se encontró la ubicación. Intente con un nombre más específico.');
+      }
     } catch (error) {
-      console.error('Error al obtener habitaciones:', error);
-      setErrorMessage('Error al cargar las habitaciones. Intente de nuevo.');
+      console.error('Error al geocodificar:', error);
+      setLocationError('Error al buscar la ubicación. Intente de nuevo.');
     }
   };
 
@@ -103,7 +197,7 @@ const Hoteles = () => {
     let error = '';
     switch (name) {
       case 'nombrehotel':
-        if (!value.trim()) error = 'El nombre del hotel es requerido';
+        if (!value.trim()) error = 'El nombre del hotel es obligatorio';
         else if (value.trim().length < 3) error = 'El nombre debe tener al menos 3 caracteres';
         else if (value.trim().length > 100) error = 'El nombre no puede exceder 100 caracteres';
         break;
@@ -111,11 +205,11 @@ const Hoteles = () => {
         if (value && !/^\d{10}$/.test(value)) error = 'El teléfono debe contener exactamente 10 dígitos';
         break;
       case 'correo':
-        if (!value.trim()) error = 'El correo electrónico es requerido';
+        if (!value.trim()) error = 'El correo electrónico es obligatorio';
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) error = 'Ingrese un correo electrónico válido';
         break;
       case 'numhabitacion':
-        if (!value) error = 'El número de habitaciones es requerido';
+        if (!value) error = 'El número de habitaciones es obligatorio';
         else if (isNaN(value) || parseInt(value) < 1) error = 'Debe tener al menos 1 habitación';
         else if (parseInt(value) > 10000) error = 'El número de habitaciones no puede exceder 10,000';
         break;
@@ -129,10 +223,12 @@ const Hoteles = () => {
         if (value && value.length > 500) error = 'Los servicios no pueden exceder 500 caracteres';
         break;
       case 'latitud':
-        if (value && (isNaN(value) || value < -90 || value > 90)) error = 'La latitud debe estar entre -90 y 90 grados';
+        if (!value) error = 'La latitud es obligatoria';
+        else if (isNaN(value) || value < -90 || value > 90) error = 'La latitud debe estar entre -90 y 90 grados';
         break;
       case 'longitud':
-        if (value && (isNaN(value) || value < -180 || value > 180)) error = 'La longitud debe estar entre -180 y 180 grados';
+        if (!value) error = 'La longitud es obligatoria';
+        else if (isNaN(value) || value < -180 || value > 180) error = 'La longitud debe estar entre -180 y 180 grados';
         break;
       default:
         break;
@@ -142,8 +238,8 @@ const Hoteles = () => {
 
   const validateAllFields = () => {
     const errors = {};
-    Object.keys(formData).forEach(key => {
-      if (key !== 'imagen' && key !== 'removeImage') {
+    Object.keys(formData).forEach((key) => {
+      if (key !== 'imagen' && key !== 'removeImage' && key !== 'ubicacionTexto') {
         const error = validateField(key, formData[key]);
         if (error) errors[key] = error;
       }
@@ -156,16 +252,17 @@ const Hoteles = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             latitud: latitude.toString(),
             longitud: longitude.toString(),
           }));
+          setMapCenter([latitude, longitude]);
           setLocationError('');
-          setValidationErrors(prev => ({
+          setValidationErrors((prev) => ({
             ...prev,
             latitud: '',
-            longitud: ''
+            longitud: '',
           }));
         },
         (error) => {
@@ -203,33 +300,44 @@ const Hoteles = () => {
     if (name === 'telefono') {
       const numericValue = value.replace(/\D/g, '');
       if (numericValue.length <= 10) {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           [name]: numericValue,
         }));
       }
+    } else if (name === 'ubicacionTexto') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      if (value.trim()) {
+        geocodeLocation(value);
+      } else {
+        setMapCenter([21.1399, -98.4194]); // Restablecer al centro de Huejutla
+        setLocationError('');
+      }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
     }
-    setTouched(prev => ({
+    setTouched((prev) => ({
       ...prev,
-      [name]: true
+      [name]: true,
     }));
     const error = validateField(name, name === 'telefono' ? value.replace(/\D/g, '') : value);
-    setValidationErrors(prev => ({
+    setValidationErrors((prev) => ({
       ...prev,
-      [name]: error
+      [name]: error,
     }));
   };
 
   const handleBlur = (e) => {
     const { name } = e.target;
-    setTouched(prev => ({
+    setTouched((prev) => ({
       ...prev,
-      [name]: true
+      [name]: true,
     }));
   };
 
@@ -238,12 +346,24 @@ const Hoteles = () => {
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        setErrorMessage('Solo se permiten archivos de imagen (JPG, PNG, GIF, WebP)');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Solo se permiten archivos de imagen (JPG, PNG, GIF, WebP)',
+          confirmButtonColor: '#0b7583',
+          confirmButtonText: 'Aceptar',
+        });
         return;
       }
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
-        setErrorMessage('La imagen no puede exceder 5MB');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La imagen no puede exceder 5MB',
+          confirmButtonColor: '#0b7583',
+          confirmButtonText: 'Aceptar',
+        });
         return;
       }
       setFormData({
@@ -252,7 +372,7 @@ const Hoteles = () => {
         removeImage: false,
       });
       setImagePreview(URL.createObjectURL(file));
-      setErrorMessage('');
+      setErrorMessage(''); // Clear any existing error message
     }
   };
 
@@ -272,7 +392,7 @@ const Hoteles = () => {
     const errors = validateAllFields();
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
-      setErrorMessage('Por favor corrija los errores en el formulario');
+      setErrorMessage('Por favor corrija los errores en el formulario.');
       return;
     }
     const formDataToSend = new FormData();
@@ -304,8 +424,8 @@ const Hoteles = () => {
       resetForm();
       setOpenModal(false);
     } catch (error) {
-      console.error('Error al guardar hotel:', error);
-      setErrorMessage(error.response?.data || 'Error al guardar el hotel. Intente de nuevo.');
+      console.error('Error al guardar hotel:', error.response?.data || error.message);
+      setErrorMessage(error.response?.data?.error || 'Error al guardar el hotel. Intente de nuevo.');
     }
   };
 
@@ -316,8 +436,8 @@ const Hoteles = () => {
         fetchHoteles();
         setErrorMessage('');
       } catch (error) {
-        console.error('Error al eliminar hotel:', error);
-        setErrorMessage('Error al eliminar el hotel. Verifique las dependencias o intente de nuevo.');
+        console.error('Error al eliminar hotel:', error.response?.data || error.message);
+        setErrorMessage(error.response?.data?.error || 'Error al eliminar el hotel. Verifique las dependencias o intente de nuevo.');
       }
     }
   };
@@ -335,8 +455,10 @@ const Hoteles = () => {
       removeImage: false,
       latitud: hotel.latitud?.toString() || '',
       longitud: hotel.longitud?.toString() || '',
+      ubicacionTexto: '',
     });
-    setImagePreview(hotel.imagen && hotel.imagen.data ? `data:${hotel.imagen.mimeType};base64,${hotel.imagen.data}` : null);
+    setImagePreview(hotel.imagen && hotel.imagen?.data ? `data:${hotel.imagen.mimeType};base64,${hotel.imagen.data}` : null);
+    setMapCenter([parseFloat(hotel.latitud) || 21.1399, parseFloat(hotel.longitud) || -98.4194]);
     setEditingId(hotel.id_hotel);
     setOpenModal(true);
     setValidationErrors({});
@@ -356,6 +478,7 @@ const Hoteles = () => {
       removeImage: false,
       latitud: '',
       longitud: '',
+      ubicacionTexto: '',
     });
     setImagePreview(null);
     setEditingId(null);
@@ -364,7 +487,15 @@ const Hoteles = () => {
     setValidationErrors({});
     setTouched({});
     setErrorMessage('');
+    setMapCenter([21.1399, -98.4194]);
   };
+
+  // Configuración del mapa centrado en Huejutla
+  const huejutlaCenter = [21.1399, -98.4194];
+  const maxBounds = [
+    [21.05, -98.55], // Suroeste
+    [21.25, -98.30], // Noreste
+  ];
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, background: '#ffffff', minHeight: '100vh' }}>
@@ -400,8 +531,8 @@ const Hoteles = () => {
 
       {errorMessage && (
         <Box sx={{ mb: 3 }}>
-          <Alert 
-            severity="error" 
+          <Alert
+            severity="error"
             onClose={() => setErrorMessage('')}
             sx={{
               borderRadius: '10px',
@@ -445,7 +576,7 @@ const Hoteles = () => {
           >
             {editingId ? 'Editar Hotel' : 'Agregar Nuevo Hotel'}
           </Typography>
-          
+
           <Box component="form" onSubmit={handleSubmit} sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
             {[
               { label: 'Nombre del Hotel', name: 'nombrehotel', type: 'text', required: true },
@@ -514,7 +645,7 @@ const Hoteles = () => {
                 }}
               />
             ))}
-            
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <TextField
                 label="Latitud"
@@ -575,7 +706,7 @@ const Hoteles = () => {
                 <MyLocationIcon />
               </IconButton>
             </Box>
-            
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <TextField
                 label="Longitud"
@@ -636,7 +767,99 @@ const Hoteles = () => {
                 <MyLocationIcon />
               </IconButton>
             </Box>
-            
+
+            <TextField
+              label="Buscar Ubicación"
+              name="ubicacionTexto"
+              type="text"
+              value={formData.ubicacionTexto}
+              onChange={handleInputChange}
+              onBlur={handleBlur}
+              variant="outlined"
+              fullWidth
+              placeholder="Ej. UTHH, Huejutla"
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: '#f8fbfc',
+                  transition: 'all 0.3s ease',
+                  '& fieldset': {
+                    borderColor: '#b3c9ca',
+                    borderWidth: '2px',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4c94bc',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#0b7583',
+                    boxShadow: '0 0 12px rgba(76, 148, 188, 0.2)',
+                  },
+                  '&.Mui-error fieldset': {
+                    borderColor: '#d32f2f',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#549c94',
+                  fontWeight: '600',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#0b7583',
+                },
+                '& .MuiInputLabel-root.Mui-error': {
+                  color: '#d32f2f',
+                },
+                '& .MuiFormHelperText-root.Mui-error': {
+                  color: '#d32f2f',
+                  fontWeight: '500',
+                },
+              }}
+            />
+
+            <Box sx={{ gridColumn: '1 / -1', mb: 3 }}>
+              <InputLabel sx={{ color: '#0b7583', fontWeight: '600', mb: 2, fontSize: '1rem' }}>
+                Seleccionar ubicación en Huejutla
+              </InputLabel>
+              <Box
+                sx={{
+                  height: '300px',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  border: `2px solid #b3c9ca`,
+                  '& .leaflet-container': {
+                    height: '100%',
+                    width: '100%',
+                  },
+                }}
+              >
+                <MapContainer
+                  center={mapCenter}
+                  zoom={14}
+                  style={{ height: '100%', width: '100%' }}
+                  maxBounds={maxBounds}
+                  maxBoundsViscosity={1.0}
+                  minZoom={12}
+                  maxZoom={18}
+                >
+                  <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    attribution='© <a href="https://www.esri.com/">Esri</a>, USGS, NOAA'
+                  />
+                  <MapInvalidateSize />
+                  {formData.latitud && formData.longitud && !isNaN(parseFloat(formData.latitud)) && !isNaN(parseFloat(formData.longitud)) && (
+                    <Marker position={[parseFloat(formData.latitud), parseFloat(formData.longitud)]} icon={markerIcon}>
+                      <Popup>Ubicación seleccionada</Popup>
+                    </Marker>
+                  )}
+                  <MapClickHandler setFormData={setFormData} setValidationErrors={setValidationErrors} />
+                  <MapCenterUpdater center={mapCenter} />
+                </MapContainer>
+              </Box>
+              <Typography variant="caption" sx={{ mt: 1, display: 'block', color: '#549c94', fontWeight: '500' }}>
+                Busca una ubicación o haz clic en el mapa para seleccionar la ubicación del hotel.
+              </Typography>
+            </Box>
+
             <TextField
               label="Descripción"
               name="descripcion"
@@ -666,6 +889,9 @@ const Hoteles = () => {
                     borderColor: '#0b7583',
                     boxShadow: '0 0 12px rgba(76, 148, 188, 0.2)',
                   },
+                  '&.Mui-error fieldset': {
+                    borderColor: '#d32f2f',
+                  },
                 },
                 '& .MuiInputLabel-root': {
                   color: '#549c94',
@@ -674,9 +900,16 @@ const Hoteles = () => {
                 '& .MuiInputLabel-root.Mui-focused': {
                   color: '#0b7583',
                 },
+                '& .MuiInputLabel-root.Mui-error': {
+                  color: '#d32f2f',
+                },
+                '& .MuiFormHelperText-root.Mui-error': {
+                  color: '#d32f2f',
+                  fontWeight: '500',
+                },
               }}
             />
-            
+
             <Box sx={{ mb: 3, gridColumn: '1 / -1' }}>
               <InputLabel sx={{ color: '#0b7583', fontWeight: '600', mb: 2, fontSize: '1rem' }}>
                 Imagen del Hotel
@@ -737,20 +970,16 @@ const Hoteles = () => {
                 />
               )}
             </Box>
-            
+
             {locationError && (
               <Box sx={{ gridColumn: '1 / -1', mb: 3 }}>
-                <Alert 
-                  severity="warning" 
-                  onClose={() => setLocationError('')}
-                  sx={{ borderRadius: '8px' }}
-                >
+                <Alert severity="warning" onClose={() => setLocationError('')} sx={{ borderRadius: '8px' }}>
                   {locationError}
                 </Alert>
               </Box>
             )}
-            
-            <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 3, justifyContent: 'center' }}>
+
+            <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 2, justifyContent: 'center' }}>
               <Button
                 type="submit"
                 variant="contained"
@@ -803,123 +1032,31 @@ const Hoteles = () => {
         </Box>
       </Modal>
 
-      <Modal open={openHabitacionesModal} onClose={() => setOpenHabitacionesModal(false)}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: { xs: '95%', md: 700 },
-            bgcolor: 'background.paper',
-            boxShadow: '0 20px 40px rgba(11, 117, 131, 0.15)',
-            p: 4,
-            borderRadius: '8px',
-            maxHeight: '85vh',
-            overflowY: 'auto',
-            border: `2px solid #b3c9ca`,
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8fbfc 100%)',
-          }}
-        >
-          <Typography
-            variant="h5"
-            gutterBottom
-            sx={{
-              color: '#0b7583',
-              fontWeight: '700',
-              textAlign: 'center',
-              mb: 4,
-            }}
-          >
-            Habitaciones del Hotel
-          </Typography>
-          <Paper
-            elevation={0}
-            sx={{
-              borderRadius: '8px',
-              overflow: 'hidden',
-              border: `2px solid #b3c9ca`,
-            }}
-          >
-            <Table sx={{ minWidth: 400 }} aria-label="habitaciones table">
-              <TableHead sx={{ background: 'linear-gradient(135deg, #4c94bc, #549c94)' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: '700', color: 'white', fontSize: '1rem' }}>Cuarto</TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: 'white', fontSize: '1rem' }}>Estado</TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: 'white', fontSize: '1rem' }}>ID Hotel</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {habitaciones.map((habitacion, index) => (
-                  <TableRow 
-                    key={habitacion.id}
-                    sx={{
-                      backgroundColor: index % 2 === 0 ? '#f8fbfc' : 'white',
-                      '&:hover': { backgroundColor: '#b3c9ca20' },
-                      transition: 'background-color 0.3s ease',
-                    }}
-                  >
-                    <TableCell sx={{ color: '#0b7583', fontWeight: '500' }}>{habitacion.cuarto}</TableCell>
-                    <TableCell sx={{ color: '#549c94', fontWeight: '500' }}>{habitacion.estado}</TableCell>
-                    <TableCell sx={{ color: '#4c94bc', fontWeight: '500' }}>{habitacion.id_hoteles}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                borderColor: '#f3a384',
-                color: '#f3a384',
-                borderRadius: '8px',
-                padding: '12px 32px',
-                fontWeight: '600',
-                borderWidth: '2px',
-                '&:hover': {
-                  backgroundColor: '#f3a384',
-                  color: 'white',
-                  borderColor: '#f3a384',
-                  transform: 'translateY(-2px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-              onClick={() => setOpenHabitacionesModal(false)}
-            >
-              Cerrar
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-
       <Paper
         elevation={0}
         sx={{
-          borderRadius: '8px',
+          borderRadius: '12px',
           overflow: 'hidden',
           boxShadow: '0 12px 24px rgba(11, 117, 131, 0.15)',
           border: `2px solid #b3c9ca`,
         }}
       >
-        <Table sx={{ minWidth: 650 }} aria-label="hoteles table">
+        <Table sx={{ minWidth: 650 }} aria-label="tabla de hoteles">
           <TableHead sx={{ background: 'linear-gradient(135deg, #4c94bc, #549c94)' }}>
             <TableRow>
-              {['Nombre', 'Dirección', 'Habitaciones', 'Servicios', 'Latitud', 'Longitud', 'Imagen', 'Acciones'].map(
-                (head) => (
-                  <TableCell
-                    key={head}
-                    sx={{
-                      fontWeight: '700',
-                      color: 'white',
-                      fontSize: '1rem',
-                      padding: '20px 16px',
-                    }}
-                  >
-                    {head}
-                  </TableCell>
-                )
-              )}
+              {['Nombre', 'Dirección', 'Habitaciones', 'Servicios', 'Latitud', 'Longitud', 'Imagen', 'Teléfono', 'Acciones'].map((head) => (
+                <TableCell
+                  key={head}
+                  sx={{
+                    fontWeight: '700',
+                    color: 'white',
+                    fontSize: '1rem',
+                    padding: '20px 16px',
+                  }}
+                >
+                  {head}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -928,7 +1065,7 @@ const Hoteles = () => {
                 key={hotel.id}
                 sx={{
                   backgroundColor: index % 2 === 0 ? '#f8fbfc' : 'white',
-                  '&:hover': { 
+                  '&:hover': {
                     backgroundColor: '#b3c9ca20',
                     transform: 'scale(1.001)',
                   },
@@ -945,22 +1082,21 @@ const Hoteles = () => {
                   {hotel.imagen && hotel.imagen.data ? (
                     <img
                       src={`data:${hotel.imagen.mimeType};base64,${hotel.imagen.data}`}
-                      alt="Hotel"
+                      alt={hotel.nombrehotel}
                       style={{
                         height: '60px',
                         width: '60px',
                         objectFit: 'cover',
                         borderRadius: '8px',
-                        boxShadow: '0 4px 8px rgba(11, 117, 131, 0.2)',
+                        boxShadow: '0 4px 8px rgba(76, 148, 188, 0.2)',
                         border: `2px solid #b3c9ca`,
                       }}
                     />
                   ) : (
-                    <Typography sx={{ fontStyle: 'italic', color: '#549c94' }}>
-                      Sin imagen
-                    </Typography>
+                    <Typography sx={{ fontStyle: 'italic', color: '#549c94' }}>Sin imagen</Typography>
                   )}
                 </TableCell>
+                <TableCell sx={{ color: '#4c94bc', fontWeight: '500' }}>{hotel.telefono || 'N/A'}</TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <IconButton
@@ -998,7 +1134,7 @@ const Hoteles = () => {
                       <DeleteIcon sx={{ fontSize: '18px' }} />
                     </IconButton>
                     <IconButton
-                      onClick={() => fetchHabitaciones(hotel.id)}
+                      onClick={() => navigate(`/propietario/cuartos/${hotel.id}`)}
                       sx={{
                         backgroundColor: '#549c94',
                         color: 'white',

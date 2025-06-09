@@ -160,36 +160,36 @@ const Politica = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.title}>Gestión de Políticas</h1>
+            <div style={styles.header}>
+                <h1 style={styles.title}>Gestión de Políticas</h1>
+                <div style={styles.subtitle}>Administra las políticas de tu empresa de manera eficiente</div>
+            </div>
 
             <div style={styles.flexContainer}>
                 <section style={styles.gestionPoliticaContainer}>
-                    <h2>Gestión de Política</h2>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>
+                            <span style={styles.icon}>📝</span>
+                            {editingId ? 'Editar Política' : 'Nueva Política'}
+                        </h2>
+                    </div>
+                    
                     <form onSubmit={handleSubmit} style={styles.form}>
                         <div style={styles.formGrid}>
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Título</label>
+                                <label style={styles.label}>Título de la Política</label>
                                 <input
                                     type="text"
                                     name="titulo"
-                                    placeholder="Título de la política"
+                                    placeholder="Ingresa el título de la política"
                                     value={politica.titulo}
                                     onChange={handleChange}
                                     required
                                     style={styles.input}
                                 />
+                                <div style={styles.charCount}>{politica.titulo.length}/255</div>
                             </div>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Contenido</label>
-                                <textarea
-                                    name="contenido"
-                                    placeholder="Contenido de la política"
-                                    value={politica.contenido}
-                                    onChange={handleChange}
-                                    required
-                                    style={{ ...styles.input, height: '100px', resize: 'vertical' }}
-                                />
-                            </div>
+                            
                             <div style={styles.inputGroup}>
                                 <label style={styles.label}>Empresa</label>
                                 <select
@@ -197,7 +197,7 @@ const Politica = () => {
                                     value={politica.id_empresa}
                                     onChange={handleChange}
                                     required
-                                    style={styles.input}
+                                    style={styles.select}
                                 >
                                     {perfiles.length === 0 ? (
                                         <option value="">No hay empresas disponibles</option>
@@ -210,12 +210,29 @@ const Politica = () => {
                                     )}
                                 </select>
                             </div>
+                            
+                            <div style={styles.inputGroupFull}>
+                                <label style={styles.label}>Contenido de la Política</label>
+                                <textarea
+                                    name="contenido"
+                                    placeholder="Describe el contenido completo de la política..."
+                                    value={politica.contenido}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.textarea}
+                                />
+                            </div>
                         </div>
+                        
                         <div style={styles.buttonGroup}>
-                            <button type="submit" style={styles.editButton}>
+                            <button type="submit" style={styles.primaryButton}>
+                                <span style={styles.buttonIcon}>
+                                    {editingId ? '✏️' : '💾'}
+                                </span>
                                 {editingId ? 'Actualizar Política' : 'Crear Política'}
                             </button>
-                            <button type="button" onClick={handleCancel} style={styles.cancelButton}>
+                            <button type="button" onClick={handleCancel} style={styles.secondaryButton}>
+                                <span style={styles.buttonIcon}>❌</span>
                                 Cancelar
                             </button>
                         </div>
@@ -223,31 +240,76 @@ const Politica = () => {
                 </section>
 
                 <section style={styles.politicasGuardadasContainer}>
-                    <h2>Políticas Guardadas</h2>
-                    {politicas.length === 0 && <p>No hay políticas guardadas.</p>}
-                    {politicas.map((politica) => (
-                        <div key={politica.id} style={styles.politicaItem}>
-                            <p><strong>Título:</strong> {politica.titulo}</p>
-                            <p><strong>Contenido:</strong> {politica.contenido}</p>
-                            <p><strong>Fecha:</strong> {new Date(politica.fechahora).toLocaleString()}</p>
-                            <p><strong>Empresa:</strong> {politica.NombreEmpresa}</p>
-                            <p><strong>Estado:</strong> {politica.estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
-                            <div style={styles.buttonGroup}>
-                                <button
-                                    style={styles.editButton}
-                                    onClick={() => handleEdit(politica)}
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    style={styles.deleteButton}
-                                    onClick={() => handleDelete(politica.id)}
-                                >
-                                    Eliminar
-                                </button>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>
+                            <span style={styles.icon}>📋</span>
+                            Políticas Guardadas
+                        </h2>
+                        <div style={styles.badge}>{politicas.length} políticas</div>
+                    </div>
+                    
+                    <div style={styles.politicasList}>
+                        {politicas.length === 0 ? (
+                            <div style={styles.emptyState}>
+                                <div style={styles.emptyIcon}>📄</div>
+                                <p style={styles.emptyText}>No hay políticas guardadas</p>
+                                <p style={styles.emptySubtext}>Crea tu primera política usando el formulario</p>
                             </div>
-                        </div>
-                    ))}
+                        ) : (
+                            politicas.map((politica) => (
+                                <div key={politica.id} style={styles.politicaCard}>
+                                    <div style={styles.cardHeader}>
+                                        <h3 style={styles.cardTitle}>{politica.titulo}</h3>
+                                        <div style={styles.statusBadge}>
+                                            <span style={styles.statusDot}></span>
+                                            {politica.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.cardContent}>
+                                        <div style={styles.contentPreview}>
+                                            {politica.contenido.length > 150 
+                                                ? politica.contenido.substring(0, 150) + '...' 
+                                                : politica.contenido
+                                            }
+                                        </div>
+                                        
+                                        <div style={styles.cardMeta}>
+                                            <div style={styles.metaItem}>
+                                                <strong>Empresa:</strong> {politica.NombreEmpresa}
+                                            </div>
+                                            <div style={styles.metaItem}>
+                                                <strong>Fecha:</strong> {new Date(politica.fechahora).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.cardActions}>
+                                        <button
+                                            style={styles.editButton}
+                                            onClick={() => handleEdit(politica)}
+                                        >
+                                            <span style={styles.buttonIcon}>✏️</span>
+                                            Editar
+                                        </button>
+                                        <button
+                                            style={styles.deleteButton}
+                                            onClick={() => handleDelete(politica.id)}
+                                        >
+                                            <span style={styles.buttonIcon}>🗑️</span>
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </section>
             </div>
         </div>
@@ -256,46 +318,82 @@ const Politica = () => {
 
 const styles = {
     container: {
-        maxWidth: '1100px',
-        margin: '30px auto',
-        padding: '30px',
-        background: '#eff3cd',
-        borderRadius: '15px',
-        boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
-        fontFamily: "'Poppins', sans-serif"
+    minHeight: '100vh',
+    background: '#b3c9ca', // Changed to white
+    padding: '40px 20px',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+},
+    header: {
+        textAlign: 'center',
+        marginBottom: '40px'
     },
     title: {
-        fontSize: '32px',
-        fontWeight: '800',
-        marginBottom: '30px',
-        textAlign: 'center',
-        color: '#4b3f72',
-        textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
-        letterSpacing: '0.05em'
+    fontSize: '42px',
+    fontWeight: '700',
+    color: '#000000', // Changed to black
+    textShadow: 'none', // Removed shadow for better contrast on white background
+    margin: 0,
+    letterSpacing: '-0.5px'
+},
+    subtitle: {
+        fontSize: '18px',
+         color: '#000000',
+        fontWeight: '400'
     },
     flexContainer: {
-        display: 'flex',
-        gap: '25px',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '30px',
+        maxWidth: '1400px',
+        margin: '0 auto'
     },
     gestionPoliticaContainer: {
-        flex: '1 1 45%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        transition: 'transform 0.3s ease',
-        cursor: 'default'
+        background: 'rgba(255,255,255,0.95)',
+        borderRadius: '24px',
+        padding: '32px',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.2)',
+        border: '1px solid rgba(255,255,255,0.2)'
     },
     politicasGuardadasContainer: {
-        flex: '1 1 50%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        maxHeight: '600px',
-        overflowY: 'auto'
+        background: 'rgba(255,255,255,0.95)',
+        borderRadius: '24px',
+        padding: '32px',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.2)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        maxHeight: '800px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    sectionHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '24px',
+        paddingBottom: '16px',
+        borderBottom: '2px solid #f0f4f8'
+    },
+    sectionTitle: {
+        fontSize: '24px',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: 0,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    icon: {
+        fontSize: '28px'
+    },
+    badge: {
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        color: 'white',
+        padding: '6px 16px',
+        borderRadius: '20px',
+        fontSize: '14px',
+        fontWeight: '600'
     },
     form: {
         display: 'flex',
@@ -303,76 +401,220 @@ const styles = {
     },
     formGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px'
+        gridTemplateColumns: '1fr 1fr',
+        gap: '24px',
+        marginBottom: '32px'
     },
     inputGroup: {
         display: 'flex',
         flexDirection: 'column'
     },
+    inputGroupFull: {
+        display: 'flex',
+        flexDirection: 'column',
+        gridColumn: 'span 2'
+    },
     label: {
-        fontWeight: '700',
+        fontWeight: '600',
         marginBottom: '8px',
-        color: '#5e548e',
-        fontSize: '15px'
+        color: '#2d3748',
+        fontSize: '16px'
     },
     input: {
-        padding: '12px 16px',
+        padding: '16px 20px',
         fontSize: '16px',
-        borderRadius: '12px',
-        border: '2px solid #d3d0f7',
-        backgroundColor: '#fafaff',
-        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+        borderRadius: '16px',
+        border: '2px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
         outline: 'none',
         fontWeight: '500',
-        color: '#333'
+        color: '#2d3748'
+    },
+    select: {
+        padding: '16px 20px',
+        fontSize: '16px',
+        borderRadius: '16px',
+        border: '2px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontWeight: '500',
+        color: '#2d3748',
+        cursor: 'pointer'
+    },
+    textarea: {
+        padding: '16px 20px',
+        fontSize: '16px',
+        borderRadius: '16px',
+        border: '2px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontWeight: '500',
+        color: '#2d3748',
+        resize: 'vertical',
+        minHeight: '120px',
+        fontFamily: 'inherit'
+    },
+    charCount: {
+        fontSize: '12px',
+        color: '#718096',
+        textAlign: 'right',
+        marginTop: '4px'
     },
     buttonGroup: {
-        marginTop: '28px',
         display: 'flex',
-        gap: '18px',
+        gap: '16px',
         justifyContent: 'flex-start'
     },
-    editButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
-        border: 'none',
-        borderRadius: '14px',
-        cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    cancelButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f7a8b)',
-        color: '#fff',
-        padding: '14px 25px',
-        fontSize: '17px',
-        border: 'none',
-        borderRadius: '10px',
-        cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 14px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    deleteButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f7a8b)',
-        color: '#fff',
-        padding: '14px',
+    primaryButton: {
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        color: '#ffffff',
+        padding: '16px 32px',
         fontSize: '16px',
         border: 'none',
-        borderRadius: '20px',
+        borderRadius: '16px',
         cursor: 'pointer',
-        fontWeight: 'normal',
-        boxShadow: '0 6px 14px rgba(121, 174, 10, 0.5)',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+        fontWeight: '600',
+        boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
     },
-    politicaItem: {
-        padding: '15px',
-        borderBottom: '1px solid #eee',
-        marginBottom: '10px'
+    secondaryButton: {
+        background: '#ffffff',
+        color: '#4a5568',
+        padding: '16px 32px',
+        fontSize: '16px',
+        border: '2px solid #e2e8f0',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+    },
+    buttonIcon: {
+        fontSize: '16px'
+    },
+    politicasList: {
+        flex: 1,
+        overflowY: 'auto',
+        paddingRight: '8px'
+    },
+    emptyState: {
+        textAlign: 'center',
+        padding: '60px 20px',
+        color: '#718096'
+    },
+    emptyIcon: {
+        fontSize: '64px',
+        marginBottom: '16px'
+    },
+    emptyText: {
+        fontSize: '18px',
+        fontWeight: '600',
+        margin: '0 0 8px 0',
+        color: '#4a5568'
+    },
+    emptySubtext: {
+        fontSize: '14px',
+        margin: 0
+    },
+    politicaCard: {
+        background: '#ffffff',
+        borderRadius: '20px',
+        padding: '24px',
+        marginBottom: '20px',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+        border: '1px solid #f0f4f8',
+        transition: 'all 0.3s ease'
+    },
+    cardHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '16px'
+    },
+    cardTitle: {
+        fontSize: '20px',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: 0,
+        flex: 1,
+        marginRight: '16px'
+    },
+    statusBadge: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        background: '#c6f6d5',
+        color: '#22543d',
+        padding: '6px 12px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '600',
+        whiteSpace: 'nowrap'
+    },
+    statusDot: {
+        width: '8px',
+        height: '8px',
+        backgroundColor: '#38a169',
+        borderRadius: '50%'
+    },
+    cardContent: {
+        marginBottom: '20px'
+    },
+    contentPreview: {
+        color: '#4a5568',
+        lineHeight: '1.6',
+        marginBottom: '16px',
+        fontSize: '15px'
+    },
+    cardMeta: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '12px'
+    },
+    metaItem: {
+        fontSize: '14px',
+        color: '#718096'
+    },
+    cardActions: {
+        display: 'flex',
+        gap: '12px',
+        justifyContent: 'flex-end'
+    },
+    editButton: {
+        background: 'linear-gradient(135deg, #4fd1c7, #36b89e)',
+        color: '#ffffff',
+        padding: '10px 20px',
+        fontSize: '14px',
+        border: 'none',
+        borderRadius: '12px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
+    },
+    deleteButton: {
+        background: 'linear-gradient(135deg, #fc8181, #e53e3e)',
+        color: '#ffffff',
+        padding: '10px 20px',
+        fontSize: '14px',
+        border: 'none',
+        borderRadius: '12px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
     }
 };
 

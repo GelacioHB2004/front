@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal);
 
 const Perfil = () => {
     const [perfil, setPerfil] = useState({
-        NombreEmpresa: '', // Ajustado a mayúsculas iniciales
+        NombreEmpresa: '',
         Eslogan: '',
         logo: null,
         Direccion: '',
@@ -21,7 +21,7 @@ const Perfil = () => {
         const fetchPerfiles = async () => {
             try {
                 const response = await axios.get('https://backendd-q0zc.onrender.com/api/perfil');
-                console.log('Datos recibidos del backend:', response.data); // Depuración
+                console.log('Datos recibidos del backend:', response.data);
                 setPerfiles(response.data);
             } catch (error) {
                 console.error('Error al obtener perfiles:', error.message);
@@ -148,8 +148,8 @@ const Perfil = () => {
             text: "No podrás revertir esto después de eliminarlo.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar',
         });
@@ -184,6 +184,12 @@ const Perfil = () => {
             Telefono: perfil.Telefono
         });
         setEditingId(perfil.id);
+        
+        // Scroll suave hacia el formulario
+        document.querySelector('[data-form-section]')?.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
     };
 
     const handleCancel = () => {
@@ -200,273 +206,544 @@ const Perfil = () => {
 
     return (
         <div style={styles.container}>
-          <h1 style={styles.title}>Gestión de Perfil y Perfiles Guardados</h1>
-    
-          <div style={styles.flexContainer}>
-            <section style={styles.gestionPerfilContainer}>
-              <h2>Gestión de Perfil</h2>
-              <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.formGrid}>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Empresa</label>
-                    <input
-                      type="text"
-                      name="NombreEmpresa"
-                      placeholder="Nombre de la Empresa"
-                      value={perfil.NombreEmpresa}
-                      onChange={handleChange}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Eslogan</label>
-                    <input
-                      type="text"
-                      name="Eslogan"
-                      placeholder="Eslogan"
-                      value={perfil.Eslogan}
-                      onChange={handleChange}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Logo</label>
-                    <input
-                      type="file"
-                      name="logo"
-                      accept="image/*"
-                      onChange={handleLogoChange}
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Dirección</label>
-                    <input
-                      type="text"
-                      name="Direccion"
-                      placeholder="Dirección"
-                      value={perfil.Direccion}
-                      onChange={handleChange}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Correo</label>
-                    <input
-                      type="email"
-                      name="Correo"
-                      placeholder="Correo"
-                      value={perfil.Correo}
-                      onChange={handleChange}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>Teléfono (10 dígitos)</label>
-                    <input
-                      type="text"
-                      name="Telefono"
-                      placeholder="Teléfono"
-                      value={perfil.Telefono}
-                      onChange={handleChange}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                </div>
-                <div style={styles.buttonGroup}>
-                  <button type="submit" style={styles.editButton}>
-                    {editingId ? "Actualizar Perfil" : "Crear Perfil"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    style={styles.cancelButton}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
-            </section>
-    
-            <section style={styles.perfilesGuardadosContainer}>
-              <h2>Perfiles Guardados</h2>
-              {perfiles.length === 0 && <p>No hay perfiles guardados.</p>}
-              {perfiles.map((perfil) => (
-                <div key={perfil.id} style={styles.profileItem}>
-                  {perfil.Logo && (
-                    <img
-                      src={`data:image/jpeg;base64,${perfil.Logo}`}
-                      alt="Logo de la empresa"
-                      style={{ width: '100px', height: '100px', marginBottom: '10px', objectFit: 'contain' }}
-                    />
-                  )}
-                  <p><strong>Empresa:</strong> {perfil.NombreEmpresa}</p>
-                  <p><strong>Eslogan:</strong> {perfil.Eslogan}</p>
-                  <p><strong>Dirección:</strong> {perfil.Direccion}</p>
-                  <p><strong>Correo:</strong> {perfil.Correo}</p>
-                  <p><strong>Teléfono:</strong> {perfil.Telefono}</p>
-                  <div style={styles.buttonGroup}>
-                    <button
-                      style={styles.editButton}
-                      onClick={() => handleEdit(perfil)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      style={styles.deleteButton}
-                      onClick={() => handleDelete(perfil.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </section>
-          </div>
+            <div style={styles.header}>
+                <h1 style={styles.title}>
+                    <FaBuilding style={styles.titleIcon} />
+                    Gestión de Perfiles Empresariales
+                </h1>
+                <p style={styles.subtitle}>
+                    Administra la información de tu empresa de manera profesional
+                </p>
+            </div>
+
+            <div style={styles.flexContainer}>
+                <section style={styles.gestionPerfilContainer} data-form-section>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>
+                            {editingId ? "Editar Perfil" : "Nuevo Perfil"}
+                        </h2>
+                        <div style={styles.sectionLine}></div>
+                    </div>
+                    
+                    <form onSubmit={handleSubmit} style={styles.form}>
+                        <div style={styles.formGrid}>
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    <FaBuilding style={styles.labelIcon} />
+                                    Nombre de la Empresa
+                                </label>
+                                <input
+                                    type="text"
+                                    name="NombreEmpresa"
+                                    placeholder="Ingresa el nombre de tu empresa"
+                                    value={perfil.NombreEmpresa}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.input}
+                                />
+                            </div>
+                            
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    ✨ Eslogan
+                                </label>
+                                <input
+                                    type="text"
+                                    name="Eslogan"
+                                    placeholder="Tu eslogan corporativo"
+                                    value={perfil.Eslogan}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.input}
+                                />
+                            </div>
+                            
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    🖼️ Logo de la Empresa
+                                </label>
+                                <div style={styles.fileInputContainer}>
+                                    <input
+                                        type="file"
+                                        name="logo"
+                                        accept="image/*"
+                                        onChange={handleLogoChange}
+                                        style={styles.fileInput}
+                                        id="logo-upload"
+                                    />
+                                    <label htmlFor="logo-upload" style={styles.fileInputLabel}>
+                                        Seleccionar Imagen
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    <FaMapMarkerAlt style={styles.labelIcon} />
+                                    Dirección
+                                </label>
+                                <input
+                                    type="text"
+                                    name="Direccion"
+                                    placeholder="Dirección completa"
+                                    value={perfil.Direccion}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.input}
+                                />
+                            </div>
+                            
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    <FaEnvelope style={styles.labelIcon} />
+                                    Correo Electrónico
+                                </label>
+                                <input
+                                    type="email"
+                                    name="Correo"
+                                    placeholder="correo@empresa.com"
+                                    value={perfil.Correo}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.input}
+                                />
+                            </div>
+                            
+                            <div style={styles.inputGroup}>
+                                <label style={styles.label}>
+                                    <FaPhone style={styles.labelIcon} />
+                                    Teléfono
+                                </label>
+                                <input
+                                    type="text"
+                                    name="Telefono"
+                                    placeholder="1234567890"
+                                    value={perfil.Telefono}
+                                    onChange={handleChange}
+                                    required
+                                    style={styles.input}
+                                />
+                                <span style={styles.helperText}>10 dígitos numéricos</span>
+                            </div>
+                        </div>
+                        
+                        <div style={styles.buttonGroup}>
+                            <button type="submit" style={styles.primaryButton}>
+                                {editingId ? "💾 Actualizar Perfil" : "✨ Crear Perfil"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                style={styles.secondaryButton}
+                            >
+                                ❌ Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section style={styles.perfilesGuardadosContainer}>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>Perfiles Guardados</h2>
+                        <div style={styles.sectionLine}></div>
+                    </div>
+                    
+                    <div style={styles.profilesGrid}>
+                        {perfiles.length === 0 ? (
+                            <div style={styles.emptyState}>
+                                <FaBuilding style={styles.emptyIcon} />
+                                <p style={styles.emptyText}>No hay perfiles guardados</p>
+                                <p style={styles.emptySubtext}>Crea tu primer perfil empresarial</p>
+                            </div>
+                        ) : (
+                            perfiles.map((perfil) => (
+                                <div key={perfil.id} style={styles.profileCard}>
+                                    <div style={styles.profileHeader}>
+                                        {perfil.Logo && (
+                                            <div style={styles.logoContainer}>
+                                                <img
+                                                    src={`data:image/jpeg;base64,${perfil.Logo}`}
+                                                    alt="Logo de la empresa"
+                                                    style={styles.logoImage}
+                                                />
+                                            </div>
+                                        )}
+                                        <div style={styles.profileHeaderText}>
+                                            <h3 style={styles.profileName}>{perfil.NombreEmpresa}</h3>
+                                            <p style={styles.profileSlogan}>"{perfil.Eslogan}"</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.profileInfo}>
+                                        <div style={styles.infoItem}>
+                                            <FaMapMarkerAlt style={styles.infoIcon} />
+                                            <span>{perfil.Direccion}</span>
+                                        </div>
+                                        <div style={styles.infoItem}>
+                                            <FaEnvelope style={styles.infoIcon} />
+                                            <span>{perfil.Correo}</span>
+                                        </div>
+                                        <div style={styles.infoItem}>
+                                            <FaPhone style={styles.infoIcon} />
+                                            <span>{perfil.Telefono}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={styles.profileActions}>
+                                        <button
+                                            style={styles.editButton}
+                                            onClick={() => handleEdit(perfil)}
+                                        >
+                                            ✏️ Editar
+                                        </button>
+                                        <button
+                                            style={styles.deleteButton}
+                                            onClick={() => handleDelete(perfil.id)}
+                                        >
+                                            🗑️ Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </section>
+            </div>
         </div>
-      );
-    };
+    );
+};
+
+const styles = {
+    container: {
+        minHeight: '100vh',
+        background: '#b3c9ca',
+        padding: '2rem',
+        fontFamily: "'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    },
     
-    const styles = {
-        container: {
-            maxWidth: '1100px',
-            margin: '30px auto',
-            padding: '30px',
-            background: '#eff3cd', // nuevo color de fondo
-            borderRadius: '15px',
-            boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
-            fontFamily: "'Poppins', sans-serif",
-          },
-          
-        title: {
-          fontSize: '32px',
-          fontWeight: '800',
-          marginBottom: '30px',
-          textAlign: 'center',
-          color: '#4b3f72', // púrpura oscuro
-          textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
-          letterSpacing: '0.05em',
-        },
-        flexContainer: {
-          display: 'flex',
-          gap: '25px',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        },
-        gestionPerfilContainer: {
-          flex: '1 1 45%',
-          padding: '30px',
-          background: '#fff',
-          borderRadius: '15px',
-          boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-          transition: 'transform 0.3s ease',
-          cursor: 'default',
-        },
-        perfilesGuardadosContainer: {
-          flex: '1 1 50%',
-          padding: '30px',
-          background: '#fff',
-          borderRadius: '15px',
-          boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-          maxHeight: '600px',
-          overflowY: 'auto',
-        },
-        form: {
-          display: 'flex',
-          flexDirection: 'column',
-        },
-        formGrid: {
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '20px',
-        },
-        inputGroup: {
-          display: 'flex',
-          flexDirection: 'column',
-        },
-        label: {
-          fontWeight: '700',
-          marginBottom: '8px',
-          color: '#5e548e', // púrpura medio
-          fontSize: '15px',
-        },
-        input: {
-          padding: '12px 16px',
-          fontSize: '16px',
-          borderRadius: '12px',
-          border: '2px solid #d3d0f7',
-          backgroundColor: '#fafaff',
-          transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
-          outline: 'none',
-          fontWeight: '500',
-          color: '#333',
-        },
-        inputFocus: {
-          borderColor: '#7266f0',
-          boxShadow: '0 0 8px rgba(114, 102, 240, 0.5)',
-        },
-        buttonGroup: {
-          marginTop: '28px',
-          display: 'flex',
-          gap: '18px',
-          justifyContent: 'flex-start',
-        },
-        editButton: {
-            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)', // degradado en tono verde
-            color: '#fff',
-            padding: '14px 28px',
-            fontSize: '17px',
-            border: 'none',
-            borderRadius: '14px',
-            cursor: 'pointer',
-            fontWeight: '700',
-            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-          },
-          editButtonHover: {
-            transform: 'translateY(-3px)',
-            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
-          },
-          
-          cancelButton: {
-            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-            color: '#fff',
-            padding: '14px 28px',
-            fontSize: '17px',
-            border: 'none',
-            borderRadius: '14px',
-            cursor: 'pointer',
-            fontWeight: '700',
-            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-          },
-          cancelButtonHover: {
-            transform: 'translateY(-3px)',
-            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
-          },
-          
-          deleteButton: {
-            background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-            color: '#fff',
-            padding: '14px 28px',
-            fontSize: '17px',
-            border: 'none',
-            borderRadius: '14px',
-            cursor: 'pointer',
-            fontWeight: '700',
-            boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-            transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-          },
-          deleteButtonHover: {
-            transform: 'translateY(-3px)',
-            boxShadow: '0 8px 20px rgba(121, 174, 146, 0.7)',
-          },
-          
-      };
-      
+    header: {
+        textAlign: 'center',
+        marginBottom: '3rem',
+        color: '#000000',
+    },
+    
+    title: {
+        fontSize: '3rem',
+        fontWeight: '800',
+        margin: '0 0 1rem 0',
+        textShadow: '0 4px 20px rgba(0,0,0,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '1rem',
+    },
+    
+    titleIcon: {
+        fontSize: '2.5rem',
+    },
+    
+    subtitle: {
+        fontSize: '1.2rem',
+        opacity: 0.9,
+        fontWeight: '300',
+        margin: 0,
+    },
+    
+    flexContainer: {
+        display: 'flex',
+        gap: '2rem',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        alignItems: 'flex-start',
+    },
+    
+    gestionPerfilContainer: {
+        flex: '1 1 45%',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '20px',
+        padding: '2rem',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        border: '1px solid rgba(255,255,255,0.2)',
+    },
+    
+    perfilesGuardadosContainer: {
+        flex: '1 1 55%',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '20px',
+        padding: '2rem',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        maxHeight: '80vh',
+        overflowY: 'auto',
+    },
+    
+    sectionHeader: {
+        marginBottom: '2rem',
+    },
+    
+    sectionTitle: {
+        fontSize: '1.5rem',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: '0 0 0.5rem 0',
+    },
+    
+    sectionLine: {
+        height: '3px',
+        background: 'linear-gradient(90deg, #667eea, #764ba2)',
+        borderRadius: '2px',
+        width: '60px',
+    },
+    
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    
+    formGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '1.5rem',
+    },
+    
+    inputGroup: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    
+    label: {
+        fontWeight: '600',
+        marginBottom: '0.5rem',
+        color: '#4a5568',
+        fontSize: '0.95rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+    },
+    
+    labelIcon: {
+        color: '#667eea',
+        fontSize: '0.9rem',
+    },
+    
+    input: {
+        padding: '0.875rem 1rem',
+        fontSize: '1rem',
+        borderRadius: '12px',
+        border: '2px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontWeight: '400',
+        color: '#2d3748',
+    },
+    
+    fileInputContainer: {
+        position: 'relative',
+    },
+    
+    fileInput: {
+        position: 'absolute',
+        opacity: 0,
+        width: '100%',
+        height: '100%',
+        cursor: 'pointer',
+    },
+    
+    fileInputLabel: {
+        display: 'block',
+        padding: '0.875rem 1rem',
+        backgroundColor: '#f7fafc',
+        border: '2px dashed #cbd5e0',
+        borderRadius: '12px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        color: '#4a5568',
+        fontWeight: '500',
+    },
+    
+    helperText: {
+        fontSize: '0.75rem',
+        color: '#718096',
+        marginTop: '0.25rem',
+    },
+    
+    buttonGroup: {
+        marginTop: '2rem',
+        display: 'flex',
+        gap: '1rem',
+        justifyContent: 'flex-start',
+    },
+    
+    primaryButton: {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        padding: '0.875rem 2rem',
+        fontSize: '1rem',
+        border: 'none',
+        borderRadius: '12px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+    },
+    
+    secondaryButton: {
+        background: 'rgba(113, 128, 150, 0.1)',
+        color: '#4a5568',
+        padding: '0.875rem 2rem',
+        fontSize: '1rem',
+        border: '2px solid #e2e8f0',
+        borderRadius: '12px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+    },
+    
+    profilesGrid: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.5rem',
+    },
+    
+    emptyState: {
+        textAlign: 'center',
+        padding: '3rem 1rem',
+        color: '#718096',
+    },
+    
+    emptyIcon: {
+        fontSize: '3rem',
+        marginBottom: '1rem',
+        opacity: 0.5,
+    },
+    
+    emptyText: {
+        fontSize: '1.25rem',
+        fontWeight: '600',
+        margin: '0 0 0.5rem 0',
+    },
+    
+    emptySubtext: {
+        fontSize: '1rem',
+        opacity: 0.7,
+        margin: 0,
+    },
+    
+    profileCard: {
+        background: 'white',
+        borderRadius: '16px',
+        padding: '1.5rem',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        border: '1px solid #f1f5f9',
+        transition: 'all 0.3s ease',
+    },
+    
+    profileHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '1rem',
+        gap: '1rem',
+    },
+    
+    logoContainer: {
+        width: '60px',
+        height: '60px',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        backgroundColor: '#f8fafc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+    },
+    
+    logoImage: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+    },
+    
+    profileHeaderText: {
+        flex: 1,
+    },
+    
+    profileName: {
+        fontSize: '1.25rem',
+        fontWeight: '700',
+        color: '#2d3748',
+        margin: '0 0 0.25rem 0',
+    },
+    
+    profileSlogan: {
+        fontSize: '0.9rem',
+        color: '#667eea',
+        fontStyle: 'italic',
+        margin: 0,
+    },
+    
+    profileInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.75rem',
+        marginBottom: '1.5rem',
+    },
+    
+    infoItem: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        fontSize: '0.9rem',
+        color: '#4a5568',
+    },
+    
+    infoIcon: {
+        color: '#667eea',
+        fontSize: '0.8rem',
+        width: '16px',
+    },
+    
+    profileActions: {
+        display: 'flex',
+        gap: '0.75rem',
+        paddingTop: '1rem',
+        borderTop: '1px solid #f1f5f9',
+    },
+    
+    editButton: {
+        background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
+        color: 'white',
+        padding: '0.5rem 1rem',
+        fontSize: '0.875rem',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        flex: 1,
+    },
+    
+    deleteButton: {
+        background: 'linear-gradient(135deg, #fc8181 0%, #e53e3e 100%)',
+        color: 'white',
+        padding: '0.5rem 1rem',
+        fontSize: '0.875rem',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        transition: 'all 0.3s ease',
+        flex: 1,
+    },
+};
+
 export default Perfil;

@@ -22,17 +22,29 @@ function Login() {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/login`, {
         user: username,
-        password: password,
+        password,
+      }, {
+        withCredentials: true,
       });
 
-      const { message, tipo, user: userData } = response.data;
+      const { message, token, tipo, user: userData } = response.data;
 
       if (message === 'Inicio de sesión exitoso') {
-        // Guardar los datos del usuario, incluyendo id_usuario
-        login(userData.Usuario, tipo, userData);
-        localStorage.setItem('id_usuario', userData.id_usuario); // Cambiado de id a id_usuario
-        const ruta = tipo === 'Administrador' ? '/admin' : '/cliente';
+        login(username, tipo, { id_usuario: userData.id, ...userData }, token);
+
+        let ruta;
+        if (tipo === 'Administrador') {
+          ruta = '/admin';
+        } else if (tipo === 'Cliente') {
+          ruta = '/cliente';
+        } else if (tipo === 'Propietario') {
+          ruta = '/propietario';
+        } else {
+          ruta = '/';
+        }
+
         navigate(ruta);
+
         MySwal.fire({
           icon: 'success',
           title: 'Éxito',

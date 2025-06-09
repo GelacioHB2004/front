@@ -160,36 +160,56 @@ const Mision = () => {
 
     return (
         <div style={styles.container}>
-            <h1 style={styles.title}>Gestión de Misiones</h1>
+            {/* Header Principal */}
+            <div style={styles.mainHeader}>
+                <div style={styles.headerContent}>
+                    <h1 style={styles.mainTitle}>Gestión de Misiones</h1>
+                    <p style={styles.subtitle}>Administra las misiones de tu empresa de manera eficiente</p>
+                </div>
+                <div style={styles.headerDecoration}></div>
+            </div>
 
-            <div style={styles.flexContainer}>
-                <section style={styles.gestionMisionContainer}>
-                    <h2>Gestión de Misión</h2>
-                    <form onSubmit={handleSubmit} style={styles.form}>
-                        <div style={styles.formGrid}>
+            <div style={styles.content}>
+                <div style={styles.flexContainer}>
+                    {/* Sección de Gestión */}
+                    <div style={styles.formSection}>
+                        <div style={styles.sectionHeader}>
+                            <div style={styles.sectionIcon}>✏️</div>
+                            <h2 style={styles.sectionTitle}>
+                                {editingId ? 'Editar Misión' : 'Nueva Misión'}
+                            </h2>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit} style={styles.form}>
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Título</label>
+                                <label style={styles.label}>Título de la Misión</label>
                                 <input
                                     type="text"
                                     name="titulo"
-                                    placeholder="Título de la misión"
+                                    placeholder="Ingresa el título de la misión..."
                                     value={mision.titulo}
                                     onChange={handleChange}
                                     required
                                     style={styles.input}
                                 />
+                                <div style={styles.charCounter}>
+                                    {mision.titulo.length}/255 caracteres
+                                </div>
                             </div>
+
                             <div style={styles.inputGroup}>
-                                <label style={styles.label}>Contenido</label>
+                                <label style={styles.label}>Descripción</label>
                                 <textarea
                                     name="contenido"
-                                    placeholder="Contenido de la misión"
+                                    placeholder="Describe detalladamente la misión..."
                                     value={mision.contenido}
                                     onChange={handleChange}
                                     required
-                                    style={{ ...styles.input, height: '100px', resize: 'vertical' }}
+                                    style={styles.textarea}
+                                    rows="4"
                                 />
                             </div>
+
                             <div style={styles.inputGroup}>
                                 <label style={styles.label}>Empresa</label>
                                 <select
@@ -197,7 +217,7 @@ const Mision = () => {
                                     value={mision.id_empresa}
                                     onChange={handleChange}
                                     required
-                                    style={styles.input}
+                                    style={styles.select}
                                 >
                                     {perfiles.length === 0 ? (
                                         <option value="">No hay empresas disponibles</option>
@@ -210,45 +230,91 @@ const Mision = () => {
                                     )}
                                 </select>
                             </div>
-                        </div>
-                        <div style={styles.buttonGroup}>
-                            <button type="submit" style={styles.editButton}>
-                                {editingId ? 'Actualizar Misión' : 'Crear Misión'}
-                            </button>
-                            <button type="button" onClick={handleCancel} style={styles.cancelButton}>
-                                Cancelar
-                            </button>
-                        </div>
-                    </form>
-                </section>
 
-                <section style={styles.misionesGuardadasContainer}>
-                    <h2>Misiones Guardadas</h2>
-                    {misiones.length === 0 && <p>No hay misiones guardadas.</p>}
-                    {misiones.map((mision) => (
-                        <div key={mision.id} style={styles.misionItem}>
-                            <p><strong>Título:</strong> {mision.titulo}</p>
-                            <p><strong>Contenido:</strong> {mision.contenido}</p>
-                            <p><strong>Fecha:</strong> {new Date(mision.fechahora).toLocaleString()}</p>
-                            <p><strong>Empresa:</strong> {mision.NombreEmpresa}</p>
-                            <p><strong>Estado:</strong> {mision.estado === 'activo' ? 'Activo' : 'Inactivo'}</p>
                             <div style={styles.buttonGroup}>
-                                <button
-                                    style={styles.editButton}
-                                    onClick={() => handleEdit(mision)}
-                                >
-                                    Editar
+                                <button type="submit" style={styles.primaryButton}>
+                                    <span style={styles.buttonIcon}>
+                                        {editingId ? '✓' : '+'}
+                                    </span>
+                                    {editingId ? 'Actualizar Misión' : 'Crear Misión'}
                                 </button>
-                                <button
-                                    style={styles.deleteButton}
-                                    onClick={() => handleDelete(mision.id)}
-                                >
-                                    Eliminar
-                                </button>
+                                {editingId && (
+                                    <button type="button" onClick={handleCancel} style={styles.secondaryButton}>
+                                        <span style={styles.buttonIcon}>✕</span>
+                                        Cancelar
+                                    </button>
+                                )}
                             </div>
+                        </form>
+                    </div>
+
+                    {/* Sección de Misiones Guardadas */}
+                    <div style={styles.listSection}>
+                        <div style={styles.sectionHeader}>
+                            <div style={styles.sectionIcon}>📋</div>
+                            <h2 style={styles.sectionTitle}>Misiones Registradas</h2>
+                            <div style={styles.badge}>{misiones.length}</div>
                         </div>
-                    ))}
-                </section>
+
+                        <div style={styles.listContainer}>
+                            {misiones.length === 0 ? (
+                                <div style={styles.emptyState}>
+                                    <div style={styles.emptyIcon}>📝</div>
+                                    <p style={styles.emptyText}>No hay misiones registradas</p>
+                                    <p style={styles.emptySubtext}>Crea tu primera misión usando el formulario</p>
+                                </div>
+                            ) : (
+                                misiones.map((mision) => (
+                                    <div key={mision.id} style={styles.misionCard}>
+                                        <div style={styles.cardHeader}>
+                                            <h3 style={styles.cardTitle}>{mision.titulo}</h3>
+                                            <div style={styles.statusBadge}>
+                                                <span style={styles.statusDot}></span>
+                                                {mision.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                                            </div>
+                                        </div>
+                                        
+                                        <p style={styles.cardContent}>{mision.contenido}</p>
+                                        
+                                        <div style={styles.cardMeta}>
+                                            <div style={styles.metaItem}>
+                                                <span style={styles.metaLabel}>Empresa:</span>
+                                                <span style={styles.metaValue}>{mision.NombreEmpresa}</span>
+                                            </div>
+                                            <div style={styles.metaItem}>
+                                                <span style={styles.metaLabel}>Fecha:</span>
+                                                <span style={styles.metaValue}>
+                                                    {new Date(mision.fechahora).toLocaleDateString('es-ES', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit'
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div style={styles.cardActions}>
+                                            <button
+                                                style={styles.editButton}
+                                                onClick={() => handleEdit(mision)}
+                                            >
+                                                ✏️ Editar
+                                            </button>
+                                            <button
+                                                style={styles.deleteButton}
+                                                onClick={() => handleDelete(mision.id)}
+                                            >
+                                                🗑️ Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -256,123 +322,346 @@ const Mision = () => {
 
 const styles = {
     container: {
-        maxWidth: '1100px',
-        margin: '30px auto',
-        padding: '30px',
-        background: '#eff3cd',
-        borderRadius: '15px',
-        boxShadow: '0 10px 30px rgba(100, 100, 150, 0.15)',
-        fontFamily: "'Poppins', sans-serif"
+        minHeight: '100vh',
+        background: '#b3c9ca',
+        fontFamily: "'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        padding: '20px'
     },
-    title: {
-        fontSize: '32px',
-        fontWeight: '800',
+    mainHeader: {
+        position: 'relative',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '24px',
+        padding: '40px',
         marginBottom: '30px',
-        textAlign: 'center',
-        color: '#4b3f72',
-        textShadow: '0 2px 5px rgba(75, 63, 114, 0.3)',
-        letterSpacing: '0.05em'
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        overflow: 'hidden'
+    },
+    headerContent: {
+        position: 'relative',
+        zIndex: 2
+    },
+    mainTitle: {
+        fontSize: '3rem',
+        fontWeight: '800',
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        backgroundClip: 'text',
+        WebkitBackgroundClip: 'text',
+        color: 'transparent',
+        margin: '0 0 10px 0',
+        letterSpacing: '-0.02em'
+    },
+    subtitle: {
+        fontSize: '1.2rem',
+        color: '#64748b',
+        margin: 0,
+        fontWeight: '400'
+    },
+    headerDecoration: {
+        position: 'absolute',
+        top: '-50px',
+        right: '-50px',
+        width: '200px',
+        height: '200px',
+        background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))',
+        borderRadius: '50%',
+        zIndex: 1
+    },
+    content: {
+        maxWidth: '1400px',
+        margin: '0 auto'
     },
     flexContainer: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '30px',
+        alignItems: 'start'
+    },
+    formSection: {
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '20px',
+        padding: '0',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
+    },
+    listSection: {
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '20px',
+        padding: '0',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        maxHeight: '800px',
         display: 'flex',
-        gap: '25px',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        flexDirection: 'column'
     },
-    gestionMisionContainer: {
-        flex: '1 1 45%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        transition: 'transform 0.3s ease',
-        cursor: 'default'
+    sectionHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '15px',
+        padding: '30px 30px 20px 30px',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
     },
-    misionesGuardadasContainer: {
-        flex: '1 1 50%',
-        padding: '30px',
-        background: '#fff',
-        borderRadius: '15px',
-        boxShadow: '0 8px 20px rgba(75, 63, 114, 0.1)',
-        maxHeight: '600px',
-        overflowY: 'auto'
+    sectionIcon: {
+        fontSize: '1.5rem',
+        padding: '8px',
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        borderRadius: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    sectionTitle: {
+        fontSize: '1.5rem',
+        fontWeight: '700',
+        color: '#1e293b',
+        margin: 0,
+        flex: 1
+    },
+    badge: {
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        color: 'white',
+        padding: '4px 12px',
+        borderRadius: '20px',
+        fontSize: '0.875rem',
+        fontWeight: '600'
     },
     form: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    formGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '20px'
+        padding: '0 30px 30px 30px'
     },
     inputGroup: {
-        display: 'flex',
-        flexDirection: 'column'
+        marginBottom: '25px'
     },
     label: {
-        fontWeight: '700',
+        display: 'block',
+        fontSize: '0.95rem',
+        fontWeight: '600',
+        color: '#374151',
         marginBottom: '8px',
-        color: '#5e548e',
-        fontSize: '15px'
+        letterSpacing: '0.01em'
     },
     input: {
-        padding: '12px 16px',
-        fontSize: '16px',
+        width: '100%',
+        padding: '14px 18px',
+        fontSize: '1rem',
+        border: '2px solid #e5e7eb',
         borderRadius: '12px',
-        border: '2px solid #d3d0f7',
-        backgroundColor: '#fafaff',
-        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+        background: '#fafafa',
+        color: '#1f2937',
+        transition: 'all 0.3s ease',
         outline: 'none',
-        fontWeight: '500',
-        color: '#333'
+        fontFamily: 'inherit',
+        boxSizing: 'border-box'
+    },
+    textarea: {
+        width: '100%',
+        padding: '14px 18px',
+        fontSize: '1rem',
+        border: '2px solid #e5e7eb',
+        borderRadius: '12px',
+        background: '#fafafa',
+        color: '#1f2937',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontFamily: 'inherit',
+        resize: 'vertical',
+        minHeight: '100px',
+        boxSizing: 'border-box'
+    },
+    select: {
+        width: '100%',
+        padding: '14px 18px',
+        fontSize: '1rem',
+        border: '2px solid #e5e7eb',
+        borderRadius: '12px',
+        background: '#fafafa',
+        color: '#1f2937',
+        transition: 'all 0.3s ease',
+        outline: 'none',
+        fontFamily: 'inherit',
+        cursor: 'pointer',
+        boxSizing: 'border-box'
+    },
+    charCounter: {
+        fontSize: '0.8rem',
+        color: '#9ca3af',
+        textAlign: 'right',
+        marginTop: '5px'
     },
     buttonGroup: {
-        marginTop: '28px',
         display: 'flex',
-        gap: '18px',
-        justifyContent: 'flex-start'
+        gap: '15px',
+        marginTop: '30px'
+    },
+    primaryButton: {
+        background: 'linear-gradient(135deg, #667eea, #764ba2)',
+        color: 'white',
+        border: 'none',
+        padding: '14px 28px',
+        borderRadius: '12px',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        transition: 'all 0.3s ease',
+        boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+        fontFamily: 'inherit'
+    },
+    secondaryButton: {
+        background: '#f8fafc',
+        color: '#64748b',
+        border: '2px solid #e2e8f0',
+        padding: '14px 28px',
+        borderRadius: '12px',
+        fontSize: '1rem',
+        fontWeight: '600',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        transition: 'all 0.3s ease',
+        fontFamily: 'inherit'
+    },
+    buttonIcon: {
+        fontSize: '1rem'
+    },
+    listContainer: {
+        flex: 1,
+        overflowY: 'auto',
+        padding: '0 30px 30px 30px'
+    },
+    emptyState: {
+        textAlign: 'center',
+        padding: '60px 20px',
+        color: '#64748b'
+    },
+    emptyIcon: {
+        fontSize: '4rem',
+        marginBottom: '20px',
+        opacity: 0.5
+    },
+    emptyText: {
+        fontSize: '1.25rem',
+        fontWeight: '600',
+        margin: '0 0 10px 0'
+    },
+    emptySubtext: {
+        fontSize: '1rem',
+        margin: 0,
+        opacity: 0.7
+    },
+    misionCard: {
+        background: 'white',
+        border: '1px solid #e5e7eb',
+        borderRadius: '16px',
+        padding: '24px',
+        marginBottom: '20px',
+        transition: 'all 0.3s ease',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+        position: 'relative'
+    },
+    cardHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '15px',
+        gap: '15px'
+    },
+    cardTitle: {
+        fontSize: '1.25rem',
+        fontWeight: '700',
+        color: '#1e293b',
+        margin: 0,
+        lineHeight: '1.4',
+        flex: 1
+    },
+    statusBadge: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '6px 12px',
+        background: '#dcfce7',
+        color: '#166534',
+        borderRadius: '20px',
+        fontSize: '0.8rem',
+        fontWeight: '600',
+        whiteSpace: 'nowrap'
+    },
+    statusDot: {
+        width: '6px',
+        height: '6px',
+        borderRadius: '50%',
+        background: '#22c55e'
+    },
+    cardContent: {
+        fontSize: '1rem',
+        color: '#4b5563',
+        lineHeight: '1.6',
+        marginBottom: '20px',
+        margin: '0 0 20px 0'
+    },
+    cardMeta: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '15px',
+        marginBottom: '20px',
+        padding: '15px',
+        background: '#f8fafc',
+        borderRadius: '12px'
+    },
+    metaItem: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px'
+    },
+    metaLabel: {
+        fontSize: '0.8rem',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    metaValue: {
+        fontSize: '0.95rem',
+        color: '#1e293b',
+        fontWeight: '500'
+    },
+    cardActions: {
+        display: 'flex',
+        gap: '12px'
     },
     editButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+        background: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+        color: 'white',
         border: 'none',
-        borderRadius: '14px',
+        padding: '10px 20px',
+        borderRadius: '8px',
+        fontSize: '0.9rem',
+        fontWeight: '600',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    cancelButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
-        border: 'none',
-        borderRadius: '14px',
-        cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        fontFamily: 'inherit'
     },
     deleteButton: {
-        background: 'linear-gradient(90deg, #79ae92, #5f8f7a)',
-        color: '#fff',
-        padding: '14px 28px',
-        fontSize: '17px',
+        background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+        color: 'white',
         border: 'none',
-        borderRadius: '14px',
+        padding: '10px 20px',
+        borderRadius: '8px',
+        fontSize: '0.9rem',
+        fontWeight: '600',
         cursor: 'pointer',
-        fontWeight: '700',
-        boxShadow: '0 6px 15px rgba(121, 174, 146, 0.5)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease'
-    },
-    misionItem: {
-        padding: '15px',
-        borderBottom: '1px solid #eee',
-        marginBottom: '10px'
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        fontFamily: 'inherit'
     }
 };
 
