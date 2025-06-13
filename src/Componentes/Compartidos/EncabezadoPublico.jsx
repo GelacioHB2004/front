@@ -43,9 +43,6 @@ const EncabezadoPublico = () => {
       case "hoteles":
         navigate('/hotelesp');
         break;
-      case "departamentos":
-        navigate('/departamentos');
-        break;
       case "login":
         navigate('/login');
         break;
@@ -195,10 +192,6 @@ const EncabezadoPublico = () => {
             <li className={active === 'hoteles' ? 'active' : ''} onClick={() => { handleClick('hoteles'); handleMenuClick('hoteles'); }}>
               <BankOutlined style={{ color: '#E67E22' }} />
               Hoteles
-            </li>
-            <li className={active === 'departamentos' ? 'active' : ''} onClick={() => { handleClick('departamentos'); handleMenuClick('departamentos'); }}>
-              <ApartmentOutlined style={{ color: '#9B59B6' }} />
-              Departamentos
             </li>
             <li className={active === 'login' ? 'active' : ''} onClick={() => { handleClick('login'); handleMenuClick('login'); }}>
               <LoginOutlined style={{ color: '#E74C3C' }} />

@@ -19,28 +19,13 @@ import {
   Divider,
 } from '@mui/material';
 import { LocationOn, StarBorder, Star, Visibility, Room } from '@mui/icons-material';
-import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import markerIconPng from 'leaflet/dist/images/marker-icon.png';
-import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 
-const customIcon = new L.Icon({
-  iconUrl: markerIconPng,
-  shadowUrl: markerShadowPng,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-// Paleta de colores personalizada
 const colors = {
-  primary: '#4c94bc',    // color1 - Azul principal
-  accent: '#f3a384',     // color2 - Coral/Naranja
-  dark: '#0b7583',       // color3 - Verde azulado oscuro
-  secondary: '#549c94',  // color4 - Verde agua
-  light: '#b3c9ca',      // color5 - Gris azulado claro
+  primary: '#4c94bc',
+  accent: '#f3a384',
+  dark: '#0b7583',
+  secondary: '#549c94',
+  light: '#b3c9ca',
 };
 
 const HotelesP = () => {
@@ -69,24 +54,26 @@ const HotelesP = () => {
 
   const fetchHoteles = async () => {
     try {
-      const response = await axios.get('https://backendd-q0zc.onrender.com/api/detallehotel/public'); // Nueva ruta
+      const response = await axios.get('https://backendd-q0zc.onrender.com/api/detallehotel/public');
       const hotelesData = response.data.map(hotel => {
-        let imagenParsed = null;
+        let imagenParsed = { data: null, mimeType: 'image/jpeg' };
         try {
           if (hotel.imagen) {
             if (typeof hotel.imagen === 'object' && hotel.imagen.data && hotel.imagen.mimeType) {
               imagenParsed = hotel.imagen;
-            } else {
+            } else if (typeof hotel.imagen === 'string' && hotel.imagen.includes('base64')) {
+              imagenParsed = { data: hotel.imagen, mimeType: 'image/jpeg' };
+            } else if (typeof hotel.imagen === 'string') {
               const parsed = JSON.parse(hotel.imagen);
-              if (parsed.data && parsed.mimeType) {
-                imagenParsed = { data: parsed.data, mimeType: parsed.mimeType };
-              } else {
-                imagenParsed = { data: hotel.imagen, mimeType: 'image/jpeg' };
-              }
+              imagenParsed = { data: parsed.data || hotel.imagen, mimeType: parsed.mimeType || 'image/jpeg' };
             }
           }
+          if (!imagenParsed.data) {
+            imagenParsed.data = 'https://via.placeholder.com/320x180/4c94bc/ffffff?text=Hotel+Premium';
+          }
         } catch (error) {
-          imagenParsed = { data: hotel.imagen, mimeType: 'image/jpeg' };
+          imagenParsed.data = 'https://via.placeholder.com/320x180/4c94bc/ffffff?text=Hotel+Premium';
+          console.warn('Error al parsear imagen para hotel', hotel.id_hotel, error);
         }
         return {
           ...hotel,
@@ -126,11 +113,6 @@ const HotelesP = () => {
       ...prevRatings,
       [hotelId]: newValue
     }));
-  };
-
-  const mapContainerStyle = {
-    height: '500px',
-    width: '100%',
   };
 
   return (
@@ -294,6 +276,27 @@ const HotelesP = () => {
                     {hotel.nombrehotel}
                   </Typography>
                   
+                  {hotel.promociones && hotel.promociones.length > 0 && (
+                    <Box sx={{ mb: 1 }}>
+                      {hotel.promociones.map((promo, index) => (
+                        <Chip
+                          key={index}
+                          label={`¡Promoción Activa! ${promo.descuento}%`}
+                          size="small"
+                          sx={{
+                            bgcolor: '#ff4444',
+                            color: '#ffffff',
+                            fontWeight: 600,
+                            borderRadius: 1,
+                            fontSize: '0.7rem',
+                            mb: 0.5,
+                            height: 20,
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )}
+
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
                     <Room sx={{ color: colors.secondary, mr: 0.5, fontSize: '0.9rem' }} />
                     <Typography

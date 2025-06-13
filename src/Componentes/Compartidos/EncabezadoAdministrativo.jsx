@@ -64,17 +64,11 @@ const EncabezadoAdministrativo = () => {
       case "vision":
         navigate('/admin/vision');
         break;
-      case "altapropiedades":
-        navigate('/admin/hoteles');
+      case "Alojamientos":
+        navigate('/admin/gestionhoteles');
         break;
-      case "cuartos":
-        navigate('/admin/cuartos');
-        break;
-        case "tiposhabitaciones":
-        navigate('/admin/tiposhabitaciones');
-        break;
-      case "Departamentos":
-        navigate('/admin/departamentos');
+      case "Usuarios":
+        navigate('/admin/gestionusuarios');
         break;
       case "cerrarSesion":
         handleLogout();
@@ -279,22 +273,13 @@ const EncabezadoAdministrativo = () => {
                 </ul>
               )}
             </li>
-            <li className="dropdown" onClick={() => toggleDropdown('altapropiedadess')}>
-              <span>
-                <ShopOutlined style={{ color: '#00B300', marginRight: '8px' }} />
-                Alta Propiedades
-              </span>
-              {openDropdown === 'altapropiedadess' && (
-                <ul className="dropdown-menu">
-                  <li onClick={() => { handleClick('altapropiedades'); handleMenuClick('altapropiedades'); }}>Hotel</li>
-                  <li onClick={() => { handleClick('tiposhabitaciones'); handleMenuClick('tiposhabitaciones'); }}>Tipos de Habitacion</li>
-                  <li onClick={() => { handleClick('cuartos'); handleMenuClick('cuartos'); }}>Habitaciones</li>
-                </ul>
-              )}
-            </li>
-            <li onClick={() => handleMenuClick('Departamentos')}>
+<li onClick={() => handleMenuClick('Alojamientos')}>
               <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
-              Departamentos
+               Gestion de Alajamientos
+            </li>
+            <li onClick={() => handleMenuClick('Usuarios')}>
+              <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
+               Gestion de Usuarios
             </li>
             <li onClick={() => handleMenuClick('cerrarSesion')}>
               <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />

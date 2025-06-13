@@ -12,10 +12,8 @@ import VerificarCorreo from './Componentes/Autenticacion/VerificarCorreo';
 import ValidarCodigo from './Componentes/Autenticacion/ValidarCodigo';
 import SolicitarCodigo from './Componentes/Autenticacion/SolicitarCodigo';
 import Perfil from './Componentes/Administrativo/Perfil';
-import HotelesR from './Componentes/Administrativo/Hoteles';
 import HotelesP from './Componentes/Publico/HotelesP';
 import Politicas from './Componentes/Administrativo/Politica';
-import Cuartos from './Componentes/Administrativo/Cuartos';
 import CuartosP from './Componentes/Publico/CuartosP';
 import DetallesHabitacion from './Componentes/Publico/DetalleHabitacion';
 import CambiarPassword from './Componentes/Autenticacion/CambiarPassword';
@@ -26,7 +24,7 @@ import PoliticasPCA from './Componentes/Compartidos/PoliticasPCA';
 import TerminosPCA from './Componentes/Compartidos/TerminosPCA';
 import VisionPCA from './Componentes/Compartidos/VisionPCA';
 import MisionPCA from './Componentes/Compartidos/MisionPCA';
-import Tipohabitacion from './Componentes/Administrativo/TiposHabitaciones';
+
 //rutas publicas
 import DetallesHotel from './Componentes/Publico/DetallesHotel';
 //rutas cliente
@@ -40,6 +38,9 @@ import PaginaPrincipalPropietario from './Paginas/PaginaPrincipalPropietario';
 import CuartosPropietario from './Componentes/Propietario/Cuartos';
 import HotelPropietario from './Componentes/Propietario/Hoteles';
 import TipoHabitacionPropietario from './Componentes/Propietario/TiposHabitaciones';
+import Promociones from './Componentes/Propietario/Promociones';
+import GestionUsuarios from './Componentes/Administrativo/GestionUsuarios';
+import GestionHoteles from './Componentes/Administrativo/GestionHoteles';
 
 
 const CuartosPWrapper = () => {
@@ -80,18 +81,16 @@ const App = () => {
 
             <Route path="/admin" element={<PaginaPrincipalAdministrativa />} />
             <Route path="/admin/perfil" element={<Perfil />} />
-            <Route path="/admin/hoteles" element={<HotelesR />} />
-            <Route path="/admin/cuartos" element={<Cuartos />} />
-            <Route path="/admin/tiposhabitaciones" element={<Tipohabitacion />} />
             <Route path="admin/politicas" element={<Politicas/>} />
             <Route path="/admin/terminos" element={<Terminos />} />
             <Route path="/admin/vision" element={<Vision />} />
             <Route path="/admin/mision" element={<Mision />} />
-
             <Route path="/admin/politicaspca" element={<PoliticasPCA/>} />
             <Route path="/admin/terminospca" element={<TerminosPCA/>} />
             <Route path="/admin/visionpca" element={<VisionPCA/>} />
             <Route path="/admin/misionpca" element={<MisionPCA/>} />
+            <Route path="/admin/gestionusuarios" element={<GestionUsuarios />} />
+            <Route path="/admin/gestionhoteles" element={<GestionHoteles />} />
             
             {/* Rutas para el cliente */}
             <Route path="/cliente" element={<PaginaPrincipalCliente />} />
@@ -103,7 +102,7 @@ const App = () => {
             <Route path="/cliente/cuartosc/:idHotel" element={<CuartosCWrapper/>} />
             <Route path="/cliente/detalles-habitacionc/:idHabitacion" element={<DetallesHabitacionC />} />
              <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
-
+            {/* Rutas para el propietario */}
             <Route path="/propietario" element={<PaginaPrincipalPropietario />} />
             <Route path="/propietario/cuartos/:id" element={<CuartosPropietario />} />
             <Route path="/propietario/hoteles" element={<HotelPropietario />} />
@@ -112,6 +111,9 @@ const App = () => {
             <Route path="/propietario/terminospca" element={<TerminosPCA/>} />
             <Route path="/propietario/visionpca" element={<VisionPCA/>} />
             <Route path="/propietario/misionpca" element={<MisionPCA/>} />
+            <Route path="/propietario/promociones" element={<Promociones />} />
+            
+            
 
           </Routes>
         </LayoutConEncabezado>

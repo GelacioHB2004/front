@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../Autenticacion/AuthContext'; // Importar el contexto de autenticación
+import { Person as PersonIcon } from '@mui/icons-material';
 import { 
   Box, 
   Typography, 
-  Container, 
+  Container,
   IconButton,
   Button,
   Card,
   CardContent,
   Divider,
-  Chip
+  Chip,
+  Modal,
+  TextField,
+  Rating,
+  Grid
 } from '@mui/material';
-import { LocationOn, Directions, Hotel, Phone, Email, Home, Info, RoomService } from '@mui/icons-material';
+import { LocationOn, Directions, Hotel, Phone, Email, Home, Info, RoomService, Delete } from '@mui/icons-material';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import Alert from '@mui/material/Alert';
 
 // Configurar el ícono personalizado rojo
 const redIcon = new L.Icon({
@@ -30,15 +37,27 @@ const redIcon = new L.Icon({
 const DetallesHoteles = () => {
   const { id } = useParams(); // Obtener el ID del hotel desde los parámetros de la URL
   const navigate = useNavigate(); // Hook para redirigir a otras rutas
+  const { user } = useAuth(); // Obtener el usuario del contexto de autenticación
   const [hotel, setHotel] = useState(null); // Estado para almacenar los datos del hotel
   const [loading, setLoading] = useState(true); // Estado para manejar la carga
   const [error, setError] = useState(null); // Estado para manejar errores
+  const [openModal, setOpenModal] = useState(false); // Estado para el modal
+  const [comentario, setComentario] = useState(""); // Estado para el texto del comentario
+  const [calificacion, setCalificacion] = useState(0); // Estado para la calificación
+  const [comentarios, setComentarios] = useState([]); // Estado para los comentarios
+  const [success, setSuccess] = useState(""); // Estado para mensajes de éxito
+
+  const userId = user ? user.id_usuario : localStorage.getItem("id_usuario"); // Usar id_usuario del contexto o localStorage
+  const token = localStorage.getItem("token"); // Obtener token del localStorage
 
   useEffect(() => {
+    console.log('userId:', userId); // Depuración
+    console.log('token:', token); // Depuración
+    console.log('user from AuthContext:', user); // Depuración
+
     const fetchHotel = async () => {
       try {
         setLoading(true);
-        // Cambiar al nuevo endpoint público
         const response = await axios.get(`https://backendd-q0zc.onrender.com/api/detallehotel/public/${id}`);
         let imagenParsed = null;
         try {
@@ -71,8 +90,21 @@ const DetallesHoteles = () => {
         setLoading(false);
       }
     };
+
+    const fetchComentarios = async () => {
+      try {
+        const response = await axios.get(`https://backendd-q0zc.onrender.com/api/comentarios/hotel/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setComentarios(response.data);
+      } catch (err) {
+        console.error('Error al cargar comentarios:', err);
+      }
+    };
+
     fetchHotel();
-  }, [id]); // El useEffect se ejecuta cada vez que cambia el id
+    fetchComentarios();
+  }, [id, token, user]);
 
   const mapContainerStyle = {
     width: '100%',
@@ -99,6 +131,74 @@ const DetallesHoteles = () => {
 
   const handleViewRooms = () => {
     navigate(`/cliente/cuartosc/${id}`);
+  };
+
+  const handleOpenModal = () => {
+    console.log('Intentando abrir modal. userId:', userId, 'token:', token); // Depuración
+    if (!userId || !token) {
+      setError("Debes iniciar sesión para dejar un comentario.");
+      return;
+    }
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setComentario("");
+    setCalificacion(0);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleSubmitComentario = async (e) => {
+    e.preventDefault();
+    console.log('Enviando comentario. userId:', userId, 'token:', token); // Depuración
+    if (!comentario || !calificacion) {
+      setError("Por favor, completa el comentario y la calificación.");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `https://backendd-q0zc.onrender.com/api/comentarios`,
+        { id_hotel: id, comentario, calificacion },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('Respuesta del servidor:', response.data); // Depuración
+      setSuccess("Comentario enviado con éxito.");
+      setComentario("");
+      setCalificacion(0);
+      setTimeout(async () => {
+        setSuccess("");
+        handleCloseModal();
+        // Actualizar la lista de comentarios
+        const response = await axios.get(`https://backendd-q0zc.onrender.com/api/comentarios/hotel/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setComentarios(response.data);
+      }, 2000);
+    } catch (err) {
+      console.error('Error al enviar comentario:', err.response ? err.response.data : err.message); // Depuración
+      setError("Error al enviar el comentario.");
+    }
+  };
+
+  const handleDeleteComentario = async (id_comentario) => {
+    try {
+      await axios.delete(`https://backendd-q0zc.onrender.com/api/comentarios/${id_comentario}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Actualizar la lista de comentarios después de eliminar
+      const response = await axios.get(`https://backendd-q0zc.onrender.com/api/comentarios/hotel/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setComentarios(response.data);
+      setSuccess("Comentario eliminado con éxito.");
+      setTimeout(() => setSuccess(""), 2000);
+    } catch (err) {
+      console.error('Error al eliminar comentario:', err.response ? err.response.data : err.message);
+      setError("Error al eliminar el comentario.");
+      setTimeout(() => setError(""), 2000);
+    }
   };
 
   if (loading) {
@@ -455,14 +555,88 @@ const DetallesHoteles = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Ver Habitaciones 
+            Ver Habitaciones Disponibles
           </Button>
         </Box>
+
+        {/* Botón para dejar comentario */}
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<RoomService />}
+            onClick={handleOpenModal}
+            sx={{ 
+              bgcolor: '#4c94bc',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+              px: 4,
+              py: 1.5,
+              borderRadius: 3,
+              textTransform: 'none',
+              boxShadow: '0 8px 24px rgba(76, 148, 188, 0.4)',
+              '&:hover': {
+                bgcolor: '#0b7583',
+                boxShadow: '0 12px 32px rgba(11, 117, 131, 0.5)',
+                transform: 'translateY(-2px)'
+              },
+              transition: 'all 0.3s ease'
+            }}
+          >
+            Dejar Comentario
+          </Button>
+        </Box>
+
+        {/* Modal para agregar comentario */}
+        <Modal open={openModal} onClose={handleCloseModal}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: { xs: '90%', sm: '500px' },
+              bgcolor: 'white',
+              borderRadius: 2,
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2, color: '#0b7583', fontWeight: 600 }}>
+              Dejar un Comentario
+            </Typography>
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+            <TextField
+              label="Escribe tu comentario"
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              fullWidth
+              multiline
+              rows={4}
+              sx={{ mb: 2 }}
+            />
+            <Rating
+              value={calificacion}
+              onChange={(e, newValue) => setCalificacion(newValue)}
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+              <Button onClick={handleCloseModal} variant="outlined" color="secondary">
+                Cancelar
+              </Button>
+              <Button onClick={handleSubmitComentario} variant="contained" color="primary">
+                Enviar
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
 
         {/* Sección del mapa */}
         <Card 
           sx={{ 
-            mt: 3, 
+            mt: 4, 
             borderRadius: 2,
             boxShadow: '0 4px 16px rgba(11, 117, 131, 0.1)',
             background: 'rgba(255, 255, 255, 0.98)',
@@ -532,6 +706,53 @@ const DetallesHoteles = () => {
             </Box>
           </CardContent>
         </Card>
+
+       {/* Sección de comentarios */}
+<Box sx={{ mt: 4 }}>
+  <Typography variant="h5" sx={{ color: '#0b7583', fontWeight: 600, mb: 2 }}>
+    Comentarios de los Clientes
+  </Typography>
+  <Grid container spacing={2}>
+    {comentarios.map((comentario) => (
+      <Grid item xs={12} key={comentario.id_comentario}>
+        <Card sx={{ p: 2, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                <PersonIcon sx={{ color: '#0b7583', mr: 1, fontSize: '18px', mt: 0.2 }} />
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 500, color: '#0b7583' }}>
+                    {comentario.Nombre} {comentario.ApellidoP} {comentario.ApellidoM}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(comentario.fecha).toLocaleDateString()}
+                  </Typography>
+                </Box>
+              </Box>
+              {userId && comentario.id_usuario === parseInt(userId) && (
+                <IconButton
+                  onClick={() => handleDeleteComentario(comentario.id_comentario)}
+                  sx={{ color: '#f3a384', '&:hover': { color: '#d32f2f' } }}
+                >
+                  <Delete />
+                </IconButton>
+              )}
+            </Box>
+            <Rating value={comentario.calificacion} readOnly sx={{ mb: 1 }} />
+            <Typography variant="body1" sx={{ color: '#000', lineHeight: 1.5 }}>
+              {comentario.comentario}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+    ))}
+    {comentarios.length === 0 && (
+      <Typography variant="body2" sx={{ color: '#888', textAlign: 'center', mt: 2 }}>
+        No hay comentarios disponibles.
+      </Typography>
+    )}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );

@@ -40,7 +40,7 @@ const theme = createTheme({
 });
 
 // URL base del backend
-const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Cambia esto según tu configuración
+const API_BASE_URL = "https://backendd-q0zc.onrender.com";
 
 function VerificarCorreo() {
     const [verificationCode, setVerificationCode] = useState("");

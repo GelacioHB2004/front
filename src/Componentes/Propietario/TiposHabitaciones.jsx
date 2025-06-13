@@ -177,7 +177,7 @@ const modalStyle = {
   overflow: 'hidden',
 };
 
-const API_BASE_URL = "https://backendd-q0zc.onrender.com";
+const API_BASE_URL = "https://backendd-q0zc.onrender.com"; // Cambia esto según tu configuración
 
 function Tipohabitacion() {
   const [tipoHabitacion, setTipoHabitacion] = useState({

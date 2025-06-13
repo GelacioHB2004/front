@@ -64,67 +64,103 @@ const DetallesHabitacion = () => {
     headerCard: {
       backgroundColor: colors.primary,
       color: "white",
-      borderRadius: "12px",
+      borderRadius: "16px",
       marginBottom: "2rem",
-      boxShadow: "0 4px 20px rgba(76, 148, 188, 0.2)",
+      boxShadow: "0 8px 32px rgba(76, 148, 188, 0.2)",
       border: "1px solid rgba(255,255,255,0.1)",
     },
     imageCard: {
-      borderRadius: "8px",
+      borderRadius: "12px",
       overflow: "hidden",
-      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+      boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+      height: "100%",
       "&:hover": {
-        transform: "translateY(-2px)",
-        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+        transform: "translateY(-4px)",
+        boxShadow: "0 12px 32px rgba(0,0,0,0.15)",
       },
     },
     detailsCard: {
-      borderRadius: "12px",
+      borderRadius: "16px",
       backgroundColor: "white",
-      boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
       border: "1px solid #e0e6ed",
+      height: "100%",
     },
     priceCard: {
-      backgroundColor: colors.secondary,
+      background: `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.accent} 100%)`,
       borderRadius: "12px",
       padding: "1.5rem",
-      marginBottom: "1rem",
-      boxShadow: "0 2px 8px rgba(84, 156, 148, 0.2)",
+      marginBottom: "1.5rem",
+      boxShadow: "0 4px 16px rgba(84, 156, 148, 0.25)",
       color: "white",
     },
     reservationCard: {
       backgroundColor: "white",
       borderRadius: "12px",
-      padding: "2rem",
+      padding: "1.5rem",
       boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
       border: `2px solid ${colors.neutral}`,
+      height: "fit-content",
     },
     statusChip: {
       fontSize: "1rem",
       fontWeight: "bold",
-      padding: "0.5rem 1rem",
-      borderRadius: "20px",
+      padding: "0.75rem 1.5rem",
+      borderRadius: "25px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
     },
     iconBox: {
       display: "flex",
       alignItems: "center",
-      marginBottom: "1rem",
       padding: "1rem",
       borderRadius: "8px",
       backgroundColor: "#f8f9fa",
       border: "1px solid #e9ecef",
+      transition: "all 0.2s ease",
+      height: "100%",
+      "&:hover": {
+        backgroundColor: "#e9ecef",
+        transform: "translateY(-1px)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      },
     },
     serviceIcon: {
       marginRight: "0.75rem",
       color: colors.accent,
       fontSize: "1.5rem",
+      flexShrink: 0,
     },
     sectionTitle: {
       color: colors.accent,
       fontWeight: "600",
       marginBottom: "1.5rem",
       fontSize: "1.25rem",
+      display: "flex",
+      alignItems: "center",
+    },
+    originalPrice: {
+      textDecoration: "line-through",
+      color: "rgba(255,255,255,0.7)",
+      marginRight: "0.5rem",
+      fontSize: "0.9rem",
+    },
+    discountedPrice: {
+      color: "#ffeb3b",
+      fontWeight: "bold",
+      fontSize: "1.1rem",
+    },
+    priceRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "1rem",
+      padding: "0.5rem 0",
+      borderBottom: "1px solid rgba(255,255,255,0.1)",
+      "&:last-child": {
+        borderBottom: "none",
+        marginBottom: 0,
+      },
     },
   };
 
@@ -143,6 +179,7 @@ const DetallesHabitacion = () => {
       const response = await axios.get(
         `https://backendd-q0zc.onrender.com/api/detallesHabitacion/detalles/${idHabitacion}`
       );
+      console.log('Datos recibidos del backend:', response.data);
       setHabitacion(response.data);
       setError("");
     } catch (err) {
@@ -210,12 +247,17 @@ const DetallesHabitacion = () => {
       serviceList.map((service, index) => {
         const trimmedService = service.trim().toLowerCase();
         return (
-          <Grid item xs={12} sm={6} key={index}>
+          <Grid item xs={12} sm={6} lg={4} key={index}>
             <Box sx={styles.iconBox}>
               {serviceMap[trimmedService] || <RoomService sx={styles.serviceIcon} />}
               <Typography
                 variant="body1"
-                sx={{ textTransform: "capitalize", fontWeight: "500" }}
+                sx={{ 
+                  textTransform: "capitalize", 
+                  fontWeight: "600",
+                  color: colors.accent,
+                  lineHeight: 1.2
+                }}
               >
                 {service.trim()}
               </Typography>
@@ -225,15 +267,38 @@ const DetallesHabitacion = () => {
       })
     ) : (
       <Grid item xs={12}>
-        <Typography
-          variant="body1"
-          color="textSecondary"
-          sx={{ fontStyle: "italic", textAlign: "center", py: 2 }}
-        >
-          No hay servicios especificados
-        </Typography>
+        <Box sx={{
+          ...styles.iconBox,
+          justifyContent: "center",
+          textAlign: "center",
+          py: 3
+        }}>
+          <Typography
+            variant="body1"
+            color="textSecondary"
+            sx={{ fontStyle: "italic" }}
+          >
+            No hay servicios especificados
+          </Typography>
+        </Box>
       </Grid>
     );
+  };
+
+  // Verificar si hay una promoción activa basada en la fecha actual
+  const currentDate = new Date('2025-06-10T09:33:00-06:00');
+  const hasActivePromotion = habitacion?.promocion &&
+    new Date(habitacion.promocion.fechainicio) <= currentDate &&
+    new Date(habitacion.promocion.fechafin) >= currentDate;
+
+  // Calcular precio con descuento
+  const getDiscountedPrice = (originalPrice, discountPrice) => {
+    console.log('Calculando precio:', { originalPrice, discountPrice, hasActivePromotion });
+    return hasActivePromotion && discountPrice !== null && !isNaN(discountPrice)
+      ? Number(discountPrice).toFixed(2)
+      : originalPrice !== null && !isNaN(originalPrice)
+      ? Number(originalPrice).toFixed(2)
+      : "No definido";
   };
 
   if (loading) {
@@ -267,7 +332,7 @@ const DetallesHabitacion = () => {
             <Alert
               severity="error"
               onClose={() => setError("")}
-              sx={{ borderRadius: "8px", fontSize: "1.1rem" }}
+              sx={{ borderRadius: "12px", fontSize: "1.1rem" }}
             >
               {error}
             </Alert>
@@ -313,18 +378,18 @@ const DetallesHabitacion = () => {
               <Avatar
                 sx={{
                   bgcolor: "rgba(255,255,255,0.15)",
-                  width: 70,
-                  height: 70,
+                  width: 60,
+                  height: 60,
                   mx: "auto",
                   mb: 2,
                 }}
               >
-                <Hotel sx={{ fontSize: 35, color: "white" }} />
+                <Hotel sx={{ fontSize: 30, color: "white" }} />
               </Avatar>
-              <Typography variant="h3" sx={{ fontWeight: "600", mb: 1 }}>
+              <Typography variant="h4" sx={{ fontWeight: "600", mb: 1 }}>
                 Habitación {habitacion.cuarto}
               </Typography>
-              <Typography variant="h6" sx={{ mb: 2, opacity: 0.9 }}>
+              <Typography variant="subtitle1" sx={{ mb: 2, opacity: 0.9 }}>
                 Tipo: {habitacion.tipo_habitacion || "No especificado"}
               </Typography>
               <Chip
@@ -347,7 +412,7 @@ const DetallesHabitacion = () => {
               <Alert
                 severity="success"
                 onClose={() => setReservationSuccess("")}
-                sx={{ borderRadius: "8px", fontSize: "1.1rem" }}
+                sx={{ borderRadius: "12px", fontSize: "1.1rem" }}
               >
                 {reservationSuccess}
               </Alert>
@@ -355,19 +420,20 @@ const DetallesHabitacion = () => {
           </Zoom>
         )}
 
-        {/* Image Gallery */}
+        {/* Image Gallery - Modificado para mostrar 4 columnas */}
         <Fade in={true} timeout={1000}>
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="h5"
-              sx={{ ...styles.sectionTitle, textAlign: "center" }}
+              sx={{ ...styles.sectionTitle, textAlign: "center", mb: 2 }}
             >
-              Imágenes de la Habitación
+              <Hotel sx={{ mr: 1, fontSize: "1.5rem" }} />
+              Galería de Imágenes
             </Typography>
             <Grid container spacing={2}>
               {images && images.length > 0 ? (
                 images.map((image, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Grid item xs={6} sm={4} md={3} lg={3} xl={3} key={index}>
                     <Card sx={styles.imageCard}>
                       <CardMedia
                         component="img"
@@ -408,34 +474,30 @@ const DetallesHabitacion = () => {
 
         <Grid container spacing={4}>
           {/* Room Details */}
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} lg={8}>
             <Fade in={true} timeout={1200}>
               <Card sx={styles.detailsCard}>
                 <CardContent sx={{ p: 4 }}>
                   <Typography
                     variant="h5"
-                    sx={{
-                      ...styles.sectionTitle,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
+                    sx={styles.sectionTitle}
                   >
-                    <Hotel sx={{ mr: 2 }} />
+                    <RoomService sx={{ mr: 1, fontSize: "1.5rem" }} />
                     Detalles de la Habitación
                   </Typography>
 
                   <Grid container spacing={3} sx={{ mb: 4 }}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <Box sx={styles.iconBox}>
                         <AccessTime sx={styles.serviceIcon} />
-                        <Box>
+                        <Box sx={{ flex: 1 }}>
                           <Typography
                             variant="subtitle1"
-                            sx={{ fontWeight: "600", color: colors.accent }}
+                            sx={{ fontWeight: "600", color: colors.accent, mb: 0.5 }}
                           >
                             Horario
                           </Typography>
-                          <Typography variant="body1" sx={{ color: "#6c757d" }}>
+                          <Typography variant="body2" sx={{ color: "#6c757d", lineHeight: 1.4 }}>
                             {habitacion.horario
                               ? new Date(habitacion.horario).toLocaleString()
                               : "No especificado"}
@@ -444,21 +506,22 @@ const DetallesHabitacion = () => {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <Box sx={styles.iconBox}>
                         <Schedule sx={styles.serviceIcon} />
-                        <Box>
+                        <Box sx={{ flex: 1 }}>
                           <Typography
                             variant="subtitle1"
-                            sx={{ fontWeight: "600", color: colors.accent }}
+                            sx={{ fontWeight: "600", color: colors.accent, mb: 0.5 }}
                           >
                             Estado
                           </Typography>
                           <Typography
-                            variant="body1"
+                            variant="body2"
                             sx={{
                               color: isAvailable ? colors.success : "#dc3545",
                               fontWeight: "600",
+                              lineHeight: 1.4
                             }}
                           >
                             {normalizedEstado || "Sin estado"}
@@ -467,17 +530,17 @@ const DetallesHabitacion = () => {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                       <Box sx={styles.iconBox}>
-                        <RoomService sx={styles.serviceIcon} />
-                        <Box>
+                        <Hotel sx={styles.serviceIcon} />
+                        <Box sx={{ flex: 1 }}>
                           <Typography
                             variant="subtitle1"
-                            sx={{ fontWeight: "600", color: colors.accent }}
+                            sx={{ fontWeight: "600", color: colors.accent, mb: 0.5 }}
                           >
                             Tipo de Habitación
                           </Typography>
-                          <Typography variant="body1" sx={{ color: "#6c757d" }}>
+                          <Typography variant="body2" sx={{ color: "#6c757d", lineHeight: 1.4 }}>
                             {habitacion.tipo_habitacion || "No especificado"}
                           </Typography>
                         </Box>
@@ -485,12 +548,13 @@ const DetallesHabitacion = () => {
                     </Grid>
                   </Grid>
 
-                  <Divider sx={{ my: 3, borderColor: colors.neutral }} />
+                  <Divider sx={{ my: 4, borderColor: colors.neutral }} />
 
                   <Typography variant="h6" sx={styles.sectionTitle}>
+                    <Spa sx={{ mr: 1, fontSize: "1.3rem" }} />
                     Servicios del Hotel
                   </Typography>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={3}>
                     {getServiceIcons(habitacion.servicios)}
                   </Grid>
                 </CardContent>
@@ -499,9 +563,9 @@ const DetallesHabitacion = () => {
           </Grid>
 
           {/* Pricing and Reservation */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} lg={4}>
             <Fade in={true} timeout={1400}>
-              <Box>
+              <Box sx={{ position: "sticky", top: "2rem" }}>
                 {/* Pricing Card */}
                 <Paper sx={styles.priceCard}>
                   <Typography
@@ -514,36 +578,70 @@ const DetallesHabitacion = () => {
                       color: "white",
                     }}
                   >
-                    <AttachMoney sx={{ mr: 1 }} />
+                    <AttachMoney sx={{ mr: 1, fontSize: "1.3rem" }} />
                     Tarifas
                   </Typography>
 
                   {[
-                    { label: "Por Hora", price: habitacion.preciohora },
-                    { label: "Por Día", price: habitacion.preciodia },
-                    { label: "Por Noche", price: habitacion.precionoche },
-                    { label: "Por Semana", price: habitacion.preciosemana },
-                  ].map((item, index) => (
-                    <Box
-                      key={index}
-                      sx={{ display: "flex", justifyContent: "space-between", mb: 1.5 }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{ fontWeight: "500", color: "rgba(255,255,255,0.9)" }}
-                      >
-                        {item.label}:
+                    { label: "Por Hora", price: habitacion.preciohora, discount: habitacion.promocion?.preciohora_promocion },
+                    { label: "Por Día", price: habitacion.preciodia, discount: habitacion.promocion?.preciodia_promocion },
+                    { label: "Por Noche", price: habitacion.precionoche, discount: habitacion.promocion?.precionoche_promocion },
+                    { label: "Por Semana", price: habitacion.preciosemana, discount: habitacion.promocion?.preciosemana_promocion },
+                  ].map((item, index) => {
+                    const originalPrice = item.price !== null && item.price !== undefined && !isNaN(item.price)
+                      ? Number(item.price).toFixed(2)
+                      : "No definido";
+                    const discountPrice = item.discount !== null && item.discount !== undefined && !isNaN(item.discount)
+                      ? Number(item.discount).toFixed(2)
+                      : null;
+
+                    return (
+                      <Box key={index} sx={styles.priceRow}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "600", color: "rgba(255,255,255,0.9)" }}
+                        >
+                          {item.label}:
+                        </Typography>
+                        <Box sx={{ textAlign: "right" }}>
+                          {hasActivePromotion && discountPrice ? (
+                            <>
+                              <Typography component="span" sx={styles.originalPrice}>
+                                ${originalPrice}
+                              </Typography>
+                              <Typography component="span" sx={styles.discountedPrice}>
+                                ${discountPrice}
+                              </Typography>
+                            </>
+                          ) : (
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: "700", color: "white", fontSize: "1.1rem" }}
+                            >
+                              ${originalPrice}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    );
+                  })}
+
+                  {hasActivePromotion && habitacion.promocion && (
+                    <Box sx={{ 
+                      mt: 3, 
+                      p: 2, 
+                      backgroundColor: "rgba(255,235,59,0.2)", 
+                      borderRadius: "8px",
+                      border: "1px solid rgba(255,235,59,0.3)"
+                    }}>
+                      <Typography variant="body2" sx={{ color: "#ffeb3b", fontWeight: "600" }}>
+                        🎉 Promoción activa: {habitacion.promocion.descuento}% de descuento
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{ fontWeight: "600", color: "white" }}
-                      >
-                        {item.price !== null && item.price !== undefined && !isNaN(item.price)
-                          ? `$${Number(item.price).toFixed(2)}`
-                          : "No definido"}
+                      <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.8)" }}>
+                        Válida del {new Date(habitacion.promocion.fechainicio).toLocaleDateString()} al {new Date(habitacion.promocion.fechafin).toLocaleDateString()}
                       </Typography>
                     </Box>
-                  ))}
+                  )}
                 </Paper>
 
                 {/* Reservation Card */}
@@ -553,7 +651,7 @@ const DetallesHabitacion = () => {
                     sx={{
                       color: colors.accent,
                       fontWeight: "600",
-                      mb: 3,
+                      mb: 2,
                       textAlign: "center",
                     }}
                   >
@@ -568,7 +666,7 @@ const DetallesHabitacion = () => {
                     fullWidth
                     InputLabelProps={{ shrink: true }}
                     sx={{
-                      mb: 3,
+                      mb: 2,
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "8px",
                         "&.Mui-focused fieldset": {
@@ -590,16 +688,22 @@ const DetallesHabitacion = () => {
                     sx={{
                       borderRadius: "8px",
                       py: 1.5,
-                      fontSize: "1.1rem",
+                      fontSize: "1rem",
                       fontWeight: "600",
                       backgroundColor: isAvailable ? colors.primary : "#6c757d",
+                      boxShadow: "0 2px 8px rgba(76, 148, 188, 0.3)",
                       "&:hover": {
                         backgroundColor: isAvailable ? colors.accent : "#6c757d",
+                        transform: "translateY(-1px)",
+                        boxShadow: "0 4px 12px rgba(76, 148, 188, 0.4)",
                       },
                       "&:disabled": {
                         backgroundColor: "#6c757d",
                         color: "rgba(255,255,255,0.7)",
+                        transform: "none",
+                        boxShadow: "none",
                       },
+                      transition: "all 0.2s ease",
                     }}
                   >
                     {isAvailable ? "Reservar Ahora" : "No Disponible"}

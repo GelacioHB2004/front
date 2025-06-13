@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -7,14 +7,21 @@ import { useAuth } from './AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const MySwal = withReactContent(Swal);
-const API_BASE_URL = 'https://backendd-q0zc.onrender.com';
+const API_BASE_URL = 'https://backendd-q0zc.onrender.com'; // Cambia esto a tu URL de API real
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, logout, isAuthenticated } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    // Limpiar autenticación si existe un token inválido
+    if (isAuthenticated) {
+      logout();
+    }
+  }, [isAuthenticated, logout]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,31 +62,24 @@ function Login() {
       if (error.response) {
         const { error: serverError } = error.response.data;
 
+        let config = {
+          title: 'Error',
+          icon: 'error',
+        };
+
         if (serverError === 'Usuario no encontrado') {
-          MySwal.fire({
-            icon: 'error',
-            title: 'Usuario No Encontrado',
-            text: 'El usuario ingresado no existe.',
-          });
-        } else if (serverError === 'La cuenta no está verificada. Por favor, revisa tu correo para activar tu cuenta.') {
-          MySwal.fire({
-            icon: 'warning',
-            title: 'Cuenta No Verificada',
-            text: serverError,
-          });
-        } else if (serverError === 'Tu cuenta está permanentemente bloqueada. Por favor, contacta con el administrador.') {
-          MySwal.fire({
-            icon: 'error',
-            title: 'Cuenta Bloqueada Permanentemente',
-            text: serverError,
-          });
+          config.text = 'El usuario ingresado no existe.';
         } else if (serverError === 'Usuario o contraseña incorrecta') {
-          MySwal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: serverError,
-          });
+          config.text = serverError;
+        } else if (serverError === 'La cuenta no está verificada o fue desactivada por el administrador.' ||
+                   serverError === 'Tu cuenta está permanentemente bloqueada. Por favor, contacta con el administrador.') {
+          config.text = serverError;
+          config.icon = 'warning';
+        } else {
+          config.text = 'La cuenta no está verificada o fue desactivada por el administrador.';
         }
+
+        MySwal.fire(config);
       } else {
         MySwal.fire({
           icon: 'error',

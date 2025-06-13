@@ -55,8 +55,8 @@ const EncabezadoPropietario = () => {
       case "tiposhabitaciones":
         navigate('/propietario/tiposhabitaciones');
         break;
-      case "Departamentos":
-        navigate('/propietario/departamentos');
+      case "Promociones":
+        navigate('/propietario/promociones');
         break;
       case "cerrarSesion":
         handleLogout();
@@ -258,9 +258,9 @@ const EncabezadoPropietario = () => {
                 </ul>
               )}
             </li>
-            <li onClick={() => handleMenuClick('Departamentos')}>
+            <li onClick={() => handleMenuClick('Promociones')}>
               <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
-              Departamentos
+              Promociones
             </li>
             <li onClick={() => handleMenuClick('cerrarSesion')}>
               <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />

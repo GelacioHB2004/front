@@ -372,7 +372,7 @@ const Hoteles = () => {
         removeImage: false,
       });
       setImagePreview(URL.createObjectURL(file));
-      setErrorMessage(''); // Clear any existing error message
+      setErrorMessage('');
     }
   };
 
@@ -409,6 +409,9 @@ const Hoteles = () => {
     }
     if (formData.latitud) formDataToSend.append('latitud', formData.latitud);
     if (formData.longitud) formDataToSend.append('longitud', formData.longitud);
+    if (!editingId) {
+      formDataToSend.append('visible', '1'); // Set visible to 1 for new hotels
+    }
 
     try {
       if (editingId) {

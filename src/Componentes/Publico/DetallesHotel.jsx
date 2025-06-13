@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Person as PersonIcon } from '@mui/icons-material';
 import { 
   Box, 
   Typography, 
@@ -10,7 +11,9 @@ import {
   Card,
   CardContent,
   Divider,
-  Chip
+  Chip,
+  Rating,
+  Grid
 } from '@mui/material';
 import { LocationOn, Directions, Hotel, Phone, Email, Home, Info, RoomService } from '@mui/icons-material';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -33,12 +36,12 @@ const DetallesHoteles = () => {
   const [hotel, setHotel] = useState(null); // Estado para almacenar los datos del hotel
   const [loading, setLoading] = useState(true); // Estado para manejar la carga
   const [error, setError] = useState(null); // Estado para manejar errores
+  const [comentarios, setComentarios] = useState([]); // Estado para los comentarios
 
   useEffect(() => {
     const fetchHotel = async () => {
       try {
         setLoading(true);
-        // Cambiar al nuevo endpoint público
         const response = await axios.get(`https://backendd-q0zc.onrender.com/api/detallehotel/public/${id}`);
         let imagenParsed = null;
         try {
@@ -71,8 +74,19 @@ const DetallesHoteles = () => {
         setLoading(false);
       }
     };
+
+    const fetchComentarios = async () => {
+      try {
+        const response = await axios.get(`https://backendd-q0zc.onrender.com/api/detallehotel/hotel/${id}`);
+        setComentarios(response.data);
+      } catch (error) {
+        console.error('Error al obtener comentarios:', error);
+      }
+    };
+
     fetchHotel();
-  }, [id]); // El useEffect se ejecuta cada vez que cambia el id
+    fetchComentarios();
+  }, [id]);
 
   const mapContainerStyle = {
     width: '100%',
@@ -532,6 +546,43 @@ const DetallesHoteles = () => {
             </Box>
           </CardContent>
         </Card>
+
+        {/* Sección de comentarios */}
+<Box sx={{ mt: 4 }}>
+  <Typography variant="h5" sx={{ color: '#0b7583', fontWeight: 600, mb: 2 }}>
+    Comentarios de los Clientes
+  </Typography>
+  <Grid container spacing={2}>
+    {comentarios.map((comentario) => (
+      <Grid item xs={12} key={comentario.id_comentario}>
+        <Card sx={{ p: 2, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <PersonIcon sx={{ color: '#0b7583', mr: 1, fontSize: '18px', mt: 0.2 }} />
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 500, color: '#0b7583' }}>
+                  {comentario.Nombre} {comentario.ApellidoP} {comentario.ApellidoM}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {new Date(comentario.fecha).toLocaleDateString()}
+                </Typography>
+              </Box>
+            </Box>
+            <Rating value={comentario.calificacion} readOnly sx={{ mb: 1 }} />
+            <Typography variant="body1" sx={{ color: '#000', lineHeight: 1.5 }}>
+              {comentario.comentario}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+    ))}
+    {comentarios.length === 0 && (
+      <Typography variant="body2" sx={{ color: '#888', textAlign: 'center', mt: 2 }}>
+        No hay comentarios disponibles.
+      </Typography>
+    )}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );
