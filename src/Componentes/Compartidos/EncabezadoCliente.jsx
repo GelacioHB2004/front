@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HomeOutlined, LogoutOutlined, UserOutlined, ShopOutlined } from '@ant-design/icons';
+import { HomeOutlined, LogoutOutlined, UserOutlined, ShopOutlined,CalendarOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -43,8 +43,8 @@ const EncabezadoCliente = () => {
       case "hotelesc":
         navigate('/cliente/hotelesc');
         break;
-      case "MQTT":
-        navigate('/cliente/perfilusuario');
+      case "MisReservas":
+        navigate('/cliente/historial-reservas');
         break;
       case "cerrarSesion":
         try {
@@ -87,7 +87,11 @@ const EncabezadoCliente = () => {
           --color-primary: #000000;
           --color-secondary: #FFFFFF;
           --color-hover: #A9DFBF;
-          --color-icon: #00B300;
+          --color-icon-home: #1E90FF; /* Blue for Home */
+          --color-icon-shop: #FFD700; /* Gold for Shop/Alojamientos */
+          --color-icon-user: #9932CC;
+          --color-icon-usercalendar:rgb(50, 204, 99); /* Purple for User/Mis Reservas & Perfil */
+          --color-icon-logout: #FF4500; /* Red for Logout */
         }
 
         .header {
@@ -197,19 +201,23 @@ const EncabezadoCliente = () => {
         <nav className={`menu ${isMobileMenuOpen ? 'menu-open' : ''}`} ref={menuRef}>
           <ul>
             <li className={active === 'home' ? 'active' : ''} onClick={() => { handleClick('home'); handleMenuClick('home'); }}>
-              <HomeOutlined style={{ color: 'var(--color-icon)' }} />
+              <HomeOutlined style={{ color: 'var(--color-icon-home)' }} />
               Home
             </li>
             <li onClick={() => handleMenuClick('hotelesc')}>
-              <ShopOutlined style={{ color: 'var(--color-icon)' }} />
+              <ShopOutlined style={{ color: 'var(--color-icon-shop)' }} />
               Alojamientos
             </li>
+            <li onClick={() => handleMenuClick('MisReservas')}>
+              <CalendarOutlined style={{ color: 'var(--color-icon-usercalendar)' }} />
+              Mis Reservas
+            </li>
             <li onClick={() => handleMenuClick('MQTT')}>
-              <UserOutlined style={{ color: 'var(--color-icon)' }} />
+              <UserOutlined style={{ color: 'var(--color-icon-user)' }} />
               Perfil
             </li>
             <li className={active === 'cerrarSesion' ? 'active' : ''} onClick={() => { handleClick('cerrarSesion'); handleMenuClick('cerrarSesion'); }}>
-              <LogoutOutlined style={{ color: 'var(--color-icon)' }} />
+              <LogoutOutlined style={{ color: 'var(--color-icon-logout)' }} />
               Cerrar Sesión
             </li>
           </ul>

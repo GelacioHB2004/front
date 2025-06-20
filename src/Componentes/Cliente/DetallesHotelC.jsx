@@ -555,7 +555,7 @@ const DetallesHoteles = () => {
               transition: 'all 0.3s ease'
             }}
           >
-            Ver Habitaciones Disponibles
+            Ver Habitaciones
           </Button>
         </Box>
 

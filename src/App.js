@@ -32,7 +32,7 @@ import HotelesC from './Componentes/Cliente/HotelesC';
 import CuartosC from './Componentes/Cliente/CuartosC';
 import DetallesHabitacionC from './Componentes/Cliente/DetalleHabitacionC';
 import DetallesHotelC from './Componentes/Cliente/DetallesHotelC';
-
+import HistorialReservas from './Componentes/Cliente/HistorialReservas';
 //rutas propietario
 import PaginaPrincipalPropietario from './Paginas/PaginaPrincipalPropietario';
 import CuartosPropietario from './Componentes/Propietario/Cuartos';
@@ -102,6 +102,8 @@ const App = () => {
             <Route path="/cliente/cuartosc/:idHotel" element={<CuartosCWrapper/>} />
             <Route path="/cliente/detalles-habitacionc/:idHabitacion" element={<DetallesHabitacionC />} />
              <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
+             <Route path="/cliente/historial-reservas" element={<HistorialReservas />} />
+
             {/* Rutas para el propietario */}
             <Route path="/propietario" element={<PaginaPrincipalPropietario />} />
             <Route path="/propietario/cuartos/:id" element={<CuartosPropietario />} />
