@@ -150,22 +150,57 @@ const HistorialReservas = () => {
 
   const handleCancelReservation = async (id_reserva) => {
     try {
-      // Obtener reservas canceladas desde localStorage
+      // Cancelar en el servidor primero
+      let serverCancelled = false;
+      try {
+        // Endpoint específico de cancelación
+        const response = await axios.put(
+          `https://backendd-q0zc.onrender.com/api/reservas/${id_reserva}/cancelar`
+        );
+        serverCancelled = response.status === 200;
+      } catch (serverError) {
+        console.warn("No se pudo cancelar en el servidor:", serverError.message);
+        serverCancelled = false;
+      }
+
+      // Aplicar cancelación en localStorage (mantener lógica original)
       const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]");
-      // Agregar el id_reserva a la lista de cancelados
       if (!cancelledReservations.includes(id_reserva)) {
         cancelledReservations.push(id_reserva);
         localStorage.setItem("cancelledReservations", JSON.stringify(cancelledReservations));
       }
+      
       // Actualizar el estado local para eliminar la reserva
       setUserReservations((prev) =>
         prev.filter((res) => res.id_reserva !== id_reserva)
       );
-      setReservationSuccess("Reserva cancelada exitosamente.");
+      
+      // Mostrar mensaje apropiado
+      if (serverCancelled) {
+        setReservationSuccess("Reserva cancelada exitosamente en el sistema.");
+      } else {
+        setReservationSuccess("Reserva cancelada localmente. Por favor, contacta al administrador para confirmar la cancelación en el sistema.");
+      }
       setError("");
+      
     } catch (err) {
-      setError("Error al cancelar la reserva en la interfaz.");
-      console.error("Error al cancelar en la interfaz:", err.message);
+      // Si hay error crítico, mantener la lógica original como respaldo
+      try {
+        console.warn("Error crítico, aplicando cancelación local como respaldo:", err.message);
+        const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]");
+        if (!cancelledReservations.includes(id_reserva)) {
+          cancelledReservations.push(id_reserva);
+          localStorage.setItem("cancelledReservations", JSON.stringify(cancelledReservations));
+        }
+        setUserReservations((prev) =>
+          prev.filter((res) => res.id_reserva !== id_reserva)
+        );
+        setReservationSuccess("Reserva cancelada localmente. Contacta al administrador para confirmar.");
+        setError("");
+      } catch (localErr) {
+        setError("Error al cancelar la reserva. Por favor, intenta de nuevo.");
+        console.error("Error crítico al cancelar:", localErr.message);
+      }
     }
   };
 
@@ -225,7 +260,6 @@ const HistorialReservas = () => {
                       <TableRow>
                         <TableCell>Hotel</TableCell>
                         <TableCell>Número de Habitación</TableCell>
-                        <TableCell>Nombre del Cliente</TableCell>
                         <TableCell>Fecha de Entrada</TableCell>
                         <TableCell>Fecha de Salida</TableCell>
                         <TableCell>Total</TableCell>
@@ -235,14 +269,13 @@ const HistorialReservas = () => {
                     <TableBody>
                       {userReservations.map((res) => (
                         <TableRow key={res.id_reserva}>
-                          <TableCell>{res.hotel_nombre || "No especificado"}</TableCell>
+                          <TableCell>{res.nombrehotel || "No especificado"}</TableCell>
                           <TableCell>{res.cuarto || "No especificado"}</TableCell>
-                          <TableCell>{res.cliente_nombre || "No especificado"}</TableCell>
                           <TableCell>
-                            {new Date(res.fechainicio).toLocaleString()}
+                            {new Date(res.fechainicio).toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}
                           </TableCell>
                           <TableCell>
-                            {new Date(res.fechafin).toLocaleString()}
+                            {new Date(res.fechafin).toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}
                           </TableCell>
                           <TableCell>${res.totalpagar}</TableCell>
                           <TableCell>

@@ -46,6 +46,9 @@ const EncabezadoCliente = () => {
       case "MisReservas":
         navigate('/cliente/historial-reservas');
         break;
+      case "MiPerfil":
+        navigate('/cliente/perfilusuario');
+        break;
       case "cerrarSesion":
         try {
           await fetch('/api/logout', {
@@ -212,7 +215,7 @@ const EncabezadoCliente = () => {
               <CalendarOutlined style={{ color: 'var(--color-icon-usercalendar)' }} />
               Mis Reservas
             </li>
-            <li onClick={() => handleMenuClick('MQTT')}>
+            <li onClick={() => handleMenuClick('MiPerfil')}>
               <UserOutlined style={{ color: 'var(--color-icon-user)' }} />
               Perfil
             </li>

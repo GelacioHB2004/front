@@ -254,7 +254,7 @@ const DetallesHabitacion = () => {
       const response = await axios.get(
         `https://backendd-q0zc.onrender.com/api/detallesHabitacion/detalles/${idHabitacion}`
       );
-      console.log('Datos de habitación:', response.data);
+      console.log('Datos de habitación recibidos:', response.data);
       setHabitacion(response.data);
       setError("");
     } catch (err) {
@@ -355,41 +355,10 @@ const DetallesHabitacion = () => {
         },
         { headers: { "Content-Type": "application/json" } }
       );
-
+      console.log('Respuesta de calculate-total:', response.data);
       const { totalpagar, priceDetails } = response.data;
-
-      const priceMap = {
-        hora: Number(habitacion?.preciohora) || null,
-        dia: Number(habitacion?.preciodia) || null,
-        noche: Number(habitacion?.precionoche) || null,
-        semana: Number(habitacion?.preciosemana) || null,
-      };
-
-      const basePrice = priceMap[tipo_tarifa];
-      const expectedPrice = hasActivePromotion && habitacion.promocion?.descuento
-        ? basePrice * (1 - habitacion.promocion.descuento / 100)
-        : basePrice;
-
-      const duration = tipo_tarifa === 'hora' ? diffHours :
-                       tipo_tarifa === 'semana' ? diffWeeks : diffDays;
-      
-      const expectedTotal = expectedPrice && !isNaN(expectedPrice)
-        ? Number((expectedPrice * duration).toFixed(2))
-        : null;
-
-      if (expectedTotal && Math.abs(totalpagar - expectedTotal) > 0.01) {
-        console.warn(
-          `Discrepancia en el total: Servidor $${totalpagar}, Esperado $${expectedTotal}, ` +
-          `Precio Unitario: $${priceDetails.precio_unitario}, Descuento Aplicado: ${priceDetails.descuento_aplicado}%`
-        );
-        setError("El total calculado no coincide con el precio esperado. Por favor, contacte al soporte.");
-        setTotalpagar(null);
-        return;
-      }
-
       setTotalpagar(totalpagar);
       setError("");
-      console.log('Cálculo exitoso:', priceDetails);
     } catch (err) {
       setTotalpagar(null);
       const errorMessage =
@@ -438,6 +407,7 @@ const DetallesHabitacion = () => {
         },
         { headers: { "Content-Type": "application/json" } }
       );
+      console.log('Respuesta de reserva:', response.data);
       setReservationSuccess(`¡Reserva creada con éxito! Total: $${response.data.totalpagar}`);
       setError("");
       setReservation({ fechainicio: "", fechafin: "", tipo_tarifa: "" });
@@ -508,7 +478,7 @@ const DetallesHabitacion = () => {
 
   const currentDate = new Date();
   const hasActivePromotion =
-    habitacion?.promocion &&
+    habitacion?.promocion?.descuento &&
     new Date(habitacion.promocion.fechainicio) <= currentDate &&
     new Date(habitacion.promocion.fechafin) >= currentDate;
 
@@ -771,7 +741,7 @@ const DetallesHabitacion = () => {
                   <Divider sx={{ my: 4, borderColor: colors.neutral }} />
 
                   <Typography variant="h6" sx={styles.sectionTitle}>
-                    <Spa sx={styles.serviceIcon} />
+                    <Spa sx={{ mr: 1, fontSize: "1.3rem" }} />
                     Servicios del Hotel
                   </Typography>
                   <Grid container spacing={3}>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AppstoreOutlined, LogoutOutlined, HomeOutlined, FileTextOutlined, TeamOutlined, ShopOutlined,ApartmentOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, LogoutOutlined, HomeOutlined, FileTextOutlined, TeamOutlined, ShopOutlined,ApartmentOutlined,UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -57,6 +57,15 @@ const EncabezadoPropietario = () => {
         break;
       case "Promociones":
         navigate('/propietario/promociones');
+        break;
+      case "GestionReservas":
+        navigate('/propietario/gestionreservas');
+        break;
+      case "Reportes":
+        navigate('/propietario/reportes');
+        break;
+        case "MiPerfil":
+        navigate('/propietario/perfilusuario');
         break;
       case "cerrarSesion":
         handleLogout();
@@ -258,9 +267,25 @@ const EncabezadoPropietario = () => {
                 </ul>
               )}
             </li>
+            <li className="dropdown" onClick={() => toggleDropdown('GestionReserva')}>
+              <span>
+                <ShopOutlined style={{ color: '#00B300', marginRight: '8px' }} />
+                Gestion
+              </span>
+              {openDropdown === 'GestionReserva' && (
+                <ul className="dropdown-menu">
+                  <li onClick={() => { handleClick('GestionReservas'); handleMenuClick('GestionReservas'); }}>Reservas</li>
+                  <li onClick={() => { handleClick('Reportes'); handleMenuClick('Reportes'); }}>Generar Reporte</li>
+                </ul>
+              )}
+            </li>
             <li onClick={() => handleMenuClick('Promociones')}>
               <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
               Promociones
+            </li>
+            <li onClick={() => handleMenuClick('MiPerfil')}>
+              <UserOutlined style={{ color: 'var(--color-icon-user)' }} />
+              Perfil
             </li>
             <li onClick={() => handleMenuClick('cerrarSesion')}>
               <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />

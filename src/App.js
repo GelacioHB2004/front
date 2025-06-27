@@ -33,6 +33,7 @@ import CuartosC from './Componentes/Cliente/CuartosC';
 import DetallesHabitacionC from './Componentes/Cliente/DetalleHabitacionC';
 import DetallesHotelC from './Componentes/Cliente/DetallesHotelC';
 import HistorialReservas from './Componentes/Cliente/HistorialReservas';
+import PerfilUsuario from './Componentes/Cliente/PerfilUsuario';
 //rutas propietario
 import PaginaPrincipalPropietario from './Paginas/PaginaPrincipalPropietario';
 import CuartosPropietario from './Componentes/Propietario/Cuartos';
@@ -41,6 +42,8 @@ import TipoHabitacionPropietario from './Componentes/Propietario/TiposHabitacion
 import Promociones from './Componentes/Propietario/Promociones';
 import GestionUsuarios from './Componentes/Administrativo/GestionUsuarios';
 import GestionHoteles from './Componentes/Administrativo/GestionHoteles';
+import GestionReservas from './Componentes/Propietario/GestionReservas';
+import Reportes from './Componentes/Propietario/Reportes';
 
 
 const CuartosPWrapper = () => {
@@ -101,8 +104,9 @@ const App = () => {
             <Route path="/cliente/hotelesc" element={<HotelesC/>} />
             <Route path="/cliente/cuartosc/:idHotel" element={<CuartosCWrapper/>} />
             <Route path="/cliente/detalles-habitacionc/:idHabitacion" element={<DetallesHabitacionC />} />
-             <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
-             <Route path="/cliente/historial-reservas" element={<HistorialReservas />} />
+            <Route path="/cliente/detalles-hoteles/:id" element={<DetallesHotelC />} />
+            <Route path="/cliente/historial-reservas" element={<HistorialReservas />} />
+            <Route path="/cliente/perfilusuario" element={<PerfilUsuario />} />
 
             {/* Rutas para el propietario */}
             <Route path="/propietario" element={<PaginaPrincipalPropietario />} />
@@ -114,6 +118,11 @@ const App = () => {
             <Route path="/propietario/visionpca" element={<VisionPCA/>} />
             <Route path="/propietario/misionpca" element={<MisionPCA/>} />
             <Route path="/propietario/promociones" element={<Promociones />} />
+            <Route path="/propietario/perfilusuario" element={<PerfilUsuario />} />
+            <Route path="/propietario/gestionreservas" element={<GestionReservas />} />
+            <Route path="/propietario/reportes" element={<Reportes />} />
+            
+            {/* Rutas para las políticas, términos, visión y misión */}
             
             
 

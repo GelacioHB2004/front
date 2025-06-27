@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Hotel, Group, BarChart, ArrowForward } from "@mui/icons-material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -48,6 +49,16 @@ const theme = createTheme({
 });
 
 const PaginaPrincipalAdministrativa = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (title) => {
+    if (title === "Administrar Alojamientos") {
+      navigate("/admin/gestionhoteles");
+    } else if (title === "Gestionar Usuarios") {
+      navigate("/admin/gestionusuarios");
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ minHeight: "100vh", backgroundColor: "background.default", color: "text.primary", py: 6 }}>
@@ -85,6 +96,7 @@ const PaginaPrincipalAdministrativa = () => {
                         color={index === 2 ? "secondary" : "primary"}
                         endIcon={<ArrowForward />}
                         sx={{ mt: 3 }}
+                        onClick={() => handleNavigation(title)}
                       >
                         {title}
                       </Button>
