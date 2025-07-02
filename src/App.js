@@ -11,15 +11,7 @@ import Registro from './Componentes/Autenticacion/Registro';
 import VerificarCorreo from './Componentes/Autenticacion/VerificarCorreo';
 import ValidarCodigo from './Componentes/Autenticacion/ValidarCodigo';
 import SolicitarCodigo from './Componentes/Autenticacion/SolicitarCodigo';
-import Perfil from './Componentes/Administrativo/Perfil';
-import HotelesP from './Componentes/Publico/HotelesP';
-import Politicas from './Componentes/Administrativo/Politica';
-import CuartosP from './Componentes/Publico/CuartosP';
-import DetallesHabitacion from './Componentes/Publico/DetalleHabitacion';
 import CambiarPassword from './Componentes/Autenticacion/CambiarPassword';
-import Terminos from './Componentes/Administrativo/Terminos';
-import Vision from './Componentes/Administrativo/Vision';
-import Mision from './Componentes/Administrativo/Mision';
 import PoliticasPCA from './Componentes/Compartidos/PoliticasPCA';
 import TerminosPCA from './Componentes/Compartidos/TerminosPCA';
 import VisionPCA from './Componentes/Compartidos/VisionPCA';
@@ -27,6 +19,9 @@ import MisionPCA from './Componentes/Compartidos/MisionPCA';
 
 //rutas publicas
 import DetallesHotel from './Componentes/Publico/DetallesHotel';
+import HotelesP from './Componentes/Publico/HotelesP';
+import CuartosP from './Componentes/Publico/CuartosP';
+import DetallesHabitacion from './Componentes/Publico/DetalleHabitacion';
 //rutas cliente
 import HotelesC from './Componentes/Cliente/HotelesC';
 import CuartosC from './Componentes/Cliente/CuartosC';
@@ -40,11 +35,19 @@ import CuartosPropietario from './Componentes/Propietario/Cuartos';
 import HotelPropietario from './Componentes/Propietario/Hoteles';
 import TipoHabitacionPropietario from './Componentes/Propietario/TiposHabitaciones';
 import Promociones from './Componentes/Propietario/Promociones';
-import GestionUsuarios from './Componentes/Administrativo/GestionUsuarios';
-import GestionHoteles from './Componentes/Administrativo/GestionHoteles';
 import GestionReservas from './Componentes/Propietario/GestionReservas';
 import Reportes from './Componentes/Propietario/Reportes';
-
+//rutas administrativas
+import GestionUsuarios from './Componentes/Administrativo/GestionUsuarios';
+import GestionHoteles from './Componentes/Administrativo/GestionHoteles';
+import Terminos from './Componentes/Administrativo/Terminos';
+import Vision from './Componentes/Administrativo/Vision';
+import Mision from './Componentes/Administrativo/Mision';
+import Politicas from './Componentes/Administrativo/Politica';
+import Perfil from './Componentes/Administrativo/Perfil';
+import GestionReservasAd from './Componentes/Administrativo/GestionReservasad';
+import EstadisticasGenerales from './Componentes/Administrativo/EstadisticasGenerales';
+import GestionPromociones from './Componentes/Administrativo/GestionPromociones';
 
 const CuartosPWrapper = () => {
   const { idHotel } = useParams(); // Extrae idHotel de la URL
@@ -92,8 +95,12 @@ const App = () => {
             <Route path="/admin/terminospca" element={<TerminosPCA/>} />
             <Route path="/admin/visionpca" element={<VisionPCA/>} />
             <Route path="/admin/misionpca" element={<MisionPCA/>} />
+            <Route path="/admin/perfilusuario" element={<PerfilUsuario />} />
             <Route path="/admin/gestionusuarios" element={<GestionUsuarios />} />
             <Route path="/admin/gestionhoteles" element={<GestionHoteles />} />
+            <Route path="/admin/gestionreservasad" element={<GestionReservasAd />} />
+            <Route path="/admin/estadisticas" element={<EstadisticasGenerales />} />
+            <Route path="/admin/gestionpromociones" element={<GestionPromociones />} />
             
             {/* Rutas para el cliente */}
             <Route path="/cliente" element={<PaginaPrincipalCliente />} />
@@ -122,10 +129,6 @@ const App = () => {
             <Route path="/propietario/gestionreservas" element={<GestionReservas />} />
             <Route path="/propietario/reportes" element={<Reportes />} />
             
-            {/* Rutas para las políticas, términos, visión y misión */}
-            
-            
-
           </Routes>
         </LayoutConEncabezado>
       </ThemeProvider>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AppstoreOutlined, LogoutOutlined, HomeOutlined, FileTextOutlined, TeamOutlined, ShopOutlined,ApartmentOutlined } from '@ant-design/icons';
+import { LogoutOutlined, HomeOutlined, FileTextOutlined,UserOutlined,ApartmentOutlined,TeamOutlined, ShopOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -70,6 +70,18 @@ const EncabezadoAdministrativo = () => {
       case "Usuarios":
         navigate('/admin/gestionusuarios');
         break;
+      case "Reservas":
+        navigate('/admin/gestionreservasad');
+        break;
+      case "Estadisticas":
+        navigate('/admin/estadisticas');
+        break;
+      case "Promociones":
+        navigate('/admin/gestionpromociones');
+        break;
+      case "PerfilUsuario":
+        navigate('/admin/perfilusuario');
+        break;
       case "cerrarSesion":
         handleLogout();
         break;
@@ -109,7 +121,10 @@ const EncabezadoAdministrativo = () => {
           --color-hover: #A9DFBF;
           --color-mobile-bg: #000000;
           --color-mobile-text: #FFFFFF;
-          --color-icon: #00B300;
+          --color-icon:rgb(13, 226, 34);
+          --color-icon2:rgb(175, 185, 30);
+          --color-icon3:rgb(145, 7, 157);
+          
         }
 
         .header {
@@ -273,13 +288,27 @@ const EncabezadoAdministrativo = () => {
                 </ul>
               )}
             </li>
-<li onClick={() => handleMenuClick('Alojamientos')}>
-              <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
-               Gestion de Alajamientos
+            <li className="dropdown" onClick={() => toggleDropdown('gestiongeneral')}>
+              <span>
+                <ShopOutlined style={{ color: 'var(--color-icon)' }} />
+                Gestión General
+              </span>
+              {openDropdown === 'gestiongeneral' && (
+                <ul className="dropdown-menu">
+                  <li onClick={() => { handleClick('Alojamientos'); handleMenuClick('Alojamientos'); }}>Hoteles</li>
+                  <li onClick={() => { handleClick('Reservas'); handleMenuClick('Reservas'); }}>Reservas</li>
+                  <li onClick={() => { handleClick('Estadisticas'); handleMenuClick('Estadisticas'); }}>Estadísticas</li>
+                  <li onClick={() => { handleClick('Promociones'); handleMenuClick('Promociones'); }}>Promociones</li>
+                </ul>
+              )}
             </li>
             <li onClick={() => handleMenuClick('Usuarios')}>
-              <ApartmentOutlined style={{ color: 'var(--color-icon)' }} />
+              <TeamOutlined style={{ color: 'var(--color-icon2)' }} />
                Gestion de Usuarios
+            </li>
+            <li onClick={() => handleMenuClick('PerfilUsuario')}>
+              <UserOutlined style={{ color: 'var(--color-icon3)' }} />
+               Perfil
             </li>
             <li onClick={() => handleMenuClick('cerrarSesion')}>
               <LogoutOutlined style={{ color: 'Red', marginRight: '8px' }} />
