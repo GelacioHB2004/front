@@ -211,12 +211,12 @@ const GestionReservas = () => {
           </>
         )}
 
-        {/* Modal para Reservas de la Fecha Seleccionada */}
+        {/* Modal para Reservas Confirmadas de la Fecha Seleccionada */}
         <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} closeAfterTransition>
           <Fade in={isModalOpen}>
             <Box sx={modalStyle}>
               <Typography variant="h6" sx={{ color: "#2e7d32", mb: 2, textAlign: "center" }}>
-                Reservas para {selectedDate ? moment.tz(selectedDate, "America/Mexico_City").format("DD MMMM YYYY") : ""}
+                Reservas Confirmadas para {selectedDate ? moment.tz(selectedDate, "America/Mexico_City").format("DD MMMM YYYY") : ""}
               </Typography>
               {isLoading ? (
                 <Box sx={{ textAlign: "center", py: 2 }}>
@@ -228,7 +228,7 @@ const GestionReservas = () => {
                 </Alert>
               ) : selectedDateReservas.length === 0 ? (
                 <Typography variant="body1" align="center" sx={{ color: "#666" }}>
-                  No hay reservas para esta fecha.
+                  No hay reservas confirmadas para esta fecha.
                 </Typography>
               ) : (
                 <Paper sx={{ borderRadius: 2, boxShadow: "0 4px 10px rgba(0,0,0,0.1)" }}>

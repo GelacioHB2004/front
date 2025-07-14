@@ -20,6 +20,9 @@ import {
   Input,
   Checkbox,
   FormControlLabel,
+  Select,
+  MenuItem,
+  FormControl,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -40,6 +43,19 @@ const markerIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+// Lista de servicios disponibles
+const serviciosDisponibles = [
+  'Pet-friendly',
+  'Sustentable',
+  'Con asistencia para discapacitados',
+  'Cocina',
+  'Alberca',
+  'Lavanderia',
+  'Restaurant',
+  'Internet',
+  'Agua Caliente',
+];
 
 const API_BASE_URL = 'https://backendd-q0zc.onrender.com';
 
@@ -123,7 +139,7 @@ const Hoteles = () => {
     correo: '',
     numhabitacion: '',
     descripcion: '',
-    servicios: '',
+    servicios: [],
     imagen: null,
     removeImage: false,
     latitud: '',
@@ -161,6 +177,7 @@ const Hoteles = () => {
         id: hotel.id_hotel,
         imagen: hotel.imagen ? JSON.parse(hotel.imagen) : null,
         telefono: hotel.telefono || '',
+        servicios: hotel.servicios ? hotel.servicios.split(',') : [], // Convertir string a array
       }));
       setHoteles(hotelesData);
       setErrorMessage('');
@@ -220,7 +237,7 @@ const Hoteles = () => {
         if (value && value.length > 1000) error = 'La descripción no puede exceder 1000 caracteres';
         break;
       case 'servicios':
-        if (value && value.length > 500) error = 'Los servicios no pueden exceder 500 caracteres';
+        if (value.length === 0) error = 'Debe seleccionar al menos un servicio';
         break;
       case 'latitud':
         if (!value) error = 'La latitud es obligatoria';
@@ -316,6 +333,20 @@ const Hoteles = () => {
         setMapCenter([21.1399, -98.4194]); // Restablecer al centro de Huejutla
         setLocationError('');
       }
+    } else if (name === 'servicios') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setTouched((prev) => ({
+        ...prev,
+        [name]: true,
+      }));
+      const error = validateField(name, value);
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: error,
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -402,7 +433,7 @@ const Hoteles = () => {
     formDataToSend.append('correo', formData.correo);
     formDataToSend.append('numhabitacion', formData.numhabitacion);
     formDataToSend.append('descripcion', formData.descripcion);
-    formDataToSend.append('servicios', formData.servicios);
+    formDataToSend.append('servicios', formData.servicios.join(',')); // Convertir array a string
     formDataToSend.append('removeImage', formData.removeImage);
     if (formData.imagen instanceof File) {
       formDataToSend.append('imagen', formData.imagen);
@@ -453,7 +484,7 @@ const Hoteles = () => {
       correo: hotel.correo || '',
       numhabitacion: hotel.numhabitacion || '',
       descripcion: hotel.descripcion || '',
-      servicios: hotel.servicios || '',
+      servicios: hotel.servicios || [],
       imagen: null,
       removeImage: false,
       latitud: hotel.latitud?.toString() || '',
@@ -476,7 +507,7 @@ const Hoteles = () => {
       correo: '',
       numhabitacion: '',
       descripcion: '',
-      servicios: '',
+      servicios: [],
       imagen: null,
       removeImage: false,
       latitud: '',
@@ -593,7 +624,6 @@ const Hoteles = () => {
               },
               { label: 'Correo Electrónico', name: 'correo', type: 'email', required: true },
               { label: 'Número de Habitaciones', name: 'numhabitacion', type: 'number', required: true, inputProps: { min: 1, max: 10000 } },
-              { label: 'Servicios', name: 'servicios', type: 'text', required: false },
             ].map(({ label, name, type, required, inputProps, placeholder }) => (
               <TextField
                 key={name}
@@ -648,6 +678,70 @@ const Hoteles = () => {
                 }}
               />
             ))}
+
+            <FormControl
+              fullWidth
+              sx={{
+                mb: 2,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: '#f8fbfc',
+                  '& fieldset': {
+                    borderColor: '#b3c9ca',
+                    borderWidth: '2px',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4c94bc',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#0b7583',
+                    boxShadow: '0 0 12px rgba(76, 148, 188, 0.2)',
+                  },
+                  '&.Mui-error fieldset': {
+                    borderColor: '#d32f2f',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#549c94',
+                  fontWeight: '600',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#0b7583',
+                },
+                '& .MuiInputLabel-root.Mui-error': {
+                  color: '#d32f2f',
+                },
+                '& .MuiFormHelperText-root.Mui-error': {
+                  color: '#d32f2f',
+                  fontWeight: '500',
+                },
+              }}
+              error={touched.servicios && !!validationErrors.servicios}
+            >
+              <InputLabel id="servicios-label">Servicios</InputLabel>
+              <Select
+                labelId="servicios-label"
+                name="servicios"
+                multiple
+                value={formData.servicios}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                renderValue={(selected) => selected.join(', ')}
+                variant="outlined"
+              >
+                {serviciosDisponibles.map((servicio) => (
+                  <MenuItem key={servicio} value={servicio}>
+                    <Checkbox checked={formData.servicios.includes(servicio)} />
+                    {servicio}
+                  </MenuItem>
+                ))}
+              </Select>
+              {touched.servicios && validationErrors.servicios && (
+                <Typography sx={{ color: '#d32f2f', fontSize: '0.75rem', mt: 0.5, fontWeight: '500' }}>
+                  {validationErrors.servicios}
+                </Typography>
+              )}
+            </FormControl>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <TextField
@@ -1078,7 +1172,7 @@ const Hoteles = () => {
                 <TableCell sx={{ color: '#0b7583', fontWeight: '600', fontSize: '0.95rem' }}>{hotel.nombrehotel}</TableCell>
                 <TableCell sx={{ color: '#549c94', fontWeight: '500' }}>{hotel.direccion || 'Sin dirección'}</TableCell>
                 <TableCell sx={{ color: '#4c94bc', fontWeight: '600', textAlign: 'center' }}>{hotel.numhabitacion}</TableCell>
-                <TableCell sx={{ color: '#549c94', fontWeight: '500' }}>{hotel.servicios || 'Sin servicios'}</TableCell>
+                <TableCell sx={{ color: '#549c94', fontWeight: '500' }}>{hotel.servicios.join(', ') || 'Sin servicios'}</TableCell>
                 <TableCell sx={{ color: '#4c94bc', fontWeight: '500' }}>{hotel.latitud || 'N/A'}</TableCell>
                 <TableCell sx={{ color: '#4c94bc', fontWeight: '500' }}>{hotel.longitud || 'N/A'}</TableCell>
                 <TableCell>

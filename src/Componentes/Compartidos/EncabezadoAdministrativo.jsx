@@ -79,6 +79,9 @@ const EncabezadoAdministrativo = () => {
       case "Promociones":
         navigate('/admin/gestionpromociones');
         break;
+      case "MetodoPago":
+        navigate('/admin/metodopago');
+        break;
       case "PerfilUsuario":
         navigate('/admin/perfilusuario');
         break;
@@ -299,6 +302,7 @@ const EncabezadoAdministrativo = () => {
                   <li onClick={() => { handleClick('Reservas'); handleMenuClick('Reservas'); }}>Reservas</li>
                   <li onClick={() => { handleClick('Estadisticas'); handleMenuClick('Estadisticas'); }}>Estadísticas</li>
                   <li onClick={() => { handleClick('Promociones'); handleMenuClick('Promociones'); }}>Promociones</li>
+                   <li onClick={() => { handleClick('MetodoPago'); handleMenuClick('MetodoPago'); }}>Método de Pago</li>
                 </ul>
               )}
             </li>

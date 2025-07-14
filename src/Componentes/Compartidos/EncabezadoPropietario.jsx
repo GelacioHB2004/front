@@ -64,8 +64,11 @@ const EncabezadoPropietario = () => {
       case "Reportes":
         navigate('/propietario/reportes');
         break;
-        case "MiPerfil":
+      case "MiPerfil":
         navigate('/propietario/perfilusuario');
+        break;
+        case "ConexionMP":
+        navigate('/propietario/conexionmp');
         break;
       case "cerrarSesion":
         handleLogout();
@@ -264,6 +267,7 @@ const EncabezadoPropietario = () => {
                 <ul className="dropdown-menu">
                   <li onClick={() => { handleClick('altapropiedades'); handleMenuClick('altapropiedades'); }}>Hotel</li>
                   <li onClick={() => { handleClick('tiposhabitaciones'); handleMenuClick('tiposhabitaciones'); }}>Tipos de Habitacion</li>
+                  <li onClick={() => { handleClick('ConexionMP'); handleMenuClick('ConexionMP'); }}>Mercado Pago</li>
                 </ul>
               )}
             </li>

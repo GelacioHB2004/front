@@ -46,6 +46,9 @@ const EncabezadoCliente = () => {
       case "MisReservas":
         navigate('/cliente/historial-reservas');
         break;
+        case "pagos":
+        navigate('/cliente/catalopagos');
+        break;
       case "MiPerfil":
         navigate('/cliente/perfilusuario');
         break;
@@ -214,6 +217,10 @@ const EncabezadoCliente = () => {
             <li onClick={() => handleMenuClick('MisReservas')}>
               <CalendarOutlined style={{ color: 'var(--color-icon-usercalendar)' }} />
               Mis Reservas
+            </li>
+            <li onClick={() => handleMenuClick('pagos')}>
+              <CalendarOutlined style={{ color: 'var(--color-icon-usercalendar)' }} />
+              Pagos
             </li>
             <li onClick={() => handleMenuClick('MiPerfil')}>
               <UserOutlined style={{ color: 'var(--color-icon-user)' }} />

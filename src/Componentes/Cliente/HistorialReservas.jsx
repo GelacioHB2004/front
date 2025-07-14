@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import momentTz from "moment-timezone"; // Asegúrate de instalar moment-timezone: npm install moment-timezone
 import {
   Box,
   Paper,
@@ -18,9 +19,9 @@ import {
   CardContent,
   Alert,
   CircularProgress,
-} from "@mui/material"
-import { Hotel as HotelIcon } from "@mui/icons-material"
-import Swal from "sweetalert2"
+} from "@mui/material";
+import { Hotel as HotelIcon } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -33,100 +34,103 @@ function TabPanel({ children, value, index, ...other }) {
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
-  )
+  );
 }
 
 export default function MisReservas() {
-  const [tabValue, setTabValue] = useState(0)
-  const [confirmedReservations, setConfirmedReservations] = useState([])
-  const [expiredReservations, setExpiredReservations] = useState([])
-  const [isLoadingReservations, setIsLoadingReservations] = useState(true)
-  const [id_usuario, setIdUsuario] = useState(null)
-  const [error, setError] = useState(null)
-  const [reservationSuccess, setReservationSuccess] = useState(null)
+  const [tabValue, setTabValue] = useState(0);
+  const [confirmedReservations, setConfirmedReservations] = useState([]);
+  const [expiredReservations, setExpiredReservations] = useState([]);
+  const [isLoadingReservations, setIsLoadingReservations] = useState(true);
+  const [id_usuario, setIdUsuario] = useState(null);
+  const [error, setError] = useState(null);
+  const [reservationSuccess, setReservationSuccess] = useState(null);
 
   const colors = {
     primary: "#4c94bc",
     success: "#549c94",
-  }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError("No estás autenticado. Por favor, inicia sesión.")
-      setIsLoadingReservations(false)
-      return
+      setError("No estás autenticado. Por favor, inicia sesión.");
+      setIsLoadingReservations(false);
+      return;
     }
 
     const setupAxiosInterceptors = () => {
       axios.interceptors.request.use(
         (config) => {
-          config.headers.Authorization = `Bearer ${token}`
-          return config
+          config.headers.Authorization = `Bearer ${token}`;
+          return config;
         },
         (error) => Promise.reject(error)
-      )
+      );
 
       axios.interceptors.response.use(
         (response) => response,
         (error) => {
           if (error.response?.status === 401) {
-            setError("Sesión expirada. Por favor, inicia sesión de nuevo.")
-            localStorage.removeItem("token")
-            localStorage.removeItem("id_usuario")
-            localStorage.removeItem("cancelledReservations")
+            setError("Sesión expirada. Por favor, inicia sesión de nuevo.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("id_usuario");
+            localStorage.removeItem("cancelledReservations");
           }
-          return Promise.reject(error)
+          return Promise.reject(error);
         }
-      )
-    }
+      );
+    };
 
-    setupAxiosInterceptors()
+    setupAxiosInterceptors();
 
     const decodeToken = () => {
       try {
-        const decoded = JSON.parse(atob(token.split(".")[1]))
-        setIdUsuario(decoded.id)
+        const decoded = JSON.parse(atob(token.split(".")[1]));
+        setIdUsuario(decoded.id);
       } catch (error) {
-        console.error("Error al decodificar token:", error)
-        setError("Token inválido. Por favor, inicia sesión de nuevo.")
-        setIsLoadingReservations(false)
+        console.error("Error al decodificar token:", error);
+        setError("Token inválido. Por favor, inicia sesión de nuevo.");
+        setIsLoadingReservations(false);
       }
-    }
+    };
 
     if (!id_usuario) {
-      decodeToken()
+      decodeToken();
     }
 
     if (id_usuario) {
-      fetchUserReservations()
+      fetchUserReservations();
     }
-  }, [id_usuario])
+  }, [id_usuario]);
 
   const fetchUserReservations = async () => {
     try {
-      setIsLoadingReservations(true)
-      if (!id_usuario) return
+      setIsLoadingReservations(true);
+      if (!id_usuario) return;
 
       const [confirmedResponse, expiredResponse] = await Promise.all([
         axios.get(`https://backendd-q0zc.onrender.com/api/reservas/usuario/${id_usuario}/confirmed`),
         axios.get(`https://backendd-q0zc.onrender.com/api/reservas/usuario/${id_usuario}/expired`),
-      ])
+      ]);
 
-      const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]")
-      const filteredConfirmed = confirmedResponse.data.filter((res) => !cancelledReservations.includes(res.id_reserva))
-      const filteredExpired = expiredResponse.data.filter((res) => !cancelledReservations.includes(res.id_reserva))
+      console.log("Reservas Confirmadas Crudas:", confirmedResponse.data);
+      console.log("Reservas Vencidas Crudas:", expiredResponse.data);
 
-      setConfirmedReservations(filteredConfirmed)
-      setExpiredReservations(filteredExpired)
-      setError(null)
+      const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]");
+      const filteredConfirmed = confirmedResponse.data.filter((res) => !cancelledReservations.includes(res.id_reserva));
+      const filteredExpired = expiredResponse.data.filter((res) => !cancelledReservations.includes(res.id_reserva));
+
+      setConfirmedReservations(filteredConfirmed);
+      setExpiredReservations(filteredExpired);
+      setError(null);
     } catch (err) {
-      setError(err.response?.data?.error || "Error al cargar las reservas del usuario.")
-      console.error("Error al obtener reservas:", err.response?.data || err.message)
+      setError(err.response?.data?.error || "Error al cargar las reservas del usuario.");
+      console.error("Error al obtener reservas:", err.response?.data || err.message);
     } finally {
-      setIsLoadingReservations(false)
+      setIsLoadingReservations(false);
     }
-  }
+  };
 
   const handleCancelReservation = async (id_reserva) => {
     const result = await Swal.fire({
@@ -138,62 +142,30 @@ export default function MisReservas() {
       cancelButtonColor: "#6c757d",
       confirmButtonText: "Sí",
       cancelButtonText: "Cancelar",
-    })
+    });
 
     if (result.isConfirmed) {
       try {
-        let serverCancelled = false
-        try {
-          const response = await axios.put(`https://backendd-q0zc.onrender.com/api/reservas/${id_reserva}/cancelar`)
-          serverCancelled = response.status === 200 && response.data.confirmCancel
-        } catch (serverError) {
-          console.warn("No se pudo cancelar en el servidor:", serverError.message)
-          serverCancelled = false
-        }
-
-        const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]")
-        if (!cancelledReservations.includes(id_reserva)) {
-          cancelledReservations.push(id_reserva)
-          localStorage.setItem("cancelledReservations", JSON.stringify(cancelledReservations))
-        }
-
-        setConfirmedReservations((prev) => prev.filter((res) => res.id_reserva !== id_reserva))
-        
-        if (serverCancelled) {
-          setReservationSuccess("Reserva cancelada exitosamente en el sistema.")
+        const response = await axios.put(`https://backendd-q0zc.onrender.com/api/reservas/${id_reserva}/cancelar`);
+        if (response.status === 200 && response.data.confirmCancel) {
+          setConfirmedReservations((prev) => prev.filter((res) => res.id_reserva !== id_reserva));
+          setReservationSuccess("Reserva cancelada exitosamente en el sistema.");
+          setError(null);
         } else {
-          setReservationSuccess("Reserva cancelada localmente. Por favor, contacta al administrador para confirmar la cancelación en el sistema.")
+          throw new Error("La cancelación no se confirmó correctamente en el servidor.");
         }
-        setError(null)
       } catch (err) {
-        try {
-          console.warn("Error crítico, aplicando cancelación local como respaldo:", err.message)
-          const cancelledReservations = JSON.parse(localStorage.getItem("cancelledReservations") || "[]")
-          if (!cancelledReservations.includes(id_reserva)) {
-            cancelledReservations.push(id_reserva)
-            localStorage.setItem("cancelledReservations", JSON.stringify(cancelledReservations))
-          }
-          setConfirmedReservations((prev) => prev.filter((res) => res.id_reserva !== id_reserva))
-          setReservationSuccess("Reserva cancelada localmente. Contacta al administrador para confirmar.")
-          setError(null)
-        } catch (localErr) {
-          setError("Error al cancelar la reserva. Por favor, intenta de nuevo.")
-          console.error("Error crítico al cancelar:", localErr.message)
-        }
+        setError("Error al cancelar la reserva. Por favor, intenta de nuevo o contacta al administrador.");
+        console.error("Error al cancelar reserva:", err.message);
       }
     }
-  }
+  };
 
   const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleString("es-MX", {
-      timeZone: "America/Mexico_City",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+    return momentTz(fecha)
+      .tz('America/Mexico_City')
+      .format('D [de] MMMM [de] YYYY, h:mm a');
+  };
 
   const TablaReservas = ({ reservas, mostrarAcciones = false }) => (
     <TableContainer component={Paper} elevation={2}>
@@ -239,7 +211,7 @@ export default function MisReservas() {
         </TableBody>
       </Table>
     </TableContainer>
-  )
+  );
 
   return (
     <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", p: 3 }}>
@@ -344,5 +316,5 @@ export default function MisReservas() {
         </TabPanel>
       </Paper>
     </Box>
-  )
+  );
 }
