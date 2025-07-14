@@ -93,7 +93,7 @@ const ConexionMP = () => {
     try {
       const response = await axios.get(
         `https://backendd-q0zc.onrender.com/api/mercadopago/iniciar-oauth?id_usuario=${id_usuario}`,
-        { timeout: 10000 } // Añadir timeout
+        { timeout: 10000 }
       );
       const { oauthUrl } = response.data;
       console.log("URL de OAuth recibida:", oauthUrl); // Depuración

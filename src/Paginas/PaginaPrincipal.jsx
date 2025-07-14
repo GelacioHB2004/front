@@ -366,6 +366,7 @@ const HotelDetailModal = ({ open, handleClose, hotel }) => {
   }
 
   return (
+    
     <Modal open={open} onClose={handleClose} aria-labelledby="hotel-detail-modal" closeAfterTransition>
       <Fade in={open}>
         <Box
@@ -383,6 +384,20 @@ const HotelDetailModal = ({ open, handleClose, hotel }) => {
             overflow: "hidden",
           }}
         >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '40px',
+              backgroundImage: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhGdWLuXlzvaWSE17D7isKuDzo7Y7PX_KRjQ&s')`,
+              backgroundRepeat: 'repeat-x',
+              backgroundSize: 'auto 100%',
+              backgroundPosition: 'center',
+              zIndex: 2
+            }}
+          />
           <Box sx={{ position: "relative" }}>
             <CardMedia
               component="img"
@@ -908,11 +923,13 @@ const PaginaPrincipal = () => {
           </Container>
         </Box>
 
-        {/* Destinos Destacados */}
+
+        
+{/* Destinos Destacados */}
         {hoteles.length > 0 && (
           <Box
             sx={{
-              background: "linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(142, 36, 170, 0.05) 100%)",
+              background: "linear-gradient(135deg, rgba(139, 69, 19, 0.05) 0%, rgba(160, 82, 45, 0.08) 100%)",
               py: 6,
               position: "relative",
             }}
@@ -921,50 +938,75 @@ const PaginaPrincipal = () => {
               <Box sx={{ mb: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Box>
                   <Chip
-                    label="EXPERIENCIAS ÚNICAS DE XANTOLO"
+                    label="🎭 EXPERIENCIAS ÚNICAS 🎭"
                     sx={{
                       mb: 2,
                       fontWeight: 600,
-                      px: 2,
-                      py: 1,
-                      backgroundColor: "#FF6B35",
+                      px: 3,
+                      py: 1.5,
+                      backgroundColor: "#8B4513",
                       color: "white",
-                      fontSize: "0.8rem",
+                      fontSize: "0.9rem",
                       letterSpacing: "0.5px",
-                      boxShadow: "0 4px 12px rgba(255, 107, 53, 0.3)",
+                      boxShadow: "0 2px 8px rgba(139, 69, 19, 0.3)",
+                      borderRadius: "20px",
+                      textTransform: "uppercase",
+                      fontFamily: '"Fresca", cursive',
                     }}
                   />
                   <Typography
                     variant="h4"
                     sx={{
                       fontWeight: 700,
-                      color: "#8E24AA",
-                      textShadow: "0 2px 4px rgba(142, 36, 170, 0.1)",
+                      color: "#8B4513",
+                      textShadow: "1px 1px 3px rgba(139, 69, 19, 0.2)",
                       mb: 1,
+                      fontFamily: '"Fresca", cursive',
+                      position: "relative",
+                      "&::after": {
+                        content: '"🌺"',
+                        position: "absolute",
+                        right: -40,
+                        top: -5,
+                        fontSize: "1.2rem",
+                        animation: "float 3s ease-in-out infinite",
+                      },
+                      "@keyframes float": {
+                        "0%, 100%": { transform: "translateY(0px)" },
+                        "50%": { transform: "translateY(-8px)" },
+                      },
                     }}
                   >
                     Destinos Destacados
                   </Typography>
-                  <Typography variant="body1" sx={{ color: "#FF6B35", maxWidth: 400 }}>
-                    Descubre los lugares más increíbles para celebrar Xantolo
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      color: "#A0522D", 
+                      maxWidth: 400,
+                      fontWeight: 500,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Descubre los lugares más increíbles 💀✨
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <IconButton
                     onClick={prevSlide}
                     sx={{
-                      bgcolor: "rgba(255, 255, 255, 0.9)",
+                      bgcolor: "rgba(139, 69, 19, 0.1)",
                       backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(255, 107, 53, 0.3)",
-                      boxShadow: "0 8px 24px rgba(255, 107, 53, 0.15)",
-                      color: "#FF6B35",
+                      border: "2px solid #8B4513",
+                      boxShadow: "0 4px 12px rgba(139, 69, 19, 0.2)",
+                      color: "#8B4513",
                       width: 48,
                       height: 48,
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      transition: "all 0.3s ease",
                       "&:hover": {
-                        bgcolor: "#FF6B35",
-                        transform: "translateY(-2px) scale(1.05)",
-                        boxShadow: "0 12px 32px rgba(255, 107, 53, 0.25)",
+                        bgcolor: "#8B4513",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 6px 20px rgba(139, 69, 19, 0.3)",
                         color: "white",
                       },
                     }}
@@ -974,18 +1016,18 @@ const PaginaPrincipal = () => {
                   <IconButton
                     onClick={nextSlide}
                     sx={{
-                      bgcolor: "rgba(255, 255, 255, 0.9)",
+                      bgcolor: "rgba(139, 69, 19, 0.1)",
                       backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(255, 107, 53, 0.3)",
-                      boxShadow: "0 8px 24px rgba(255, 107, 53, 0.15)",
-                      color: "#FF6B35",
+                      border: "2px solid #8B4513",
+                      boxShadow: "0 4px 12px rgba(139, 69, 19, 0.2)",
+                      color: "#8B4513",
                       width: 48,
                       height: 48,
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      transition: "all 0.3s ease",
                       "&:hover": {
-                        bgcolor: "#FF6B35",
-                        transform: "translateY(-2px) scale(1.05)",
-                        boxShadow: "0 12px 32px rgba(255, 107, 53, 0.25)",
+                        bgcolor: "#8B4513",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 6px 20px rgba(139, 69, 19, 0.3)",
                         color: "white",
                       },
                     }}
@@ -998,10 +1040,10 @@ const PaginaPrincipal = () => {
                 sx={{
                   position: "relative",
                   overflow: "hidden",
-                  borderRadius: "24px",
+                  borderRadius: "16px",
                   height: 400,
-                  boxShadow: "0 20px 60px rgba(255, 107, 53, 0.2)",
-                  border: "1px solid rgba(255, 107, 53, 0.2)",
+                  boxShadow: "0 8px 32px rgba(139, 69, 19, 0.15)",
+                  border: "3px solid #D2B48C",
                 }}
               >
                 {hoteles.map((hotel, index) => (
@@ -1014,9 +1056,9 @@ const PaginaPrincipal = () => {
                       width: "100%",
                       height: "100%",
                       opacity: index === currentSlide ? 1 : 0,
-                      transform: index === currentSlide ? "scale(1)" : "scale(1.02)",
-                      transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-                      backgroundImage: `linear-gradient(135deg, rgba(255, 107, 53, 0.4) 0%, rgba(142, 36, 170, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%), url(${getImageSrc(hotel.imagen)})`,
+                      transform: index === currentSlide ? "scale(1)" : "scale(1.01)",
+                      transition: "all 0.6s ease",
+                      backgroundImage: `linear-gradient(135deg, rgba(139, 69, 19, 0.4) 0%, rgba(160, 82, 45, 0.3) 50%, rgba(0, 0, 0, 0.4) 100%), url(${getImageSrc(hotel.imagen)})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
@@ -1025,7 +1067,7 @@ const PaginaPrincipal = () => {
                       justifyContent: "center",
                       flexDirection: "column",
                       color: "white",
-                      borderRadius: "24px",
+                      borderRadius: "13px",
                       zIndex: index === currentSlide ? 2 : 1,
                       visibility: index === currentSlide ? "visible" : "hidden",
                     }}
@@ -1042,11 +1084,33 @@ const PaginaPrincipal = () => {
                       <Typography
                         variant="h2"
                         sx={{
-                          fontWeight: 800,
+                          fontWeight: 700,
                           mb: 2,
-                          textShadow: "0 4px 16px rgba(0,0,0,0.7)",
-                          color: "white",
-                          fontSize: { xs: "2rem", md: "3rem" },
+                          textShadow: "0 3px 12px rgba(0,0,0,0.7)",
+                          color: "#F5DEB3",
+                          fontSize: { xs: "2rem", md: "2.8rem" },
+                          fontFamily: '"Fresca", cursive',
+                          position: "relative",
+                          "&::before": {
+                            content: '"🎭"',
+                            position: "absolute",
+                            left: -45,
+                            top: -8,
+                            fontSize: "1.8rem",
+                            animation: "bounce 2s infinite",
+                          },
+                          "&::after": {
+                            content: '"🌺"',
+                            position: "absolute",
+                            right: -45,
+                            top: -8,
+                            fontSize: "1.8rem",
+                            animation: "bounce 2s infinite 1s",
+                          },
+                          "@keyframes bounce": {
+                            "0%, 100%": { transform: "translateY(0)" },
+                            "50%": { transform: "translateY(-12px)" },
+                          },
                         }}
                       >
                         {hotel.nombrehotel}
@@ -1057,22 +1121,24 @@ const PaginaPrincipal = () => {
                           alignItems: "center",
                           justifyContent: "center",
                           mb: 4,
-                          backgroundColor: "rgba(255, 255, 255, 0.15)",
+                          backgroundColor: "rgba(139, 69, 19, 0.3)",
                           backdropFilter: "blur(10px)",
                           borderRadius: "20px",
                           px: 3,
-                          py: 1.5,
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
+                          py: 2,
+                          border: "2px solid #D2B48C",
+                          boxShadow: "0 3px 15px rgba(139, 69, 19, 0.2)",
                         }}
                       >
-                        <LocationOn sx={{ fontSize: 20, mr: 1, color: "#FFD600" }} />
+                        <LocationOn sx={{ fontSize: 22, mr: 1.5, color: "#F5DEB3" }} />
                         <Typography
                           variant="h6"
                           sx={{
-                            textShadow: "0 2px 8px rgba(0,0,0,0.7)",
-                            fontWeight: 500,
-                            letterSpacing: "0.5px",
-                            color: "white",
+                            textShadow: "0 2px 6px rgba(0,0,0,0.6)",
+                            fontWeight: 600,
+                            letterSpacing: "0.3px",
+                            color: "#F5DEB3",
+                            fontFamily: '"Fresca", cursive',
                           }}
                         >
                           {hotel.direccion}
@@ -1082,26 +1148,43 @@ const PaginaPrincipal = () => {
                         variant="contained"
                         sx={{
                           px: 6,
-                          py: 2,
+                          py: 2.5,
                           fontWeight: 700,
                           fontSize: "1.1rem",
-                          backgroundColor: "#FF6B35",
+                          backgroundColor: "#8B4513",
                           color: "white",
-                          boxShadow: "0 8px 32px rgba(255, 107, 53, 0.4)",
-                          borderRadius: "50px",
-                          textTransform: "none",
-                          border: "2px solid rgba(255, 255, 255, 0.2)",
-                          backdropFilter: "blur(10px)",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          boxShadow: "0 6px 20px rgba(139, 69, 19, 0.3)",
+                          borderRadius: "25px",
+                          textTransform: "uppercase",
+                          border: "2px solid #D2B48C",
+                          backdropFilter: "blur(8px)",
+                          fontFamily: '"Fresca", cursive',
+                          letterSpacing: "0.5px",
+                          transition: "all 0.3s ease",
+                          position: "relative",
+                          overflow: "hidden",
+                          "&::before": {
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: "-100%",
+                            width: "100%",
+                            height: "100%",
+                            background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                            transition: "left 0.5s",
+                          },
                           "&:hover": {
-                            backgroundColor: "#8E24AA",
-                            transform: "translateY(-4px) scale(1.05)",
-                            boxShadow: "0 16px 48px rgba(142, 36, 170, 0.6)",
+                            backgroundColor: "#A0522D",
+                            transform: "translateY(-3px)",
+                            boxShadow: "0 8px 25px rgba(139, 69, 19, 0.4)",
+                            "&::before": {
+                              left: "100%",
+                            },
                           },
                         }}
                         onClick={() => handleOpenModal(hotel)}
                       >
-                        Explorar Destino
+                        🎭 Explorar Destino 🌺
                       </Button>
                     </Box>
                     <Box
@@ -1109,20 +1192,28 @@ const PaginaPrincipal = () => {
                         position: "absolute",
                         top: 20,
                         right: 20,
-                        width: 60,
-                        height: 60,
+                        width: 65,
+                        height: 65,
                         borderRadius: "50%",
-                        background:
-                          "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)",
+                        background: "rgba(139, 69, 19, 0.8)",
                         backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.3)",
+                        border: "2px solid #D2B48C",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         zIndex: 2,
+                        boxShadow: "0 3px 15px rgba(139, 69, 19, 0.3)",
                       }}
                     >
-                      <Typography sx={{ color: "white", fontWeight: 700, fontSize: "0.8rem" }}>
+                      <Typography 
+                        sx={{ 
+                          color: "white", 
+                          fontWeight: 700, 
+                          fontSize: "0.9rem",
+                          fontFamily: '"Fresca", cursive',
+                          textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+                        }}
+                      >
                         {index + 1}/{hoteles.length}
                       </Typography>
                     </Box>
@@ -1131,12 +1222,18 @@ const PaginaPrincipal = () => {
                 <Box
                   sx={{
                     position: "absolute",
-                    bottom: 24,
+                    bottom: 20,
                     left: "50%",
                     transform: "translateX(-50%)",
                     display: "flex",
-                    gap: 1,
+                    gap: 2,
                     zIndex: 10,
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
+                    backdropFilter: "blur(8px)",
+                    borderRadius: "15px",
+                    px: 2.5,
+                    py: 1.5,
+                    border: "1px solid rgba(139, 69, 19, 0.3)",
                   }}
                 >
                   {hoteles.map((_, index) => (
@@ -1146,10 +1243,21 @@ const PaginaPrincipal = () => {
                         width: index === currentSlide ? 32 : 12,
                         height: 4,
                         borderRadius: "4px",
-                        backgroundColor: index === currentSlide ? "#FFD600" : "rgba(255, 255, 255, 0.5)",
+                        backgroundImage: index === currentSlide 
+                          ? `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhGdWLuXlzvaWSE17D7isKuDzo7Y7PX_KRjQ&s')`
+                          : "none",
+                        backgroundColor: index === currentSlide ? "transparent" : "rgba(255, 255, 255, 0.5)",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "repeat-x",
                         transition: "all 0.3s ease",
                         cursor: "pointer",
-                        boxShadow: index === currentSlide ? "0 2px 8px rgba(255, 214, 0, 0.5)" : "none",
+                        boxShadow: index === currentSlide ? "0 2px 8px rgba(139, 69, 19, 0.4)" : "0 1px 4px rgba(255, 255, 255, 0.2)",
+                        border: index === currentSlide ? "1px solid #8B4513" : "1px solid rgba(255, 255, 255, 0.2)",
+                        "&:hover": {
+                          transform: "scale(1.1)",
+                          backgroundColor: index === currentSlide ? "transparent" : "#8B4513",
+                        },
                       }}
                       onClick={() => setCurrentSlide(index)}
                     />
@@ -1160,235 +1268,508 @@ const PaginaPrincipal = () => {
           </Box>
         )}
 
-        {/* Sección de Hoteles Destacados */}
-        <Container maxWidth="xl" sx={{ py: 8 }}>
-          <Box sx={{ textAlign: "center", mb: 6 }}>
-            <Chip
-              label="ALOJAMIENTOS PREMIUM XANTOLO"
-              sx={{
-                mb: 2,
-                fontWeight: 600,
-                px: 1,
-                backgroundColor: "#8E24AA",
-                color: "white",
-                fontSize: "0.75rem",
-              }}
-              size="small"
-            />
-            <Typography variant="h3" sx={{ mb: 2, color: "#FF6B35", fontWeight: 700 }}>
-              Hoteles Destacados
-            </Typography>
-            <Typography variant="h6" sx={{ color: "#8E24AA", fontWeight: 400, maxWidth: 700, mx: "auto" }}>
-              Los mejores hoteles para celebrar la tradición de Xantolo
-            </Typography>
-          </Box>
-          <Grid container spacing={2} sx={{ justifyContent: "center" }}>
-            {loading
-              ? Array.from({ length: 8 }).map((_, index) => (
-                  <Grid item xs={12} sm={6} md={3} lg={3} xl={3} key={index}>
-                    <Card sx={{ width: "100%", maxWidth: 320 }}>
-                      <Skeleton variant="rectangular" height={180} />
-                      <CardContent>
-                        <Skeleton variant="text" height={28} />
-                        <Skeleton variant="text" height={20} />
-                        <Skeleton variant="text" height={20} width="60%" />
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              : hoteles.map((hotel) => (
-                  <Grid item xs={12} sm={6} md={3} lg={3} xl={3} key={hotel.id_hotel}>
-                    <Card
-                      sx={{
-                        width: "100%",
-                        maxWidth: 320,
-                        height: "100%",
-                        border: "1px solid rgba(255, 107, 53, 0.3)",
-                        boxShadow: "0 2px 8px rgba(255, 107, 53, 0.1)",
-                      }}
-                    >
-                      <Box sx={{ position: "relative" }}>
-                        <CardMedia
-                          component="img"
-                          height={180}
-                          image={getImageSrc(hotel.imagen)}
-                          alt={hotel.nombrehotel}
-                          sx={{
-                            objectFit: "cover",
-                            transition: "transform 0.5s",
-                            "&:hover": { transform: "scale(1.05)" },
-                          }}
-                        />
-                        <IconButton
-                          sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            "&:hover": {
-                              backgroundColor: "#FF4081",
-                              transform: "scale(1.1)",
-                              color: "white",
-                            },
-                            transition: "all 0.2s",
-                            zIndex: 2,
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            toggleFavorite(hotel.id_hotel, "hotel")
-                          }}
-                        >
-                          {favorites.has(`hotel-${hotel.id_hotel}`) ? (
-                            <Favorite sx={{ color: "#FF4081" }} />
-                          ) : (
-                            <FavoriteBorder />
-                          )}
-                        </IconButton>
-                        <Chip
-                          label="Hotel"
-                          size="small"
-                          sx={{
-                            position: "absolute",
-                            top: 8,
-                            left: 8,
-                            fontWeight: 600,
-                            zIndex: 2,
-                            backgroundColor: "#8E24AA",
-                            color: "white",
-                          }}
-                        />
-                      </Box>
-                      <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            mb: 1,
-                            fontWeight: 600,
-                            fontSize: "1.1rem",
-                            color: "#FF6B35",
-                          }}
-                        >
-                          {hotel.nombrehotel}
-                        </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                          <LocationOn sx={{ fontSize: 16, color: "#8E24AA", mr: 0.5 }} />
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontSize: "0.85rem",
-                              color: "#8E24AA",
-                            }}
-                          >
-                            {hotel.direccion || "Ubicación no especificada"}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                          <Rating
-                            value={0}
-                            precision={0.5}
-                            size="small"
-                            sx={{
-                              color: "#FFD600",
-                              "& .MuiRating-iconEmpty": {
-                                color: "rgba(255, 214, 0, 0.3)",
-                              },
-                            }}
-                            onChange={(event, newValue) => {
-                              console.log("Nueva calificación para hotel:", hotel.id_hotel, newValue)
-                            }}
-                          />
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              ml: 1,
-                              color: "#8E24AA",
-                              fontSize: "0.75rem",
-                            }}
-                          >
-                            Califica este hotel
-                          </Typography>
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            mb: 2,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            height: "36px",
-                            fontSize: "0.85rem",
-                            color: "#666",
-                          }}
-                        >
-                          {hotel.descripcion || "Hotel con excelentes servicios y comodidades para Xantolo"}
-                        </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                          <Bed sx={{ fontSize: 16, color: "#FF6B35", mr: 0.5 }} />
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontSize: "0.85rem",
-                              color: "#FF6B35",
-                            }}
-                          >
-                            {hotel.numhabitacion || "N/A"} habitaciones disponibles
-                          </Typography>
-                        </Box>
-                        {hotel.servicios && (
-                          <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-                            {getServiceIcons(hotel.servicios).map((icon, index) => (
-                              <Tooltip
-                                key={index}
-                                title={
-                                  index === 0
-                                    ? "WiFi"
-                                    : index === 1
-                                      ? "Estacionamiento"
-                                      : index === 2
-                                        ? "Restaurante"
-                                        : ""
-                                }
-                              >
-                                <Box
-                                  sx={{
-                                    color: "#8E24AA",
-                                    bgcolor: "rgba(142, 36, 170, 0.1)",
-                                    p: 0.5,
-                                    borderRadius: 1,
-                                    fontSize: "0.9rem",
-                                  }}
-                                >
-                                  {icon}
-                                </Box>
-                              </Tooltip>
-                            ))}
-                          </Box>
-                        )}
-                        <Button
-                          variant="contained"
-                          fullWidth
-                          size="small"
-                          sx={{
-                            mt: "auto",
-                            py: 1,
-                            backgroundColor: "#FF6B35",
-                            color: "white",
-                            "&:hover": {
-                              backgroundColor: "#8E24AA",
-                            },
-                          }}
-                          onClick={() => handleOpenModal(hotel)}
-                        >
-                          Ver Detalles
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
+       {/* Sección de Hoteles Destacados */}
+<Container maxWidth="xl" sx={{ py: 8, position: 'relative' }}>
+  {/* Decoración de fondo inspirada en papel picado */}
+  <Box 
+    sx={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundImage: `
+        radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 60% 40%, rgba(156, 39, 176, 0.1) 0%, transparent 50%)
+      `,
+      pointerEvents: 'none',
+      zIndex: 0
+    }}
+  />
+  
+  {/* Patrón decorativo superior */}
+<Box
+  sx={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '40px', // Más grueso que antes (era 20px)
+    backgroundImage: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhGdWLuXlzvaWSE17D7isKuDzo7Y7PX_KRjQ&s')`,
+    backgroundRepeat: 'repeat-x',
+    backgroundSize: 'auto 100%', // Se ajusta a la altura completa
+    backgroundPosition: 'center',
+    zIndex: 1
+  }}
+
+  />
+  
+  <Box sx={{ textAlign: "center", mb: 6, position: 'relative', zIndex: 2 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+      <Box 
+        sx={{
+          width: '60px',
+          height: '3px',
+          background: 'linear-gradient(90deg, #FF6B35, #FFC107)',
+          borderRadius: '2px',
+          mr: 2
+        }}
+      />
+      <Chip
+        label="🏨 ALOJAMIENTOS PREMIUM XANTOLO 🎭"
+        sx={{
+          mb: 0,
+          fontWeight: 700,
+          px: 3,
+          py: 1,
+          background: 'linear-gradient(135deg, #FF6B35, #FF4081)',
+          color: "white",
+          fontSize: "0.9rem",
+          borderRadius: '20px',
+          boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 6px 20px rgba(255, 107, 53, 0.4)',
+          },
+          transition: 'all 0.3s ease'
+        }}
+        size="medium"
+      />
+      <Box 
+        sx={{
+          width: '60px',
+          height: '3px',
+          background: 'linear-gradient(90deg, #FFC107, #9C27B0)',
+          borderRadius: '2px',
+          ml: 2
+        }}
+      />
+    </Box>
+    
+    <Typography 
+      variant="h3" 
+      sx={{ 
+        mb: 2, 
+        background: 'linear-gradient(45deg, #FF6B35, #9C27B0)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        fontWeight: 800,
+        textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+        position: 'relative',
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          bottom: '-10px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100px',
+          height: '4px',
+          background: 'linear-gradient(90deg, #FFC107, #FF4081)',
+          borderRadius: '2px'
+        }
+      }}
+    >
+      Hoteles Destacados
+    </Typography>
+    
+    <Typography 
+      variant="h6" 
+      sx={{ 
+        color: "#9C27B0", 
+        fontWeight: 500, 
+        maxWidth: 700, 
+        mx: "auto",
+        fontSize: '1.1rem',
+        textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
+      }}
+    >
+      🌺 Los mejores hoteles para celebrar la tradición de Xantolo 🌺
+    </Typography>
+  </Box>
+  
+  <Grid container spacing={3} sx={{ justifyContent: "center", position: 'relative', zIndex: 2 }}>
+    {loading
+      ? Array.from({ length: 8 }).map((_, index) => (
+          <Grid item xs={12} sm={6} md={3} lg={3} xl={3} key={index}>
+            <Card sx={{ 
+              width: "100%", 
+              maxWidth: 320,
+              background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(156, 39, 176, 0.1))',
+              borderRadius: '20px',
+              border: '2px solid rgba(255, 193, 7, 0.3)'
+            }}>
+              <Skeleton variant="rectangular" height={180} sx={{ borderRadius: '20px 20px 0 0' }} />
+              <CardContent>
+                <Skeleton variant="text" height={28} />
+                <Skeleton variant="text" height={20} />
+                <Skeleton variant="text" height={20} width="60%" />
+              </CardContent>
+            </Card>
           </Grid>
-        </Container>
+        ))
+      : hoteles.map((hotel) => (
+          <Grid item xs={12} sm={6} md={3} lg={3} xl={3} key={hotel.id_hotel}>
+            <Card
+              sx={{
+                width: "100%",
+                maxWidth: 320,
+                height: "100%",
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 193, 7, 0.05))',
+                border: "3px solid transparent",
+                backgroundClip: "padding-box",
+                borderRadius: '20px',
+                boxShadow: "0 8px 30px rgba(255, 107, 53, 0.2)",
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'linear-gradient(135deg, #FF6B35, #FFC107, #9C27B0, #FF4081)',
+                  borderRadius: '20px',
+                  padding: '3px',
+                  mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  maskComposite: 'exclude',
+                  WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  WebkitMaskComposite: 'xor',
+                  zIndex: -1
+                },
+                '&:hover': {
+                  transform: 'translateY(-8px) scale(1.02)',
+                  boxShadow: "0 15px 40px rgba(255, 107, 53, 0.3)",
+                  '&::before': {
+                    background: 'linear-gradient(135deg, #FF4081, #9C27B0, #FF6B35, #FFC107)',
+                  }
+                },
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            >
+              <Box sx={{ position: "relative" }}>
+                <CardMedia
+                  component="img"
+                  height={180}
+                  image={getImageSrc(hotel.imagen)}
+                  alt={hotel.nombrehotel}
+                  sx={{
+                    objectFit: "cover",
+                    transition: "transform 0.5s ease",
+                    "&:hover": { transform: "scale(1.1)" },
+                    borderRadius: '20px 20px 0 0',
+                    filter: 'brightness(1.1) saturate(1.2)',
+                  }}
+                />
+                
+                {/* Overlay decorativo */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(45deg, rgba(255, 107, 53, 0.1), rgba(156, 39, 176, 0.1))',
+                    borderRadius: '20px 20px 0 0',
+                    pointerEvents: 'none'
+                  }}
+                />
+                
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    top: 12,
+                    right: 12,
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 193, 7, 0.2))',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                    "&:hover": {
+                      background: 'linear-gradient(135deg, #FF4081, #9C27B0)',
+                      transform: "scale(1.2) rotate(10deg)",
+                      color: "white",
+                      boxShadow: '0 6px 20px rgba(255, 64, 129, 0.4)',
+                    },
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    zIndex: 3,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleFavorite(hotel.id_hotel, "hotel")
+                  }}
+                >
+                  {favorites.has(`hotel-${hotel.id_hotel}`) ? (
+                    <Favorite sx={{ color: "#FF4081" }} />
+                  ) : (
+                    <FavoriteBorder />
+                  )}
+                </IconButton>
+                
+                <Chip
+                  label="🏨 Hotel"
+                  size="small"
+                  sx={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    fontWeight: 700,
+                    zIndex: 3,
+                    background: 'linear-gradient(135deg, #9C27B0, #FF4081)',
+                    color: "white",
+                    borderRadius: '15px',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 4px 15px rgba(156, 39, 176, 0.3)',
+                    fontSize: '0.75rem',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                      boxShadow: '0 6px 20px rgba(156, 39, 176, 0.4)',
+                    },
+                    transition: 'all 0.3s ease'
+                  }}
+                />
+              </Box>
+              
+              <CardContent sx={{ flexGrow: 1, p: 3, position: 'relative' }}>
+                {/* Decoración floral sutil */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                    fontSize: '1.5rem',
+                    opacity: 0.1,
+                    transform: 'rotate(15deg)',
+                    color: '#FF6B35'
+                  }}
+                >
+                  🌸
+                </Box>
+                
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 1.5,
+                    fontWeight: 700,
+                    fontSize: "1.2rem",
+                    background: 'linear-gradient(45deg, #FF6B35, #9C27B0)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                  }}
+                >
+                  {hotel.nombrehotel}
+                </Typography>
+                
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                  <Box
+                    sx={{
+                      background: 'linear-gradient(135deg, #9C27B0, #FF4081)',
+                      borderRadius: '50%',
+                      p: 0.5,
+                      mr: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <LocationOn sx={{ fontSize: 16, color: "white" }} />
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: "0.9rem",
+                      color: "#9C27B0",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {hotel.direccion || "Ubicación no especificada"}
+                  </Typography>
+                </Box>
+                
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Rating
+                    value={0}
+                    precision={0.5}
+                    size="small"
+                    sx={{
+                      color: "#FFC107",
+                      "& .MuiRating-iconEmpty": {
+                        color: "rgba(255, 193, 7, 0.3)",
+                      },
+                      "& .MuiRating-iconFilled": {
+                        filter: 'drop-shadow(0 2px 4px rgba(255, 193, 7, 0.3))',
+                      },
+                    }}
+                    onChange={(event, newValue) => {
+                      console.log("Nueva calificación para hotel:", hotel.id_hotel, newValue)
+                    }}
+                  />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      ml: 1,
+                      color: "#9C27B0",
+                      fontSize: "0.8rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    ⭐ Califica este hotel
+                  </Typography>
+                </Box>
+                
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mb: 2,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    height: "40px",
+                    fontSize: "0.9rem",
+                    color: "#666",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {hotel.descripcion || "🎭 Hotel con excelentes servicios y comodidades para celebrar Xantolo 🌺"}
+                </Typography>
+                
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      background: 'linear-gradient(135deg, #FF6B35, #FFC107)',
+                      borderRadius: '50%',
+                      p: 0.5,
+                      mr: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Bed sx={{ fontSize: 16, color: "white" }} />
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: "0.9rem",
+                      color: "#FF6B35",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {hotel.numhabitacion || "N/A"} habitaciones disponibles
+                  </Typography>
+                </Box>
+                
+                {hotel.servicios && (
+                  <Box sx={{ display: "flex", gap: 1, mb: 2.5, flexWrap: 'wrap' }}>
+                    {getServiceIcons(hotel.servicios).map((icon, index) => (
+                      <Tooltip
+                        key={index}
+                        title={
+                          index === 0
+                            ? "WiFi"
+                            : index === 1
+                              ? "Estacionamiento"
+                              : index === 2
+                                ? "Restaurante"
+                                : ""
+                        }
+                      >
+                        <Box
+                          sx={{
+                            background: 'linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(255, 193, 7, 0.1))',
+                            color: "#9C27B0",
+                            border: '2px solid rgba(156, 39, 176, 0.2)',
+                            p: 1,
+                            borderRadius: '12px',
+                            fontSize: "1rem",
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #9C27B0, #FF4081)',
+                              color: 'white',
+                              transform: 'translateY(-2px) scale(1.1)',
+                              boxShadow: '0 4px 15px rgba(156, 39, 176, 0.3)',
+                            }
+                          }}
+                        >
+                          {icon}
+                        </Box>
+                      </Tooltip>
+                    ))}
+                  </Box>
+                )}
+                
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="medium"
+                  sx={{
+                    mt: "auto",
+                    py: 1.5,
+                    background: 'linear-gradient(135deg, #FF6B35, #FF4081)',
+                    color: "white",
+                    borderRadius: '15px',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 6px 20px rgba(255, 107, 53, 0.3)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    "&:hover": {
+                      background: 'linear-gradient(135deg, #9C27B0, #FF6B35)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 25px rgba(156, 39, 176, 0.4)',
+                    },
+                    "&:active": {
+                      transform: 'translateY(0px)',
+                    },
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: '-100%',
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+                      transition: 'left 0.5s',
+                    },
+                    '&:hover::before': {
+                      left: '100%',
+                    },
+                  }}
+                  onClick={() => handleOpenModal(hotel)}
+                >
+                  🎭 Ver Detalles 🌺
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+  </Grid>
+  
+ {/* Patrón decorativo superior */}
+<Box
+  sx={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '40px', // Más grueso que antes (era 20px)
+    backgroundImage: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhGdWLuXlzvaWSE17D7isKuDzo7Y7PX_KRjQ&s')`,
+    backgroundRepeat: 'repeat-x',
+    backgroundSize: 'auto 100%', // Se ajusta a la altura completa
+    backgroundPosition: 'center',
+    zIndex: 1
+  }}
+/>
+</Container>
 
         {/* Sección de Departamentos/Habitaciones */}
         <Box

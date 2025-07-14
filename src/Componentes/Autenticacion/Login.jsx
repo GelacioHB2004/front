@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const MySwal = withReactContent(Swal);
-const API_BASE_URL = 'https://backendd-q0zc.onrender.com'; // Cambia esto a tu URL de API real
+const API_BASE_URL = 'http://172.31.98.34:3000'; // Cambia esto a tu URL de API real
 
 function Login() {
   const navigate = useNavigate();
